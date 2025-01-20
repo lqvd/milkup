@@ -17,7 +17,7 @@
     "@lexical/rich-text": "^0.23.1",
     "@lexical/table": "^0.23.1",
     "lexical": "^0.23.1",
-    "next": "15.1.5",
+    "next": "^15.1.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   }
