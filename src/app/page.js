@@ -1,24 +1,34 @@
 'use client';
 
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { ErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
+import { ToolbarPlugin } from './components/ToolbarPlugin';
 
 export default function Home() {
   const initialConfig = {
-    namespace: 'MyEditor',
+    namespace: 'LexicalEditor',
+    theme: {
+      // You can define theme classes here
+      paragraph: 'editor-paragraph',
+      text: {
+        bold: 'editor-text-bold',
+        italic: 'editor-text-italic',
+        underline: 'editor-text-underline',
+      },
+    },
     onError: (error) => console.error(error),
   };
 
   return (
-    <main className="p-4">
+    <main>
       <LexicalComposer initialConfig={initialConfig}>
         <div className="editor-container">
-          <PlainTextPlugin
+          <ToolbarPlugin />
+          <RichTextPlugin
             contentEditable={<ContentEditable className="editor-input" />}
-            placeholder={<div className="editor-placeholder">Enter some text...</div>}
             ErrorBoundary={ErrorBoundary}
           />
           <HistoryPlugin />

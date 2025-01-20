@@ -28,20 +28,6 @@
   display: block;
 }
 
-.editor-placeholder {
-  color: #999;
-  overflow: hidden;
-  position: absolute;
-  text-overflow: ellipsis;
-  top: 50%;
-  transform: translateY(-50%);
-  left: 10px;
-  font-size: 15px;
-  user-select: none;
-  pointer-events: none;
-  line-height: 1.4;
-}
-
 .toolbar {
   border-bottom: 1px solid #ddd;
   padding: 8px;
@@ -50,13 +36,42 @@
 }
 
 .toolbar button {
-  border: 1px solid #ddd;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: transparent;
   cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 35px;
+  height: 35px;
 }
 
 .toolbar button:hover {
-  background: #f1f1f1;
+  background-color: #f0f0f0;
+}
+
+.toolbar button.active {
+  background-color: #e1e1e1;
+}
+
+.editor-paragraph {
+  margin: 0;
+  position: relative;
+}
+
+.editor-text-bold {
+  font-weight: bold;
+}
+
+.editor-text-italic {
+  font-style: italic;
+}
+
+.editor-text-underline {
+  text-decoration: underline;
 }
