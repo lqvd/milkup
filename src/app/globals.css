@@ -1,0 +1,62 @@
+.editor-container {
+  margin: 20px auto;
+  border-radius: 2px;
+  max-width: 600px;
+  color: #000;
+  position: relative;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.editor-inner {
+  position: relative;
+  height: 100%;
+}
+
+.editor-input {
+  min-height: 40px;
+  resize: none;
+  font-size: 15px;
+  position: relative;
+  tab-size: 1;
+  outline: 0;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  line-height: 1.4;
+  display: block;
+}
+
+.editor-placeholder {
+  color: #999;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 10px;
+  font-size: 15px;
+  user-select: none;
+  pointer-events: none;
+  line-height: 1.4;
+}
+
+.toolbar {
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.toolbar button {
+  border: 1px solid #ddd;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.toolbar button:hover {
+  background: #f1f1f1;
+}
