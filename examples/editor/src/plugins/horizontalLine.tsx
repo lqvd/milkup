@@ -1,27 +1,37 @@
-import { ElementTransformer } from '@lexical/markdown';
+import { ElementTransformer, TextMatchTransformer } from '@lexical/markdown';
 import { 
     HorizontalRuleNode, 
     $isHorizontalRuleNode, 
     $createHorizontalRuleNode 
 } from '@lexical/react/LexicalHorizontalRuleNode';
-import { LexicalNode } from 'lexical';
+import { LexicalNode, TextNode } from 'lexical';
+
+export const DASH_SPACE: TextMatchTransformer = {
+  dependencies: [TextNode],
+  regExp: /^---$/,
+  replace: (node, _1) => {
+    node.replace($createHorizontalRuleNode());
+  },
+  trigger: '-',
+  type: 'text-match',
+}; 
 
 export const HR: ElementTransformer = {
-    dependencies: [HorizontalRuleNode],
-    export: (node: LexicalNode) => {
+  dependencies: [HorizontalRuleNode],
+  export: (node: LexicalNode) => {
       return $isHorizontalRuleNode(node) ? '---' : null;
-    },
-    regExp: /^(---|\*\*\*|___)(\s|\n)?$/,
-    replace: (parentNode, _1, _2, isImport) => {
-      const line = $createHorizontalRuleNode();
-  
-      if (isImport || parentNode.getNextSibling() != null) {
-        parentNode.replace(line);
-      } else {
-        parentNode.insertBefore(line);
-      }
-  
-      line.selectNext();
-    },
-    type: 'element',
-  };
+  },
+  regExp: /^(---|\*\*\*|___)(\s|\n)?$/,
+  replace: (parentNode, _1, _2, isImport) => {
+    const line = $createHorizontalRuleNode();
+
+    if (isImport || parentNode.getNextSibling() != null) {
+      parentNode.replace(line);
+    } else {
+      parentNode.insertBefore(line);
+    }
+
+    line.selectNext();
+  },
+  type: 'element',
+};

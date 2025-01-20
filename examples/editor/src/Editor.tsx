@@ -30,7 +30,7 @@ export default function Milkup() {
         <div className="editor-inner">
           <RichTextPlugin
             contentEditable={<ContentEditable className="editor-input" />}
-            placeholder={<div className="editor-placeholder">Placeholder</div>}
+            placeholder={<div className="editor-placeholder">Explore!</div>}
             ErrorBoundary={LexicalErrorBoundary}
           />
           <MarkdownShortcutPlugin transformers={TRANSFORMERS}/>
