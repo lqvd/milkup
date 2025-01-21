@@ -13,7 +13,12 @@ import {
   $getNodeByKey,
   $getSelection,
   $isNodeSelection,
+  COMMAND_PRIORITY_CRITICAL,
+  COMMAND_PRIORITY_EDITOR,
   COMMAND_PRIORITY_HIGH,
+  COMMAND_PRIORITY_LOW,
+  KEY_ARROW_LEFT_COMMAND,
+  KEY_ARROW_RIGHT_COMMAND,
   KEY_ESCAPE_COMMAND,
   NodeKey,
   SELECTION_CHANGE_COMMAND,
@@ -41,7 +46,7 @@ export default function EquationComponent({
   const isEditable = useLexicalEditable();
   const [equationValue, setEquationValue] = useState(equation);
   const [showEquationEditor, setShowEquationEditor] = useState<boolean>(false);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
   const onHide = useCallback(
     (restoreSelection?: boolean) => {
@@ -51,6 +56,7 @@ export default function EquationComponent({
         if ($isEquationNode(node)) {
           node.setEquation(equationValue);
           if (restoreSelection) {
+            // console.log(node, node.getNextSibling());
             node.selectNext(0, 0);
           }
         }
@@ -95,6 +101,36 @@ export default function EquationComponent({
             return false;
           },
           COMMAND_PRIORITY_HIGH,
+        ),
+        editor.registerCommand(
+          KEY_ARROW_RIGHT_COMMAND,
+          (payload) => {
+            const activeElement = document.activeElement;
+            const inputElem = inputRef.current;
+            if (inputElem === activeElement) {
+              if (inputElem && inputElem.selectionStart === inputElem.value.length) {
+                onHide(true);
+                return true;
+              }
+            }
+            return false;
+          },
+          COMMAND_PRIORITY_EDITOR
+        ),
+        editor.registerCommand(
+          KEY_ARROW_LEFT_COMMAND,
+          (payload) => {
+            const activeElement = document.activeElement;
+            const inputElem = inputRef.current;
+            if (inputElem === activeElement) {
+              if (inputElem && inputElem.selectionStart === 0) {
+                onHide(true);
+                return true;
+              }
+            }
+            return false;
+          },
+          COMMAND_PRIORITY_EDITOR
         ),
       );
     } else {
