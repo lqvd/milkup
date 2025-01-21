@@ -1,3 +1,24 @@
-import { DASH_SPACE, HR } from './horizontalLine';
+import { DASH_SPACE, EQB_SPACE, EQUATION, EQUATION_BLOCK, HR } from './customTransformers';
+import { 
+    // Element transformers
+    UNORDERED_LIST,
+    CODE,
+    HEADING,
+    ORDERED_LIST,
+    QUOTE,
 
-export const TRANSFORMERS = [HR, DASH_SPACE];
+    // Text format transformers
+    BOLD_ITALIC_STAR,
+    BOLD_ITALIC_UNDERSCORE,
+    BOLD_STAR,
+    BOLD_UNDERSCORE,
+    INLINE_CODE,
+    ITALIC_STAR,
+    ITALIC_UNDERSCORE,
+    STRIKETHROUGH,
+
+    // Text match transformers
+    LINK
+} from '@lexical/markdown';
+
+export const TRANSFORMERS = [HR, EQUATION_BLOCK, EQB_SPACE, DASH_SPACE, UNORDERED_LIST, CODE, HEADING, ORDERED_LIST, QUOTE, BOLD_ITALIC_STAR, BOLD_ITALIC_UNDERSCORE, BOLD_STAR, BOLD_UNDERSCORE, INLINE_CODE, ITALIC_STAR, ITALIC_UNDERSCORE, STRIKETHROUGH, LINK, EQUATION];

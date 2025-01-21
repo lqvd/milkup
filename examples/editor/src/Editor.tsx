@@ -7,6 +7,18 @@ import './Editor.css';
 import { TRANSFORMERS } from './plugins/transformers';
 import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 
+import { HeadingNode, QuoteNode } from '@lexical/rich-text';
+import { CodeHighlightNode, CodeNode } from '@lexical/code';
+import { ListItemNode, ListNode } from '@lexical/list';
+import { AutoLinkNode, LinkNode } from '@lexical/link';
+import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+
+import EquationsPlugin from '../../../packages/milkup-equations/src/index';
+import { EquationNode } from '../../../packages/milkup-equations/src/EquationNode';
+
+import { SharedHistoryContext } from './plugins/SharedHistoryContext';
 
 const theme = {
   placeholder: "editor-placeholder",
@@ -18,24 +30,40 @@ const initialConfig = {
   theme,
   onError: (error: Error) => console.error(error),
   nodes: [
+    HeadingNode,
+    ListNode,
+    ListItemNode,
+    QuoteNode,
+    CodeNode,
+    CodeHighlightNode,
+    TableNode,
+    TableCellNode,
+    TableRowNode,
+    AutoLinkNode,
     HorizontalRuleNode,
-  ],
-  transformers: TRANSFORMERS,
+    LinkNode,
+    EquationNode
+  ]
 };
 
 export default function Milkup() {
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="editor-container">
-        <div className="editor-inner">
-          <RichTextPlugin
-            contentEditable={<ContentEditable className="editor-input" />}
-            placeholder={<div className="editor-placeholder">Explore!</div>}
-            ErrorBoundary={LexicalErrorBoundary}
-          />
-          <MarkdownShortcutPlugin transformers={TRANSFORMERS}/>
+      <SharedHistoryContext>
+        <div className="editor-container">
+          <div className="editor-inner">
+            <RichTextPlugin
+              contentEditable={<ContentEditable className="editor-input" />}
+              placeholder={<div className="editor-placeholder">Explore!</div>}
+              ErrorBoundary={LexicalErrorBoundary}
+            />
+            <ListPlugin />
+            <LinkPlugin />
+            <MarkdownShortcutPlugin transformers={TRANSFORMERS}/>
+            <EquationsPlugin />
+          </div>
         </div>
-      </div>
+      </SharedHistoryContext>
     </LexicalComposer>
   );
 }
