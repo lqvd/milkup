@@ -19,17 +19,17 @@ type BaseEquationEditorProps = {
   equation: string;
   inline: boolean;
   setEquation: (equation: string) => void;
+  ref: Ref<HTMLInputElement | HTMLTextAreaElement>;
 };
 
 function EquationEditor(
-  {equation, setEquation, inline}: BaseEquationEditorProps,
-  forwardedRef: Ref<HTMLInputElement | HTMLTextAreaElement>,
+  {equation, setEquation, inline, ref}: BaseEquationEditorProps
 ): JSX.Element {
   const onChange = (event: ChangeEvent) => {
     setEquation((event.target as HTMLInputElement).value);
   };
 
-  return inline && isHTMLElement(forwardedRef) ? (
+  return inline ? (
     <span className="EquationEditor_inputBackground">
       <span className="EquationEditor_dollarSign">$</span>
       <input
@@ -37,7 +37,7 @@ function EquationEditor(
         value={equation}
         onChange={onChange}
         autoFocus={true}
-        ref={forwardedRef as RefObject<HTMLInputElement>}
+        ref={ref as RefObject<HTMLInputElement>}
       />
       <span className="EquationEditor_dollarSign">$</span>
     </span>
@@ -48,7 +48,7 @@ function EquationEditor(
         className="EquationEditor_blockEditor"
         value={equation}
         onChange={onChange}
-        ref={forwardedRef as RefObject<HTMLTextAreaElement>}
+        ref={ref as RefObject<HTMLTextAreaElement>}
       />
       <div className="EquationEditor_preview">
         <KatexRenderer 
@@ -62,4 +62,4 @@ function EquationEditor(
   );
 }
 
-export default forwardRef(EquationEditor);
+export default EquationEditor;
