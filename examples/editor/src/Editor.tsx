@@ -19,6 +19,7 @@ import EquationsPlugin from '../../../packages/milkup-equations/src/index';
 import { EquationNode } from '../../../packages/milkup-equations/src/EquationNode';
 
 import { SharedHistoryContext } from './plugins/SharedHistoryContext';
+import TreeViewPlugin from './plugins/TreeViewPlugin';
 
 const theme = {
   placeholder: "editor-placeholder",
@@ -64,6 +65,7 @@ export default function Milkup() {
           </div>
         </div>
       </SharedHistoryContext>
+      <TreeViewPlugin />
     </LexicalComposer>
   );
 }
