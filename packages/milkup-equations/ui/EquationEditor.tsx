@@ -29,6 +29,9 @@ function EquationEditor(
 ): JSX.Element {
   const onChange = (event: ChangeEvent) => {
     setEquation((event.target as HTMLInputElement).value);
+    if (event.target instanceof HTMLInputElement) {
+      event.target.style.width = `${event.target.value.length}ch`;
+    }
   };
 
   if (inline) {
@@ -59,8 +62,8 @@ function EquationEditor(
         const rect = input.getBoundingClientRect();
         const popup = popupRef.current;
         if (popup && isHTMLElement(popup)) {
-          console.log(inputRef.current)
           setFloatingElemPosition(rect, popup, document.body, false, 20);
+          inputRef.current.style.width = `${inputRef.current.value.length}ch`;
         }
       }
     }, [forwardRef, popupRef]);  
