@@ -13,6 +13,7 @@ import './EquationEditor.css';
 import {isHTMLElement} from 'lexical';
 import {ChangeEvent, forwardRef} from 'react';
 import React from 'react';
+import KatexRenderer from '../ui/KatexRenderer';
 
 type BaseEquationEditorProps = {
   equation: string;
@@ -49,6 +50,13 @@ function EquationEditor(
         onChange={onChange}
         ref={forwardedRef as RefObject<HTMLTextAreaElement>}
       />
+      <div className="EquationEditor_preview">
+        <KatexRenderer 
+          equation={equation}
+          inline={inline}
+          onDoubleClick={() => {}}
+          />
+      </div>
       <span className="EquationEditor_dollarSign">{'\n$$'}</span>
     </div>
   );
