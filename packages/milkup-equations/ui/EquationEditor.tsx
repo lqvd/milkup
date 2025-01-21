@@ -60,7 +60,7 @@ function EquationEditor(
         const popup = popupRef.current;
         if (popup && isHTMLElement(popup)) {
           console.log(inputRef.current)
-          setFloatingElemPosition(rect, popup, document.body);
+          setFloatingElemPosition(rect, popup, document.body, false, 20);
         }
       }
     }, [forwardRef, popupRef]);  
