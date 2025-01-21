@@ -36,3 +36,15 @@
     text-align: left;
     color: #b0b0b0;
   }
+
+  .EquationEditor_previewPopup {
+    position: absolute;
+    z-index: 1000;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 8px;
+    font-size: 14px;
+    color: #333;
+  }
