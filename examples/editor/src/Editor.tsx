@@ -18,6 +18,9 @@ import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import EquationsPlugin from '../../../packages/milkup-equations/src/index';
 import { EquationNode } from '../../../packages/milkup-equations/src/EquationNode';
 
+import YouTubePlugin from '../../../packages/milkup-youtube/index';
+import { YouTubeNode } from '../../../packages/milkup-youtube/YoutubeNode';
+
 import { SharedHistoryContext } from './plugins/SharedHistoryContext';
 import TreeViewPlugin from './plugins/TreeViewPlugin';
 
@@ -112,7 +115,8 @@ const initialConfig = {
     AutoLinkNode,
     HorizontalRuleNode,
     LinkNode,
-    EquationNode
+    EquationNode,
+    YouTubeNode
   ]
 };
 
@@ -132,6 +136,7 @@ export default function Milkup() {
             <LinkPlugin />
             <MarkdownShortcutPlugin transformers={TRANSFORMERS}/>
             <EquationsPlugin />
+            <YouTubePlugin />
           </div>
         </div>
       </SharedHistoryContext>
