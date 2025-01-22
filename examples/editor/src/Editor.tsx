@@ -18,6 +18,11 @@ import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import EquationsPlugin from '../../../packages/milkup-equations/src/index';
 import { EquationNode } from '../../../packages/milkup-equations/src/EquationNode';
 
+import YouTubePlugin from '../../../packages/milkup-youtube/index';
+import { YouTubeNode } from '../../../packages/milkup-youtube/YoutubeNode';
+
+import AutoEmbedPlugin from '../../../packages/milkup-autoembed/index';
+
 import { SharedHistoryContext } from './plugins/SharedHistoryContext';
 import TreeViewPlugin from './plugins/TreeViewPlugin';
 
@@ -113,7 +118,8 @@ const initialConfig = {
     AutoLinkNode,
     HorizontalRuleNode,
     LinkNode,
-    EquationNode
+    EquationNode,
+    YouTubeNode
   ]
 };
 
@@ -125,6 +131,7 @@ export default function Milkup() {
           <ToolbarPlugin />
           <div className="editor-inner">
             <RichTextPlugin
+              // @ts-ignore
               contentEditable={<ContentEditable className="editor-input" />}
               placeholder={<div className="editor-placeholder">Explore!</div>}
               ErrorBoundary={LexicalErrorBoundary}
@@ -133,6 +140,8 @@ export default function Milkup() {
             <LinkPlugin />
             <MarkdownShortcutPlugin transformers={TRANSFORMERS}/>
             <EquationsPlugin />
+            <YouTubePlugin />
+            <AutoEmbedPlugin />
           </div>
         </div>
       </SharedHistoryContext>

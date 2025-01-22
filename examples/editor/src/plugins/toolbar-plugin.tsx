@@ -18,7 +18,12 @@ import {
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
 } from 'lexical';
+
 import {useCallback, useEffect, useRef, useState} from 'react';
+import DropDown, {DropDownItem} from '../../../../ui/dropdown';
+
+import {INSERT_EMBED_COMMAND} from '@lexical/react/LexicalAutoEmbedPlugin';
+import {EmbedConfigs} from '../../../../packages/milkup-autoembed/index';
 
 const LowPriority = 1;
 
@@ -167,6 +172,24 @@ export default function ToolbarPlugin() {
         aria-label="Justify Align">
         <i className="format justify-align" />
       </button>{' '}
+      <DropDown
+        buttonClassName="toolbar-item spaced"
+        buttonLabel="Insert"
+        buttonAriaLabel="Insert specialized editor node"
+        buttonIconClassName="icon plus">
+        {EmbedConfigs.map((embedConfig) => (
+          <DropDownItem
+            key={embedConfig.type}
+            onClick={() => {
+              console.log('Inserting embed:', embedConfig.type);
+              editor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type);
+            }}
+            className="item">
+            {embedConfig.icon}
+            <span className="text">{embedConfig.contentName}</span>
+          </DropDownItem>
+        ))}
+      </DropDown>
     </div>
   );
 }
