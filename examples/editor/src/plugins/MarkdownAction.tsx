@@ -4,6 +4,7 @@ import { $createTextNode, $getRoot } from "lexical";
 import { $createCodeNode, $isCodeNode } from "@lexical/code";
 import { $convertFromMarkdownString, $convertToMarkdownString } from "@lexical/markdown";
 import { TRANSFORMERS } from "./transformers";
+import Button from "../../../../ui/Button";
 
 
 export default function MarkdownAction({
@@ -47,13 +48,14 @@ export default function MarkdownAction({
 
     return (
         <div className="markdown-action">
-            <button 
+
+            <Button 
                 className="markdown-toggle-button"
                 onClick={markdownToggle}
                 title="Convert From Markdown"
             >
                 Toggle Markdown
-            </button>
+            </Button>
         </div>
     );
     
