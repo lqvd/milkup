@@ -5,6 +5,7 @@ import {
     $createHorizontalRuleNode 
 } from '@lexical/react/LexicalHorizontalRuleNode';
 import { LexicalNode, TextNode } from 'lexical';
+import { $createYouTubeNode, $isYouTubeNode } from '../../../../packages/milkup-youtube/YoutubeNode';
 
 /* Horizontal line transformers. */
 
