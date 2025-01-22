@@ -34,7 +34,6 @@ export const EQUATION_BLOCK: ElementTransformer = {
   type: 'element',
 };
 
-/* A workaround to allow instant conversion of '---' to horizontal line. */
 export const EQB_SPACE: TextMatchTransformer = {
   dependencies: [TextNode],
   regExp: /^\$\$$/,
@@ -94,6 +93,6 @@ export const DASH_SPACE: TextMatchTransformer = {
   replace: (node, _1) => {
     node.replace($createHorizontalRuleNode());
   },
-  trigger: '-',
+  // trigger: '-',
   type: 'text-match',
 }; 
