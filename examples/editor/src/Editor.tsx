@@ -23,6 +23,7 @@ import TreeViewPlugin from './plugins/TreeViewPlugin';
 
 import "./lexical-styling.css"
 import ToolbarPlugin from './plugins/toolbar-plugin';
+import MarkdownAction from './plugins/MarkdownAction';
 
 const theme = {
   ltr: 'ltr',
@@ -136,6 +137,7 @@ export default function Milkup() {
         </div>
       </SharedHistoryContext>
       <TreeViewPlugin />
+      <MarkdownAction shouldPreserveNewLinesInMarkdown={true} />
     </LexicalComposer>
   );
 }
