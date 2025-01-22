@@ -56,7 +56,6 @@ export default function EquationComponent({
         if ($isEquationNode(node)) {
           node.setEquation(equationValue);
           if (restoreSelection) {
-            // console.log(node, node.getNextSibling());
             node.selectNext(0, 0);
           }
         }
@@ -158,6 +157,7 @@ export default function EquationComponent({
           setEquation={setEquationValue}
           inline={inline}
           forwardRef={inputRef}
+          editor={editor}
         />
       ) : (
         <ErrorBoundary onError={(e) => editor._onError(e)} fallback={null}>
