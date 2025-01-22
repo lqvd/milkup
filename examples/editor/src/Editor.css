@@ -44,3 +44,18 @@
   margin-bottom: 8px;
   position: relative;
 }
+
+.image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.resize-handle {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background: blue;
+  cursor: se-resize;
+}

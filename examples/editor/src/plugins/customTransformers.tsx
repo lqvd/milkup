@@ -97,3 +97,4 @@ export const DASH_SPACE: TextMatchTransformer = {
   trigger: '-',
   type: 'text-match',
 }; 
+

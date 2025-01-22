@@ -18,6 +18,11 @@ import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import EquationsPlugin from '../../../packages/milkup-equations/src/index';
 import { EquationNode } from '../../../packages/milkup-equations/src/EquationNode';
 
+import { ImagePlugin } from '../../../packages/milkup-image/ImagePlugin'
+import {ImageToolbarPlugin}  from '../../../packages/milkup-image/ImageToolBarPlugin'
+
+import { ImageNode } from '../../../packages/milkup-image/ImageNode'
+
 import { SharedHistoryContext } from './plugins/SharedHistoryContext';
 
 const theme = {
@@ -42,7 +47,8 @@ const initialConfig = {
     AutoLinkNode,
     HorizontalRuleNode,
     LinkNode,
-    EquationNode
+    EquationNode,
+    ImageNode // Register ImageNode
   ]
 };
 
@@ -50,6 +56,7 @@ export default function Milkup() {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <SharedHistoryContext>
+        <ImageToolbarPlugin/>
         <div className="editor-container">
           <div className="editor-inner">
             <RichTextPlugin
