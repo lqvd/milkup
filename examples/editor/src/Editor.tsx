@@ -3,7 +3,7 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
-// import './Editor.css';
+import './Editor.css';
 import { TRANSFORMERS } from './plugins/transformers';
 import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 
