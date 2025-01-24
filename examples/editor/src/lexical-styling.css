@@ -454,3 +454,15 @@ i.right-align {
 i.justify-align {
   background-image: url(/icons/justify.svg);
 }
+
+i.bullet-list {
+  background-image: url(/icons/list-bullet.svg);
+}
+
+i.numbered-list {
+  background-image: url(/icons/list-numbered.svg);
+}
+
+i.check-list {
+  background-image: url(/icons/list-check.svg);
+}
