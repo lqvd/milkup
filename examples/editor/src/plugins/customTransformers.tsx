@@ -1,18 +1,25 @@
-import { ElementTransformer, MultilineElementTransformer, TextMatchTransformer } from '@lexical/markdown';
-import { 
-    HorizontalRuleNode, 
-    $isHorizontalRuleNode, 
-    $createHorizontalRuleNode 
-} from '@lexical/react/LexicalHorizontalRuleNode';
-import { LexicalNode, TextNode } from 'lexical';
-import { $createYouTubeNode, $isYouTubeNode } from '../../../../packages/milkup-youtube/YoutubeNode';
+import {
+  ElementTransformer,
+  MultilineElementTransformer,
+  TextMatchTransformer,
+} from "@lexical/markdown";
+import {
+  HorizontalRuleNode,
+  $isHorizontalRuleNode,
+  $createHorizontalRuleNode,
+} from "@lexical/react/LexicalHorizontalRuleNode";
+import { LexicalNode, TextNode } from "lexical";
+import {
+  $createYouTubeNode,
+  $isYouTubeNode,
+} from "../../../../packages/milkup-youtube/YoutubeNode";
 
 /* Horizontal line transformers. */
 
 export const HR: ElementTransformer = {
   dependencies: [HorizontalRuleNode],
   export: (node: LexicalNode) => {
-      return $isHorizontalRuleNode(node) ? '---' : null;
+    return $isHorizontalRuleNode(node) ? "---" : null;
   },
   regExp: /^(---|\*\*\*|___)(\s|\n)?$/,
   replace: (parentNode, _1, _2, isImport) => {
@@ -26,7 +33,7 @@ export const HR: ElementTransformer = {
 
     line.selectNext();
   },
-  type: 'element',
+  type: "element",
 };
 
 /* A workaround to allow instant conversion of '---' to horizontal line. */
@@ -37,16 +44,19 @@ export const DASH_SPACE: TextMatchTransformer = {
     node.replace($createHorizontalRuleNode());
   },
   // trigger: '-',
-  type: 'text-match',
-}; 
+  type: "text-match",
+};
 
 /* A transformer for youtube links */
 export const YOUTUBE: ElementTransformer = {
   dependencies: [TextNode],
   export: (node: LexicalNode) => {
-    return $isYouTubeNode(node) ? `[YOUTUBE_EMBED](https://www.youtube.com/watch?v=${node.getId()})` : null;
+    return $isYouTubeNode(node)
+      ? `[YOUTUBE_EMBED](https://www.youtube.com/watch?v=${node.getId()})`
+      : null;
   },
-  regExp: /^\[YOUTUBE\_EMBED\]\(https:\/\/www\.((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9_-]{11})\)$/,
+  regExp:
+    /^\[YOUTUBE\_EMBED\]\(https:\/\/www\.((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9_-]{11})\)$/,
   replace: (parentNode, _1, match, isImport) => {
     if (isImport || parentNode.getNextSibling() != null) {
       parentNode.replace($createYouTubeNode(match[4]));
@@ -54,5 +64,5 @@ export const YOUTUBE: ElementTransformer = {
       parentNode.insertBefore($createYouTubeNode(match[4]));
     }
   },
-  type: 'element',
+  type: "element",
 };

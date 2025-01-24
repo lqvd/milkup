@@ -6,8 +6,8 @@
  *
  */
 
-import {isDOMNode} from 'lexical';
-import * as React from 'react';
+import { isDOMNode } from "lexical";
+import * as React from "react";
 import {
   ReactNode,
   useCallback,
@@ -15,8 +15,8 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import {createPortal} from 'react-dom';
+} from "react";
+import { createPortal } from "react-dom";
 
 type DropDownContextType = {
   registerItem: (ref: React.RefObject<HTMLButtonElement>) => void;
@@ -42,10 +42,10 @@ export function DropDownItem({
   const dropDownContext = React.useContext(DropDownContext);
 
   if (dropDownContext === null) {
-    throw new Error('DropDownItem must be used within a DropDown');
+    throw new Error("DropDownItem must be used within a DropDown");
   }
 
-  const {registerItem} = dropDownContext;
+  const { registerItem } = dropDownContext;
 
   useEffect(() => {
     if (ref && ref.current) {
@@ -59,7 +59,8 @@ export function DropDownItem({
       onClick={onClick}
       ref={ref}
       title={title}
-      type="button">
+      type="button"
+    >
       {children}
     </button>
   );
@@ -92,13 +93,13 @@ function DropDownItems({
 
     const key = event.key;
 
-    if (['Escape', 'ArrowUp', 'ArrowDown', 'Tab'].includes(key)) {
+    if (["Escape", "ArrowUp", "ArrowDown", "Tab"].includes(key)) {
       event.preventDefault();
     }
 
-    if (key === 'Escape' || key === 'Tab') {
+    if (key === "Escape" || key === "Tab") {
       onClose();
-    } else if (key === 'ArrowUp') {
+    } else if (key === "ArrowUp") {
       setHighlightedItem((prev) => {
         if (!prev) {
           return items[0];
@@ -106,7 +107,7 @@ function DropDownItems({
         const index = items.indexOf(prev) - 1;
         return items[index === -1 ? items.length - 1 : index];
       });
-    } else if (key === 'ArrowDown') {
+    } else if (key === "ArrowDown") {
       setHighlightedItem((prev) => {
         if (!prev) {
           return items[0];
@@ -175,7 +176,7 @@ export default function DropDown({
     const dropDown = dropDownRef.current;
 
     if (showDropDown && button !== null && dropDown !== null) {
-      const {top, left} = button.getBoundingClientRect();
+      const { top, left } = button.getBoundingClientRect();
       dropDown.style.top = `${top + button.offsetHeight + dropDownPadding}px`;
       dropDown.style.left = `${Math.min(
         left,
@@ -202,10 +203,10 @@ export default function DropDown({
           setShowDropDown(false);
         }
       };
-      document.addEventListener('click', handle);
+      document.addEventListener("click", handle);
 
       return () => {
-        document.removeEventListener('click', handle);
+        document.removeEventListener("click", handle);
       };
     }
   }, [dropDownRef, buttonRef, showDropDown, stopCloseOnClickSelf]);
@@ -216,7 +217,7 @@ export default function DropDown({
         const button = buttonRef.current;
         const dropDown = dropDownRef.current;
         if (button !== null && dropDown !== null) {
-          const {top} = button.getBoundingClientRect();
+          const { top } = button.getBoundingClientRect();
           const newPosition = top + button.offsetHeight + dropDownPadding;
           if (newPosition !== dropDown.getBoundingClientRect().top) {
             dropDown.style.top = `${newPosition}px`;
@@ -225,10 +226,10 @@ export default function DropDown({
       }
     };
 
-    document.addEventListener('scroll', handleButtonPositionUpdate);
+    document.addEventListener("scroll", handleButtonPositionUpdate);
 
     return () => {
-      document.removeEventListener('scroll', handleButtonPositionUpdate);
+      document.removeEventListener("scroll", handleButtonPositionUpdate);
     };
   }, [buttonRef, dropDownRef, showDropDown]);
 
@@ -240,7 +241,8 @@ export default function DropDown({
         aria-label={buttonAriaLabel || buttonLabel}
         className={buttonClassName}
         onClick={() => setShowDropDown(!showDropDown)}
-        ref={buttonRef}>
+        ref={buttonRef}
+      >
         {buttonIconClassName && <span className={buttonIconClassName} />}
         {buttonLabel && (
           <span className="text dropdown-button-text">{buttonLabel}</span>

@@ -22,8 +22,8 @@ export function setFloatingElemPosition(
   const scrollerElem = anchorElem.parentElement;
 
   if (targetRect === null || !scrollerElem) {
-    floatingElem.style.opacity = '0';
-    floatingElem.style.transform = 'translate(-10000px, -10000px)';
+    floatingElem.style.opacity = "0";
+    floatingElem.style.transform = "translate(-10000px, -10000px)";
     return;
   }
 
@@ -31,7 +31,10 @@ export function setFloatingElemPosition(
   const anchorElementRect = anchorElem.getBoundingClientRect();
   const editorScrollerRect = scrollerElem.getBoundingClientRect();
 
-  let top = targetRect.top + floatingElemRect.height * (position == "below" ? 1 : -1) - verticalGap;
+  let top =
+    targetRect.top +
+    floatingElemRect.height * (position == "below" ? 1 : -1) -
+    verticalGap;
   let left = targetRect.left - horizontalOffset;
 
   if (top < editorScrollerRect.top) {
@@ -50,9 +53,10 @@ export function setFloatingElemPosition(
   left -= anchorElementRect.left;
 
   if (centering) {
-    left += (targetRect.right - targetRect.left) / 2 - floatingElemRect.width / 2;
+    left +=
+      (targetRect.right - targetRect.left) / 2 - floatingElemRect.width / 2;
   }
 
-  floatingElem.style.opacity = '1';
+  floatingElem.style.opacity = "1";
   floatingElem.style.transform = `translate(${left}px, ${top}px)`;
 }

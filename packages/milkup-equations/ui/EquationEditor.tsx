@@ -6,16 +6,16 @@
  *
  */
 
-import type {JSX, Ref, RefObject} from 'react';
+import type { JSX, Ref, RefObject } from "react";
 
-import './EquationEditor.css';
+import "./EquationEditor.css";
 
-import {isHTMLElement, LexicalEditor} from 'lexical';
-import {ChangeEvent, forwardRef, useEffect} from 'react';
-import React from 'react';
-import KatexRenderer from '../ui/KatexRenderer';
-import { setFloatingElemPosition } from '../utils/setFloatingElemPosition';
-import { getDOMRangeRect } from '../utils/getDOMRangeRect';
+import { isHTMLElement, LexicalEditor } from "lexical";
+import { ChangeEvent, forwardRef, useEffect } from "react";
+import React from "react";
+import KatexRenderer from "../ui/KatexRenderer";
+import { setFloatingElemPosition } from "../utils/setFloatingElemPosition";
+import { getDOMRangeRect } from "../utils/getDOMRangeRect";
 
 type BaseEquationEditorProps = {
   editor: LexicalEditor;
@@ -25,9 +25,13 @@ type BaseEquationEditorProps = {
   forwardRef: Ref<HTMLInputElement | HTMLTextAreaElement>;
 };
 
-function EquationEditor(
-  {editor, equation, setEquation, inline, forwardRef}: BaseEquationEditorProps
-): JSX.Element {
+function EquationEditor({
+  editor,
+  equation,
+  setEquation,
+  inline,
+  forwardRef,
+}: BaseEquationEditorProps): JSX.Element {
   const [widthSet, setWidthSet] = React.useState(false);
   const onChange = (event: ChangeEvent) => {
     setEquation((event.target as HTMLInputElement).value);
@@ -42,13 +46,14 @@ function EquationEditor(
 
     const previewPopup = (
       <div className="EquationEditor_previewPopup" ref={popupRef}>
-        <KatexRenderer 
+        <KatexRenderer
           equation={equation}
           inline={inline}
           onDoubleClick={() => {}}
-          />
-      </div>);
-    
+        />
+      </div>
+    );
+
     const inlineEditor = (
       <input
         className="EquationEditor_inlineEditor"
@@ -56,7 +61,8 @@ function EquationEditor(
         onChange={onChange}
         autoFocus={true}
         ref={forwardRef as RefObject<HTMLInputElement>}
-      />);
+      />
+    );
 
     useEffect(() => {
       const inputRef = forwardRef as RefObject<HTMLInputElement>;
@@ -71,12 +77,23 @@ function EquationEditor(
         const input = inputRef.current;
         const rect = input.getBoundingClientRect();
         const popup = popupRef.current;
-        const anchor = isHTMLElement(editor.getRootElement()) ? editor.getRootElement() : document.body;
+        const anchor = isHTMLElement(editor.getRootElement())
+          ? editor.getRootElement()
+          : document.body;
         if (popup && isHTMLElement(popup))
-          setFloatingElemPosition(rect, popup, document.body, false, "below", true, 0, 0);
+          setFloatingElemPosition(
+            rect,
+            popup,
+            document.body,
+            false,
+            "below",
+            true,
+            0,
+            0,
+          );
       }
     }, [forwardRef, popupRef, widthSet]);
-    
+
     return (
       <span className="EquationEditor_inputBackground">
         <span className="EquationEditor_dollarSign">$</span>
@@ -88,7 +105,7 @@ function EquationEditor(
   } else {
     return (
       <div className="EquationEditor_inputBackground">
-        <span className="EquationEditor_dollarSign">{'$$\n'}</span>
+        <span className="EquationEditor_dollarSign">{"$$\n"}</span>
         <textarea
           className="EquationEditor_blockEditor"
           value={equation}
@@ -96,14 +113,15 @@ function EquationEditor(
           ref={forwardRef as RefObject<HTMLTextAreaElement>}
         />
         <div className="EquationEditor_preview">
-          <KatexRenderer 
+          <KatexRenderer
             equation={equation}
             inline={inline}
             onDoubleClick={() => {}}
-            />
+          />
         </div>
-        <span className="EquationEditor_dollarSign">{'\n$$'}</span>
-      </div>);
+        <span className="EquationEditor_dollarSign">{"\n$$"}</span>
+      </div>
+    );
   }
 }
 
