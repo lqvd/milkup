@@ -25,6 +25,9 @@ import DropDown, {DropDownItem} from '../../../../ui/dropdown';
 import {INSERT_EMBED_COMMAND} from '@lexical/react/LexicalAutoEmbedPlugin';
 import {EmbedConfigs} from '../../../../packages/milkup-autoembed/index';
 
+import { $isListNode } from '@lexical/list';
+import { INSERT_UNORDERED_LIST_COMMAND, INSERT_ORDERED_LIST_COMMAND, INSERT_CHECK_LIST_COMMAND, REMOVE_LIST_COMMAND } from '@lexical/list';
+
 const LowPriority = 1;
 
 function Divider() {
@@ -51,6 +54,22 @@ export default function ToolbarPlugin() {
       setIsStrikethrough(selection.hasFormat('strikethrough'));
     }
   }, []);
+
+  const toggleList = (listType: 'bullet' | 'number' | 'check' , command: typeof INSERT_UNORDERED_LIST_COMMAND | typeof INSERT_ORDERED_LIST_COMMAND | typeof INSERT_CHECK_LIST_COMMAND) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const element = anchorNode.getTopLevelElementOrThrow();
+        if (($isListNode(element) && element.getListType() === listType)) {
+          console.log(element.getListType());
+          editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
+        } else {
+          editor.dispatchCommand(command, undefined);
+        }
+      }
+    });
+  };
 
   useEffect(() => {
     return mergeRegister(
@@ -171,9 +190,29 @@ export default function ToolbarPlugin() {
         className="toolbar-item"
         aria-label="Justify Align">
         <i className="format justify-align" />
-      </button>{' '}
+      </button>
+      <Divider />
+      <button
+        onClick={() => toggleList('bullet', INSERT_UNORDERED_LIST_COMMAND)}
+        className="toolbar-item spaced"
+        aria-label="Bullet List">
+        <i className="format bullet-list" />
+      </button>
+      <button
+        onClick={() => toggleList('number', INSERT_ORDERED_LIST_COMMAND)}
+        className="toolbar-item spaced"
+        aria-label="Numbered List">
+        <i className="format numbered-list" />
+      </button>
+      <button
+        onClick={() => toggleList('check', INSERT_CHECK_LIST_COMMAND)}
+        className="toolbar-item"
+        aria-label="Check List">
+        <i className="format check-list" />
+      </button>
+      <Divider />
       <DropDown
-        buttonClassName="toolbar-item spaced"
+        buttonClassName="toolbar-item"
         buttonLabel="Insert"
         buttonAriaLabel="Insert specialized editor node"
         buttonIconClassName="icon plus">
@@ -190,6 +229,7 @@ export default function ToolbarPlugin() {
           </DropDownItem>
         ))}
       </DropDown>
+      <Divider />
     </div>
   );
 }

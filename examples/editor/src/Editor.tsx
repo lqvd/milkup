@@ -13,6 +13,7 @@ import { ListItemNode, ListNode } from '@lexical/list';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 
 import EquationsPlugin from '../../../packages/milkup-equations/src/index';
@@ -137,6 +138,7 @@ export default function Milkup() {
               ErrorBoundary={LexicalErrorBoundary}
             />
             <ListPlugin />
+            <CheckListPlugin />
             <LinkPlugin />
             <MarkdownShortcutPlugin transformers={TRANSFORMERS}/>
             <EquationsPlugin />
