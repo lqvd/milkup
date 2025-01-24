@@ -1,10 +1,14 @@
-import { ElementTransformer, MultilineElementTransformer, TextMatchTransformer } from '@lexical/markdown';
-import { 
-    EquationNode, 
-    $createEquationNode,
-    $isEquationNode
-} from './EquationNode';
-import { ElementNode } from 'lexical';
+import {
+  ElementTransformer,
+  MultilineElementTransformer,
+  TextMatchTransformer,
+} from "@lexical/markdown";
+import {
+  EquationNode,
+  $createEquationNode,
+  $isEquationNode,
+} from "./EquationNode";
+import { ElementNode } from "lexical";
 
 /**
  * Math transformers must be defined in order below:
@@ -33,12 +37,14 @@ export const EQUATION_BLOCK_ML: MultilineElementTransformer = {
   ) => {
     console.log("got here");
     if (isImport) {
-      const equationNode = $createEquationNode(linesInBetween?.join('\n') || '');
-      rootNode.append(equationNode); 
+      const equationNode = $createEquationNode(
+        linesInBetween?.join("\n") || "",
+      );
+      rootNode.append(equationNode);
     }
   },
-  type: 'multiline-element',
-}
+  type: "multiline-element",
+};
 
 export const EQUATION_BLOCK: ElementTransformer = {
   dependencies: [EquationNode],
@@ -49,12 +55,7 @@ export const EQUATION_BLOCK: ElementTransformer = {
     return `$$\n${node.getTextContent()}\n$$`;
   },
   regExp: /\$\$\s$/,
-  replace: (
-    parentNode: ElementNode,
-    _1,
-    _2,
-    isImport: boolean,
-  ) => {
+  replace: (parentNode: ElementNode, _1, _2, isImport: boolean) => {
     if (!isImport) {
       const equationNode = $createEquationNode();
 
@@ -67,9 +68,8 @@ export const EQUATION_BLOCK: ElementTransformer = {
       equationNode.selectNext();
     }
   },
-  type: 'element',
+  type: "element",
 };
-
 
 export const INLINE_EQUATION: TextMatchTransformer = {
   dependencies: [EquationNode],
@@ -86,6 +86,6 @@ export const INLINE_EQUATION: TextMatchTransformer = {
     const equationNode = $createEquationNode(equation, true);
     textNode.replace(equationNode);
   },
-  trigger: '$',
-  type: 'text-match',
+  trigger: "$",
+  type: "text-match",
 };

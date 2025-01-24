@@ -6,7 +6,7 @@
  *
  */
 
-import type {LexicalEditor} from 'lexical';
+import type { LexicalEditor } from "lexical";
 
 import {
   AutoEmbedOption,
@@ -14,18 +14,17 @@ import {
   EmbedMatchResult,
   LexicalAutoEmbedPlugin,
   URL_MATCHER,
-} from '@lexical/react/LexicalAutoEmbedPlugin';
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {useMemo, useState, useCallback} from 'react';
-import * as React from 'react';
-// @ts-ignore
-import * as ReactDOM from 'react-dom';
+} from "@lexical/react/LexicalAutoEmbedPlugin";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { useMemo, useState } from "react";
+import * as React from "react";
+// @ts-exprect-error
+import * as ReactDOM from "react-dom";
 
-import useModal from './useModal';
-import Button from '../../ui/button';
-import {DialogActions} from '../../ui/dialog';
-import {INSERT_YOUTUBE_COMMAND} from '../milkup-youtube/index';
-
+import useModal from "./useModal";
+import Button from "../../ui/button";
+import { DialogActions } from "../../ui/dialog";
+import { INSERT_YOUTUBE_COMMAND } from "../milkup-youtube/index";
 
 interface PlaygroundEmbedConfig extends EmbedConfig {
   // Human readable name of the embeded content e.g. Tweet or Google Map.
@@ -45,9 +44,9 @@ interface PlaygroundEmbedConfig extends EmbedConfig {
 }
 
 export const YoutubeEmbedConfig: PlaygroundEmbedConfig = {
-  contentName: 'Youtube Video',
+  contentName: "Youtube Video",
 
-  exampleUrl: 'https://www.youtube.com/watch?v=-EDPCE0cbrs',
+  exampleUrl: "https://www.youtube.com/watch?v=-EDPCE0cbrs",
 
   // Icon for display.
   icon: <i className="icon youtube" />,
@@ -56,7 +55,7 @@ export const YoutubeEmbedConfig: PlaygroundEmbedConfig = {
     editor.dispatchCommand(INSERT_YOUTUBE_COMMAND, result.id);
   },
 
-  keywords: ['youtube', 'video'],
+  keywords: ["youtube", "video"],
 
   // Determine if a given URL is a match and return url data.
   parseUrl: async (url: string) => {
@@ -75,7 +74,7 @@ export const YoutubeEmbedConfig: PlaygroundEmbedConfig = {
     return null;
   },
 
-  type: 'youtube-video',
+  type: "youtube-video",
 };
 
 // export const TwitterEmbedConfig: PlaygroundEmbedConfig = {
@@ -149,9 +148,9 @@ export const YoutubeEmbedConfig: PlaygroundEmbedConfig = {
 // };
 
 export const EmbedConfigs = [
-//   TwitterEmbedConfig,
+  //   TwitterEmbedConfig,
   YoutubeEmbedConfig,
-//   FigmaEmbedConfig,
+  //   FigmaEmbedConfig,
 ];
 
 function AutoEmbedMenuItem({
@@ -167,9 +166,9 @@ function AutoEmbedMenuItem({
   onMouseEnter: () => void;
   option: AutoEmbedOption;
 }) {
-  let className = 'item';
+  let className = "item";
   if (isSelected) {
-    className += ' selected';
+    className += " selected";
   }
   return (
     <li
@@ -179,9 +178,10 @@ function AutoEmbedMenuItem({
       ref={option.setRefElement}
       role="option"
       aria-selected={isSelected}
-      id={'typeahead-item-' + index}
+      id={"typeahead-item-" + index}
       onMouseEnter={onMouseEnter}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       <span className="text">{option.title}</span>
     </li>
   );
@@ -233,7 +233,7 @@ export function AutoEmbedDialog({
   embedConfig: PlaygroundEmbedConfig;
   onClose: () => void;
 }): JSX.Element {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [editor] = useLexicalComposerContext();
   const [embedResult, setEmbedResult] = useState<EmbedMatchResult | null>(null);
 
@@ -262,7 +262,7 @@ export function AutoEmbedDialog({
   };
 
   return (
-    <div style={{width: '600px'}}>
+    <div style={{ width: "600px" }}>
       <div className="Input__wrapper">
         <input
           type="text"
@@ -271,7 +271,7 @@ export function AutoEmbedDialog({
           value={text}
           data-test-id={`${embedConfig.type}-embed-modal-url`}
           onChange={(e) => {
-            const {value} = e.target;
+            const { value } = e.target;
             setText(value);
             validateText(value);
           }}
@@ -281,7 +281,8 @@ export function AutoEmbedDialog({
         <Button
           disabled={!embedResult}
           onClick={onClick}
-          data-test-id={`${embedConfig.type}-embed-modal-submit-btn`}>
+          data-test-id={`${embedConfig.type}-embed-modal-submit-btn`}
+        >
           Embed
         </Button>
       </DialogActions>
@@ -293,11 +294,11 @@ export default function AutoEmbedPlugin(): JSX.Element {
   const [modal, showModal] = useModal();
 
   const openEmbedModal = (embedConfig: PlaygroundEmbedConfig) => {
-    console.log('Opening modal for:', embedConfig.contentName);
+    console.log("Opening modal for:", embedConfig.contentName);
     showModal(`Embed ${embedConfig.contentName}`, (onClose) => (
       <AutoEmbedDialog embedConfig={embedConfig} onClose={onClose} />
     ));
-    console.log('Modal opened');
+    console.log("Modal opened");
   };
 
   const getMenuOptions = (
@@ -306,7 +307,7 @@ export default function AutoEmbedPlugin(): JSX.Element {
     dismissFn: () => void,
   ) => {
     return [
-      new AutoEmbedOption('Dismiss', {
+      new AutoEmbedOption("Dismiss", {
         onSelect: dismissFn,
       }),
       new AutoEmbedOption(`Embed ${activeEmbedConfig.contentName}`, {
@@ -324,7 +325,12 @@ export default function AutoEmbedPlugin(): JSX.Element {
         getMenuOptions={getMenuOptions}
         menuRenderFn={(
           anchorElementRef,
-          {selectedIndex, options, selectOptionAndCleanUp, setHighlightedIndex},
+          {
+            selectedIndex,
+            options,
+            selectOptionAndCleanUp,
+            setHighlightedIndex,
+          },
         ) =>
           anchorElementRef.current
             ? ReactDOM.createPortal(
@@ -336,7 +342,8 @@ export default function AutoEmbedPlugin(): JSX.Element {
                       0,
                     )}px`,
                     width: 200,
-                  }}>
+                  }}
+                >
                   <AutoEmbedMenu
                     options={options}
                     selectedItemIndex={selectedIndex}

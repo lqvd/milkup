@@ -6,11 +6,11 @@
  *
  */
 
-import katex from 'katex';
-import * as React from 'react';
-import {useEffect, useRef} from 'react';
-import type { JSX } from 'react';
-import 'katex/dist/katex.min.css';
+import katex from "katex";
+import * as React from "react";
+import { useEffect, useRef } from "react";
+import type { JSX } from "react";
+import "katex/dist/katex.min.css";
 
 export default function KatexRenderer({
   equation,
@@ -29,9 +29,9 @@ export default function KatexRenderer({
     if (katexElement !== null) {
       katex.render(equation, katexElement, {
         displayMode: !inline, // true === block display //
-        errorColor: '#cc0000',
-        output: 'html',
-        strict: 'warn',
+        errorColor: "#cc0000",
+        output: "html",
+        strict: "warn",
         throwOnError: false,
         trust: false,
       });
@@ -43,15 +43,17 @@ export default function KatexRenderer({
     // inner text from Katex. There didn't seem to be any other way of making this work,
     // without having a physical space.
     <>
-    <div onClick={onDoubleClick} style={{ display: inline ? 'inline' : 'block', width: inline ? 'auto' : '100%' }}>
-      <img src="#" alt="" />
-      <span
-      role="button"
-      tabIndex={-1}
-      ref={katexElementRef}
-      />
-      <img src="#" alt="" />
-    </div>
+      <div
+        onClick={onDoubleClick}
+        style={{
+          display: inline ? "inline" : "block",
+          width: inline ? "auto" : "100%",
+        }}
+      >
+        <img src="#" alt="" />
+        <span role="button" tabIndex={-1} ref={katexElementRef} />
+        <img src="#" alt="" />
+      </div>
     </>
   );
 }
