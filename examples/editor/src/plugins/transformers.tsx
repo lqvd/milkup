@@ -6,6 +6,10 @@ import {
 } from "../../../../packages/milkup-equations/src/transformers";
 
 import {
+  AUDIO_EMBED,
+} from "../../../../packages/milkup-audio/src/transformers";
+
+import {
   // Element transformers
   CHECK_LIST, // Must precede UNORDERED_LIST to avoid conflict (- [] vs -)
   UNORDERED_LIST,
@@ -50,4 +54,5 @@ export const TRANSFORMERS = [
   STRIKETHROUGH,
   LINK,
   YOUTUBE,
+  AUDIO_EMBED,
 ];
