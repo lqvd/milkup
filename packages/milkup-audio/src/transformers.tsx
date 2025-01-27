@@ -7,6 +7,8 @@ import {
 import { ElementNode } from "lexical";
 
 
+const AUDIO_MD_REGEX = /\[AUDIO_EMBED\]\((.*)\)/;
+
 export const AUDIO_EMBED: ElementTransformer = {
   dependencies: [AudioNode],
   export: (node) => {
@@ -15,17 +17,11 @@ export const AUDIO_EMBED: ElementTransformer = {
     }
     return `[AUDIO_EMBED](${node.getSource()})`;
   },
-  regExp: /\[AUDIO_EMBED\]\((.*)\)/,
+  regExp: AUDIO_MD_REGEX,
   replace: (parentNode: ElementNode, _1, match, isImport: boolean) => {
     if (isImport) {
-      const newNode = $createAudioNode(match[1]);
-
-      if (parentNode.getNextSibling() != null) {
-        parentNode.replace(newNode);
-      } else {
-        parentNode.insertBefore(newNode);
-      }
-      newNode.selectNext();
+      const newNode = $createAudioNode(match[1]);      
+      parentNode.replace(newNode);
     }
   },
   type: "element",

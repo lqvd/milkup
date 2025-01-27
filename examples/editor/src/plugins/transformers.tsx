@@ -33,6 +33,7 @@ import {
 } from "@lexical/markdown";
 
 export const TRANSFORMERS = [
+  AUDIO_EMBED,
   CHECK_LIST,
   HR,
   EQUATION_BLOCK_ML,
@@ -54,5 +55,4 @@ export const TRANSFORMERS = [
   STRIKETHROUGH,
   LINK,
   YOUTUBE,
-  AUDIO_EMBED,
 ];
