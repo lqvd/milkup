@@ -1,4 +1,3 @@
-
 import type { LexicalEditor } from "lexical";
 
 import {
