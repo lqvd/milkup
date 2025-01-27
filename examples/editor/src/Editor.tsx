@@ -31,6 +31,8 @@ import "./lexical-styling.css";
 import ToolbarPlugin from "./plugins/toolbar-plugin";
 import MarkdownAction from "./plugins/MarkdownAction";
 
+import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
+
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -121,6 +123,7 @@ const initialConfig = {
     LinkNode,
     EquationNode,
     YouTubeNode,
+    AudioNode,
   ],
 };
 
