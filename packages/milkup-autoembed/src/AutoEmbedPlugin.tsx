@@ -17,6 +17,7 @@ import useModal from "./utils/useModal";
 import Button from "../../core/ui/button";
 import { DialogActions } from "../../core/ui/dialog";
 import { INSERT_YOUTUBE_COMMAND } from "../../milkup-youtube/src/index";
+import { INSERT_PANOPTO_COMMAND } from "../../milkup-panopto/src/index";
 
 interface PlaygroundEmbedConfig extends EmbedConfig {
   // Human readable name of the embeded content e.g. Tweet or Google Map.
@@ -34,6 +35,39 @@ interface PlaygroundEmbedConfig extends EmbedConfig {
   // Embed a Figma Project.
   description?: string;
 }
+
+export const PanoptoEmbedConfig: PlaygroundEmbedConfig = {
+  contentName: "Panopto Video",
+  exampleUrl: "https://imperial.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=1234567890",
+  icon: <i className="icon panopto" />,
+  insertNode: (editor: LexicalEditor, result: EmbedMatchResult) => {
+    editor.dispatchCommand(INSERT_PANOPTO_COMMAND, result.id);
+  },
+  keywords: ["panopto", "video"],
+
+  parseUrl: async (url: string) => {
+    const match = /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9\.]+([\-\.]panopto)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?/g.exec(url);
+
+    const idMatch = url.match(/[?&]id=([^&]+)/);
+    const id = idMatch ? idMatch[1] : null;
+
+    console.log("match", match);
+    console.log("id", id);
+    console.log("url", url);
+
+
+    if (match != null && id != null) {
+      return {
+        id,
+        url,
+      };
+    }
+
+    return null;
+  },
+
+  type: "panopto-video",
+};
 
 export const YoutubeEmbedConfig: PlaygroundEmbedConfig = {
   contentName: "Youtube Video",
@@ -142,6 +176,7 @@ export const YoutubeEmbedConfig: PlaygroundEmbedConfig = {
 export const EmbedConfigs = [
   //   TwitterEmbedConfig,
   YoutubeEmbedConfig,
+  PanoptoEmbedConfig,
   //   FigmaEmbedConfig,
 ];
 

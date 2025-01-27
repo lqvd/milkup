@@ -24,6 +24,9 @@ import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
 
 import AutoEmbedPlugin from "../../../packages/milkup-autoembed/src/index";
 
+import { PanoptoNode } from "../../../packages/milkup-panopto/src/index";
+import PanoptoPlugin from "../../../packages/milkup-panopto/src/PanoptoPlugin";
+
 import { SharedHistoryContext } from "./plugins/SharedHistoryContext";
 import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
@@ -121,6 +124,7 @@ const initialConfig = {
     LinkNode,
     EquationNode,
     YouTubeNode,
+    PanoptoNode
   ],
 };
 
@@ -143,6 +147,7 @@ export default function Milkup() {
             <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
             <EquationsPlugin />
             <YouTubePlugin />
+            <PanoptoPlugin />
             <AutoEmbedPlugin />
           </div>
         </div>

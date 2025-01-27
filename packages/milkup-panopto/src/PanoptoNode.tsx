@@ -43,7 +43,7 @@ function PanoptoComponent({
       <iframe
         width="560"
         height="315"
-        src={`https://panopto.com/embed/${videoID}`}
+        src={`https://imperial.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=${videoID}`}
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen={true}
@@ -107,7 +107,7 @@ export class PanoptoNode extends DecoratorBlockNode {
     element.setAttribute("height", "315");
     element.setAttribute(
       "src",
-      `https://panopto.com/embed/${this.__id}`,
+      `https://imperial.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=${this.__id}`,
     );
     element.setAttribute("frameborder", "0");
     element.setAttribute(
@@ -145,7 +145,7 @@ export class PanoptoNode extends DecoratorBlockNode {
     _includeInert?: boolean | undefined,
     _includeDirectionless?: false | undefined,
   ): string {
-    return `https://panopto.com/embed/${this.__id}`;
+    return `https://imperial.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=${this.__id}`;
   }
 
   decorate(_editor: LexicalEditor, config: EditorConfig): JSX.Element {
