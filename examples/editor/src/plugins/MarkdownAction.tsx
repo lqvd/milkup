@@ -7,7 +7,7 @@ import {
   $convertToMarkdownString,
 } from "@lexical/markdown";
 import { TRANSFORMERS } from "./transformers";
-import Button from "../../../../ui/button";
+import Button from "../../../../packages/core/ui/button";
 
 export default function MarkdownAction({
   shouldPreserveNewLinesInMarkdown,

@@ -23,7 +23,7 @@ import {
 import { useCallback, useEffect } from "react";
 
 import { $createEquationNode, EquationNode } from "./EquationNode";
-import KatexEquationAlterer from "../ui/KatexEquationAlterer";
+import KatexEquationAlterer from "./ui/KatexEquationAlterer";
 
 type CommandPayload = {
   equation: string;

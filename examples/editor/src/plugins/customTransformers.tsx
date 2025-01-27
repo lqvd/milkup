@@ -12,7 +12,7 @@ import { LexicalNode, TextNode } from "lexical";
 import {
   $createYouTubeNode,
   $isYouTubeNode,
-} from "../../../../packages/milkup-youtube/YoutubeNode";
+} from "../../../../packages/milkup-youtube/src/YoutubeNode";
 
 /* Horizontal line transformers. */
 

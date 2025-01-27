@@ -19,10 +19,10 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/index";
 import { EquationNode } from "../../../packages/milkup-equations/src/EquationNode";
 
-import YouTubePlugin from "../../../packages/milkup-youtube/index";
-import { YouTubeNode } from "../../../packages/milkup-youtube/YoutubeNode";
+import YouTubePlugin from "../../../packages/milkup-youtube/src/index";
+import { YouTubeNode } from "../../../packages/milkup-youtube/src/YoutubeNode";
 
-import AutoEmbedPlugin from "../../../packages/milkup-autoembed/index";
+import AutoEmbedPlugin from "../../../packages/milkup-autoembed/src/index";
 
 import { SharedHistoryContext } from "./plugins/SharedHistoryContext";
 import TreeViewPlugin from "./plugins/TreeViewPlugin";

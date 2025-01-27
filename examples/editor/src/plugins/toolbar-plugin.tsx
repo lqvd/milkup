@@ -20,10 +20,10 @@ import {
 } from "lexical";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import DropDown, { DropDownItem } from "../../../../ui/dropdown";
+import DropDown, { DropDownItem } from "../../../../packages/core/ui/dropdown";
 
 import { INSERT_EMBED_COMMAND } from "@lexical/react/LexicalAutoEmbedPlugin";
-import { EmbedConfigs } from "../../../../packages/milkup-autoembed/index";
+import { EmbedConfigs } from "../../../../packages/milkup-autoembed/src/index";
 
 import { $isListNode } from "@lexical/list";
 import {
