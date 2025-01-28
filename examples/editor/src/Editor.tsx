@@ -135,7 +135,6 @@ export default function Milkup() {
           <ToolbarPlugin />
           <div className="editor-inner">
             <RichTextPlugin
-              // @ts-ignore
               contentEditable={<ContentEditable className="editor-input" />}
               placeholder={<div className="editor-placeholder">Explore!</div>}
               ErrorBoundary={LexicalErrorBoundary}

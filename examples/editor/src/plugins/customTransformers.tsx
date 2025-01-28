@@ -1,6 +1,5 @@
 import {
   ElementTransformer,
-  MultilineElementTransformer,
   TextMatchTransformer,
 } from "@lexical/markdown";
 import {
@@ -40,7 +39,7 @@ export const HR: ElementTransformer = {
 export const DASH_SPACE: TextMatchTransformer = {
   dependencies: [TextNode],
   regExp: /^---$/,
-  replace: (node, _1) => {
+  replace: (node) => {
     node.replace($createHorizontalRuleNode());
   },
   // trigger: '-',
@@ -56,7 +55,7 @@ export const YOUTUBE: ElementTransformer = {
       : null;
   },
   regExp:
-    /^\[YOUTUBE\_EMBED\]\(https:\/\/www\.((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9_-]{11})\)$/,
+    /^\[YOUTUBE_EMBED\]\(https:\/\/www\.((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9_-]{11})\)$/,
   replace: (parentNode, _1, match, isImport) => {
     if (isImport || parentNode.getNextSibling() != null) {
       parentNode.replace($createYouTubeNode(match[4]));
