@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "yarn eslint ./"
+    "lint": "yarn eslint ./",
+    "lint:fix": "yarn eslint ./ --fix"
   },
   "dependencies": {
     "@lexical/code": "^0.23.1",
