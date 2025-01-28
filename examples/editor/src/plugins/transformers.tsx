@@ -1,4 +1,4 @@
-import { DASH_SPACE, HR, YOUTUBE } from "./customTransformers";
+import { DASH_SPACE, HR, YOUTUBE, PANOPTO } from "./customTransformers";
 import {
   EQUATION_BLOCK,
   EQUATION_BLOCK_ML,
@@ -50,4 +50,5 @@ export const TRANSFORMERS = [
   STRIKETHROUGH,
   LINK,
   YOUTUBE,
+  PANOPTO,
 ];

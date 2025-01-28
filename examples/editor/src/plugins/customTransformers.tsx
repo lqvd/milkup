@@ -13,6 +13,11 @@ import {
   $createYouTubeNode,
   $isYouTubeNode,
 } from "../../../../packages/milkup-youtube/src/YoutubeNode";
+import {
+  $createPanoptoNode,
+  $getUrl,
+  $isPanoptoNode,
+} from "../../../../packages/milkup-panopto/src/PanoptoNode";
 
 /* Horizontal line transformers. */
 
@@ -62,6 +67,32 @@ export const YOUTUBE: ElementTransformer = {
       parentNode.replace($createYouTubeNode(match[4]));
     } else {
       parentNode.insertBefore($createYouTubeNode(match[4]));
+    }
+  },
+  type: "element",
+};
+
+/* A transformer for panopto links */
+export const PANOPTO: ElementTransformer = {
+  dependencies: [TextNode],
+  export: (node: LexicalNode) => {
+    return $isPanoptoNode(node)
+      ? `[PANOPTO_EMBED](${$getUrl(node)})`
+      : null;
+  },
+  regExp:
+    /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9\.]+([\-\.]panopto)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?/g,
+  replace: (parentNode, _1, match, isImport) => {
+    // modify match to extract the id from the url
+    const url = match[0];
+    const idMatch = url.match(/[?&]id=([^&\)]+)/);
+    const id = idMatch ? idMatch[1] : null;
+    if (id) {
+      if (isImport || parentNode.getNextSibling() != null) {
+        parentNode.replace($createPanoptoNode(id));
+      } else {
+        parentNode.insertBefore($createPanoptoNode(id));
+      }
     }
   },
   type: "element",
