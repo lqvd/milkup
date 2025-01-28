@@ -41,8 +41,8 @@ function PanoptoComponent({
       nodeKey={nodeKey}
     >
       <iframe
-        width="560"
-        height="315"
+        width="1200"
+        height="600"
         src={`https://imperial.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=${videoID}`}
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -103,8 +103,8 @@ export class PanoptoNode extends DecoratorBlockNode {
   exportDOM(): DOMExportOutput {
     const element = document.createElement("iframe");
     element.setAttribute("data-lexical-panopto", this.__id);
-    element.setAttribute("width", "560");
-    element.setAttribute("height", "315");
+    element.setAttribute("width", "1200");
+    element.setAttribute("height", "600");
     element.setAttribute(
       "src",
       `https://imperial.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=${this.__id}`,
@@ -173,4 +173,8 @@ export function $isPanoptoNode(
   node: PanoptoNode | LexicalNode | null | undefined,
 ): node is PanoptoNode {
   return node instanceof PanoptoNode;
+}
+
+export function $getUrl(node: PanoptoNode): string {
+  return `https://imperial.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=${node.getId()}`;
 }
