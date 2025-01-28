@@ -26,6 +26,7 @@ export const AUDIO_EMBED: ElementTransformer = {
       parentNode.replace(newNode);
     } else {
       parentNode.insertBefore(newNode);
+      parentNode.selectNext();
     }
   },
   type: "element",
