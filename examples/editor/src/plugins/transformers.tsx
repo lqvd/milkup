@@ -1,9 +1,5 @@
 import { DASH_SPACE, HR, YOUTUBE } from "./customTransformers";
-import {
-  EQUATION_BLOCK,
-  EQUATION_BLOCK_ML,
-  INLINE_EQUATION,
-} from "../../../../packages/milkup-equations/src/transformers";
+import { BLOCK_EQUATION } from '../../../../packages/milkup-equations/src/transfomers';
 
 import {
   // Element transformers
@@ -31,9 +27,7 @@ import {
 export const TRANSFORMERS = [
   CHECK_LIST,
   HR,
-  EQUATION_BLOCK_ML,
-  EQUATION_BLOCK,
-  INLINE_EQUATION,
+  BLOCK_EQUATION,
   DASH_SPACE,
   UNORDERED_LIST,
   CODE,
