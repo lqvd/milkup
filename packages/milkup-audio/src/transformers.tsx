@@ -21,11 +21,12 @@ export const AUDIO_EMBED: ElementTransformer = {
   },
   regExp: AUDIO_REGEX,
   replace: (parentNode: ElementNode, _1, match, isImport: boolean) => {
-    console.log(isImport);
-    console.log(match);
     const newNode = $createAudioNode(match[isImport ? 1 : 0]);
-    parentNode.replace(newNode);
-    newNode.selectNext();
+    if (parentNode.getNextSibling() != null || isImport) {
+      parentNode.replace(newNode);
+    } else {
+      parentNode.insertBefore(newNode);
+    }
   },
   type: "element",
 };
