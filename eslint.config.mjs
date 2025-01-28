@@ -20,6 +20,7 @@ export default [
   pluginReact.configs.flat.recommended,
   eslintPluginPrettierRecommended,
   {
+    ignores: ["node_modules"],
     rules: {
       "prettier/prettier": ["error"],
       "@typescript-eslint/no-unused-vars": "off",
