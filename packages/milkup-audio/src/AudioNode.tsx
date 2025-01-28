@@ -79,7 +79,7 @@ export class AudioNode extends DecoratorNode<JSX.Element> {
 
   updateDOM(prevNode: this): boolean {
     // If the inline property changes, replace the element
-    return false;
+    return prevNode.__source !== this.__source;
   }
 
   static importDOM(): DOMConversionMap | null {
