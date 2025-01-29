@@ -31,6 +31,8 @@ import "./lexical-styling.css";
 import ToolbarPlugin from "./plugins/toolbar-plugin";
 import MarkdownAction from "./plugins/MarkdownAction";
 
+import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
+
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -121,6 +123,7 @@ const initialConfig = {
     LinkNode,
     EquationNode,
     YouTubeNode,
+    AudioNode,
   ],
 };
 
@@ -132,7 +135,6 @@ export default function Milkup() {
           <ToolbarPlugin />
           <div className="editor-inner">
             <RichTextPlugin
-              // @ts-ignore
               contentEditable={<ContentEditable className="editor-input" />}
               placeholder={<div className="editor-placeholder">Explore!</div>}
               ErrorBoundary={LexicalErrorBoundary}

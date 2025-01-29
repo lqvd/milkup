@@ -5,6 +5,8 @@ import {
   INLINE_EQUATION,
 } from "../../../../packages/milkup-equations/src/transformers";
 
+import { AUDIO_EMBED } from "../../../../packages/milkup-audio/src/transformers";
+
 import {
   // Element transformers
   CHECK_LIST, // Must precede UNORDERED_LIST to avoid conflict (- [] vs -)
@@ -29,6 +31,7 @@ import {
 } from "@lexical/markdown";
 
 export const TRANSFORMERS = [
+  AUDIO_EMBED,
   CHECK_LIST,
   HR,
   EQUATION_BLOCK_ML,
