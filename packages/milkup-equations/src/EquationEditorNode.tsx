@@ -1,6 +1,5 @@
 import {
   $createLineBreakNode,
-  $getSelection,
   $isTabNode,
   $isTextNode,
   DOMConversionMap,
@@ -220,6 +219,13 @@ export class EquationEditorNode extends ElementNode {
     }
 
     return null;
+  }
+
+  override collapseAtStart(selection: RangeSelection): boolean {
+    const paragraph = $createParagraphNode();
+    this.replace(paragraph);
+    paragraph.select();
+    return true;
   }
 }
 

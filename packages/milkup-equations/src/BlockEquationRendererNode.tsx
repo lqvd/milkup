@@ -18,6 +18,7 @@ import { JSX, Suspense } from "react";
 import { BlockMath } from "react-katex";
 import { createRoot } from "react-dom/client";
 import { BlockEquationRendererComponent } from "./BlockEquationRendererComponent";
+import { $isBlockEquationNode } from "./BlockEquationNode";
 
 export type SerializedBlockEquationRendererNode = Spread<
   {

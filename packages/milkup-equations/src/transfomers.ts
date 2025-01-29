@@ -27,7 +27,7 @@ export const BLOCK_EQUATION: MultilineElementTransformer = {
     }
 
     const equation = node.getTextContent();
-    return "$$" + equation + "$$";
+    return "$$\n" + equation + "\n$$";
   },
   regExpStart: BLOCK_EQUATION_START_REGEX,
   regExpEnd: {
@@ -51,9 +51,12 @@ export const BLOCK_EQUATION: MultilineElementTransformer = {
 
       // Create a new block equation node with the lines in between.
       // We hide the equation editor node if it's an import.
-      const equation = linesInBetween.join("\n");
-      blockEquationNode = $createBlockEquationNode(equation, isImport);
+      const equation = linesInBetween
+        .filter((line, i) => i === 0 || i === linesInBetween.length - 1 ? line.trim() : true)
+        .join("\n")
+        .trim();
 
+      blockEquationNode = $createBlockEquationNode(equation, isImport);
       rootNode.append(blockEquationNode);
     } else if (children) {
       const equation = children

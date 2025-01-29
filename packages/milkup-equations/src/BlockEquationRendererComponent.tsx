@@ -1,5 +1,5 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getNodeByKey, NodeKey, TextNode } from "lexical";
+import { $getNodeByKey, NodeKey, TextNode, $getRoot } from 'lexical';
 import { useEffect, useRef, useState } from "react";
 
 import "katex/dist/katex.min.css";
@@ -7,6 +7,7 @@ import { BlockMath } from "react-katex";
 
 import "./BlockEquationRendererComponent.css";
 import { EquationEditorNode } from "./EquationEditorNode";
+import { $isCodeNode } from '@lexical/code';
 
 const DEFAULT_PLACEHOLDER = "\\text{\\color{gray}(empty)}";
 
@@ -33,6 +34,7 @@ export function BlockEquationRendererComponent({
     });
   }, [editor, equationEditorKey, placeholder]);
 
+  // Listen for changes in the equation editor node.
   useEffect(() => {
     return editor.registerMutationListener(TextNode, (mutations) => {
       editor.update(() => {
@@ -56,6 +58,7 @@ export function BlockEquationRendererComponent({
         // Toggle editor visibility and move selection to text after renderer node.
         editor.update(() => {
           editorNodeRef.current?.show();
+          editorNodeRef.current?.selectStart();
         });
       }}
       style={{

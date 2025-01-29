@@ -9,8 +9,8 @@ import type {
 } from "lexical";
 
 import { addClassNamesToElement } from "@lexical/utils";
-import { ElementNode, TextNode } from "lexical";
-import { $createEquationEditorNode } from "./EquationEditorNode";
+import { $createLineBreakNode, ElementNode, TextNode, $createParagraphNode } from 'lexical';
+import { $createEquationEditorNode, $isEquationEditorNode } from "./EquationEditorNode";
 import { $createBlockEquationRendererNode } from "./BlockEquationRendererNode";
 
 /** @noInheritDoc */
@@ -76,6 +76,28 @@ export class BlockEquationNode extends ElementNode {
   override canInsertTextBefore(): boolean {
     return false;
   }
+
+  override collapseAtStart(): boolean {
+    const paragraph = $createParagraphNode();
+    const editorNode = this.getFirstChild();
+
+    if (!$isEquationEditorNode(editorNode)) {
+      return false;
+    }
+
+    const editorChildren = editorNode.getChildren();
+    editorChildren.forEach((child) => {
+      paragraph.append(child);
+    });
+
+    this.replace(paragraph);
+    return true;
+  }
+
+  override remove(): void {
+    super.remove();
+    console.log("BlockEquationNode removed");
+  }
 }
 
 function $convertBlockEquationElement(): DOMConversionOutput {
@@ -100,8 +122,14 @@ export function $createBlockEquationNode(
     equationEditorNode.append(new TextNode(""));
     blockEquationNode.append(equationEditorNode);
   } else {
-    equation.split("\n").forEach((line) => {
-      equationEditorNode.append(new TextNode(line || " "));
+    const lines = equation.split("\n");
+    lines.forEach((line, index) => {
+      equationEditorNode.append(new TextNode(line || ""));
+
+      // Add a line break after each line except the last one.
+      if (index < lines.length - 1) {
+        equationEditorNode.append($createLineBreakNode());
+      }
     });
   }
 
