@@ -8,7 +8,6 @@ import {
 } from "@lexical/markdown";
 import { TRANSFORMERS } from "./transformers";
 import Button from "../../../../packages/core/ui/button";
-import { hideActiveEquationEditor } from "../../../../packages/milkup-equations/src/EquationsPlugin";
 
 export default function MarkdownAction({
   shouldPreserveNewLinesInMarkdown,
@@ -19,8 +18,6 @@ export default function MarkdownAction({
   /* other consts like isEmpty, so on that may be useful */
 
   const markdownToggle = useCallback(() => {
-    hideActiveEquationEditor();
-
     editor.update(() => {
       const root = $getRoot();
       const firstChild = root.getFirstChild();

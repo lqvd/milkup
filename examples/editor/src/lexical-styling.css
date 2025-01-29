@@ -181,7 +181,23 @@ h1 {
   position: relative;
 }
 
-.editor-code:before {
+.editor-block-equation-editor {
+  background-color: rgb(240, 242, 245);
+  font-family: Menlo, Consolas, Monaco, monospace;
+  display: block;
+  padding: 10px 10px 10px 15px;
+  line-height: 1.53;
+  margin: 0;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  tab-size: 2;
+  border-radius: 10px;
+  /* white-space: pre; */
+  overflow-x: auto;
+  position: relative;
+}
+
+.editor-code:not(.editor-block-equation-editor):before {
   content: attr(data-gutter);
   position: absolute;
   background-color: #eee;
@@ -194,7 +210,7 @@ h1 {
   text-align: right;
   min-width: 25px;
 }
-.editor-code:after {
+.editor-code:not(.editor-block-equation-editor):beforer {
   content: attr(data-highlight-language);
   top: 0;
   right: 3px;

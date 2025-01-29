@@ -27,6 +27,7 @@ import TreeViewPlugin from "./plugins/TreeViewPlugin";
 import "./lexical-styling.css";
 import ToolbarPlugin from "./plugins/toolbar-plugin";
 import MarkdownAction from "./plugins/MarkdownAction";
+import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import EquationsPlugin, {
   EQUATION_NODES,
 } from "../../../packages/milkup-equations/src/EquationsPlugin";
@@ -147,6 +148,7 @@ export default function Milkup() {
           </div>
         </div>
       </SharedHistoryContext>
+      <CodeHighlightPlugin />
       <TreeViewPlugin />
       <MarkdownAction shouldPreserveNewLinesInMarkdown={true} />
     </LexicalComposer>
