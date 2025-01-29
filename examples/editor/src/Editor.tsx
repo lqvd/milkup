@@ -30,6 +30,8 @@ import TreeViewPlugin from "./plugins/TreeViewPlugin";
 import "./lexical-styling.css";
 import ToolbarPlugin from "./plugins/toolbar-plugin";
 import MarkdownAction from "./plugins/MarkdownAction";
+import { useState } from "react";
+import DraggableBlock from "./plugins/milkupDraggable";
 
 const theme = {
   ltr: "ltr",
@@ -125,6 +127,15 @@ const initialConfig = {
 };
 
 export default function Milkup() {
+  const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLElement | null>(null);
+
+  const onRef = (_floatingAnchorElem: HTMLDivElement | null) => {
+    if (_floatingAnchorElem !== null) {
+      console.log("floatingAnchorElem", _floatingAnchorElem);
+      setFloatingAnchorElem(_floatingAnchorElem);
+    }
+  };
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <SharedHistoryContext>
@@ -133,10 +144,20 @@ export default function Milkup() {
           <div className="editor-inner">
             <RichTextPlugin
               // @ts-ignore
-              contentEditable={<ContentEditable className="editor-input" />}
-              placeholder={<div className="editor-placeholder">Explore!</div>}
+              contentEditable={
+                <div className="editor-scroller">
+                  <div className="editor-input" ref={onRef}>
+                    <ContentEditable placeholder={<div className="editor-placeholder">Explore!</div>}/>
+                  </div>
+                </div>
+              }
               ErrorBoundary={LexicalErrorBoundary}
             />
+            {floatingAnchorElem && (
+              <>
+                <DraggableBlock anchorElem={floatingAnchorElem} />
+              </>
+            )}
             <ListPlugin />
             <CheckListPlugin />
             <LinkPlugin />
