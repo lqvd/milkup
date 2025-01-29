@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
 
-import "./BlockEquationRendererComponent.css";
 import { EquationEditorNode } from "./EquationEditorNode";
 import { CodeHighlightNode } from "@lexical/code";
 
