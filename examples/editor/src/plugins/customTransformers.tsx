@@ -54,7 +54,7 @@ export const DASH_SPACE: TextMatchTransformer = {
     }
     line.selectNext();
   },
-  trigger: '-',
+  trigger: "-",
   type: "text-match",
 };
 
