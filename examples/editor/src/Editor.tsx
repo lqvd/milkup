@@ -19,8 +19,8 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/index";
 import { EquationNode } from "../../../packages/milkup-equations/src/EquationNode";
 
-import YouTubePlugin from "../../../packages/milkup-youtube/src/index";
-import { YouTubeNode } from "../../../packages/milkup-youtube/src/YoutubeNode";
+import { YouTubeNode } from "../../../packages/milkup-youtube/src/index";
+import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
 
 import AutoEmbedPlugin from "../../../packages/milkup-autoembed/src/index";
 

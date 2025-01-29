@@ -9,7 +9,7 @@
 import { useCallback, useMemo, useState } from "react";
 import * as React from "react";
 
-import Modal from "../../core/ui/modal";
+import Modal from "../../../core/ui/modal";
 
 export default function useModal(): [
   JSX.Element | null,
