@@ -33,6 +33,8 @@ import MarkdownAction from "./plugins/MarkdownAction";
 import { useState } from "react";
 import DraggableBlock from "./plugins/milkupDraggable";
 
+import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
+
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -123,6 +125,7 @@ const initialConfig = {
     LinkNode,
     EquationNode,
     YouTubeNode,
+    AudioNode,
   ],
 };
 
