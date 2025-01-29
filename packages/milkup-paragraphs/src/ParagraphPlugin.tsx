@@ -60,7 +60,29 @@ export function isSelectAll(
   return keyCode === 65 && controlOrMeta(metaKey, ctrlKey);
 }
 
-export default function ParagraphPlugin() {
+// Paragraph mode is identical to 'convert to markdown' behavior - there are effectively
+// no changes when the editor is toggled to markdown mode. Trailing line breaks at the end
+// of the *editor* are converted to paragraphs, but I do not believe this is within the
+// scope of this plugin to fix - the convert to markdown plugin should handle this.
+//
+// 'Remove' will remove a trailing LB at the end of each paragraph, but will have the
+// counterintuitive behavior that the second 'Enter' will result in a *much* smaller
+// white space. This is consistent with markdown behavior, but results in different
+// markdown and visuals from paragraph mode.
+//
+// 'Keep' will keep the trailing LB at the end of each paragraph, but when converted
+// to and from markdown the gap will increase since markdown converts this trailing LB to
+// a paragraph. This also results in the unintuitive behavior that when we press up arrow
+// we will move to the trailing blank line, and we can type there as well, reducing the
+// space between the two paragraphs.
+
+type ParagraphPluginProps = {
+  trailingLBMode: "keep" | "remove" | "paragraph";
+};
+
+export default function ParagraphPlugin({
+  trailingLBMode = "paragraph",
+}: ParagraphPluginProps): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
@@ -75,6 +97,19 @@ export default function ParagraphPlugin() {
           selection.focus.getNode().getType() === "paragraph" &&
           selection.isCollapsed()
         ) {
+          if (trailingLBMode !== "keep") {
+            selection.getNodes().forEach((node) => {
+              if (
+                node.getType() === "paragraph" ||
+                node.getType() === "linebreak"
+              ) {
+                node.remove();
+              }
+            });
+          }
+          if (trailingLBMode === "paragraph") {
+            editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
+          }
           return editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
         } else {
           return editor.dispatchCommand(INSERT_LINE_BREAK_COMMAND, false);
