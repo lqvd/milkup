@@ -9,9 +9,17 @@ import type {
 } from "lexical";
 
 import { addClassNamesToElement } from "@lexical/utils";
-import { $createLineBreakNode, ElementNode, TextNode, $createParagraphNode } from 'lexical';
-import { $createEquationEditorNode, $isEquationEditorNode } from "./EquationEditorNode";
+import {
+  $createLineBreakNode,
+  ElementNode,
+  $createParagraphNode,
+} from "lexical";
+import {
+  $createEquationEditorNode,
+  $isEquationEditorNode,
+} from "./EquationEditorNode";
 import { $createBlockEquationRendererNode } from "./BlockEquationRendererNode";
+import { $createCodeHighlightNode } from "@lexical/code";
 
 /** @noInheritDoc */
 export class BlockEquationNode extends ElementNode {
@@ -119,12 +127,12 @@ export function $createBlockEquationNode(
   const equationEditorNodeKey = equationEditorNode.getKey();
 
   if (!equation) {
-    equationEditorNode.append(new TextNode(""));
+    equationEditorNode.append($createCodeHighlightNode(""));
     blockEquationNode.append(equationEditorNode);
   } else {
     const lines = equation.split("\n");
     lines.forEach((line, index) => {
-      equationEditorNode.append(new TextNode(line || ""));
+      equationEditorNode.append($createCodeHighlightNode(line || ""));
 
       // Add a line break after each line except the last one.
       if (index < lines.length - 1) {

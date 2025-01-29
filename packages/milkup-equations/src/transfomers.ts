@@ -3,12 +3,12 @@ import {
   $createBlockEquationNode,
   $isBlockEquationNode,
   BlockEquationNode,
-} from "./BlockEquationNode";
+} from "./block/BlockEquationNode";
 import {
   $createEquationEditorNode,
   EquationEditorNode,
-} from "./EquationEditorNode";
-import { BlockEquationRendererNode } from "./BlockEquationRendererNode";
+} from "./block/EquationEditorNode";
+import { BlockEquationRendererNode } from "./block/BlockEquationRendererNode";
 import { ElementNode, LexicalNode, TextNode } from "lexical";
 
 const BLOCK_EQUATION_START_REGEX = /^[ \t]*\$\$/;
@@ -52,7 +52,9 @@ export const BLOCK_EQUATION: MultilineElementTransformer = {
       // Create a new block equation node with the lines in between.
       // We hide the equation editor node if it's an import.
       const equation = linesInBetween
-        .filter((line, i) => i === 0 || i === linesInBetween.length - 1 ? line.trim() : true)
+        .filter((line, i) =>
+          i === 0 || i === linesInBetween.length - 1 ? line.trim() : true,
+        )
         .join("\n")
         .trim();
 

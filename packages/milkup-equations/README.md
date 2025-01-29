@@ -29,18 +29,23 @@ block-equation
 | └ text "3x + 9y &= -12"
 └ equation-renderer
 ```
-The equation editor root node is either hidden or not hidden depending
-on whether the user has clicked on equation-renderer or not.
+
 
 `EquationRendererNode` takes in the Lexical key of the `EquationEditorNode`
 on creation and listens to text mutations within it.
 
 ## CSS
 
+> Make sure to register code highlighting to enable LaTeX syntax highlighting.
+
 ### Block equations
 
-The block equation editor is wrapped in a div with class `editor-block-equation-editor`.
-**Do not override the hidden component**, this is used to show/hide the editor.
+`EquationEditorNode` is just a Lexical `CodeNode` with language set to $\LaTeX$.
+It will inherit the CSS of `editor-code` by default. 
+
+To style just the maths editors, use `.editor-block-equation-editor`.
+You may need to exclude maths editors from other code stylings with the `not` 
+CSS keyword, i.e., `.editor-code:not(.editor-block-equation-editor) { style... }`.
 
 The KaTeX preview is wrapped in 
 
