@@ -1,6 +1,13 @@
 import { MultilineElementTransformer } from "@lexical/markdown";
-import { $createBlockEquationNode, $isBlockEquationNode, BlockEquationNode } from "./BlockEquationNode";
-import { $createEquationEditorNode, EquationEditorNode } from "./EquationEditorNode";
+import {
+  $createBlockEquationNode,
+  $isBlockEquationNode,
+  BlockEquationNode,
+} from "./BlockEquationNode";
+import {
+  $createEquationEditorNode,
+  EquationEditorNode,
+} from "./EquationEditorNode";
 import { BlockEquationRendererNode } from "./BlockEquationRendererNode";
 import { ElementNode, LexicalNode, TextNode } from "lexical";
 
@@ -9,10 +16,10 @@ const BLOCK_EQUATION_END_REGEX = /\$\$[ \t]*$/;
 
 export const BLOCK_EQUATION: MultilineElementTransformer = {
   dependencies: [
-    BlockEquationNode, 
-    EquationEditorNode, 
-    BlockEquationRendererNode, 
-    TextNode
+    BlockEquationNode,
+    EquationEditorNode,
+    BlockEquationRendererNode,
+    TextNode,
   ],
   export: (node: LexicalNode) => {
     if (!$isBlockEquationNode(node)) {
@@ -20,9 +27,7 @@ export const BLOCK_EQUATION: MultilineElementTransformer = {
     }
 
     const equation = node.getTextContent();
-    return (
-      '$$' + equation + '$$'
-    );
+    return "$$" + equation + "$$";
   },
   regExpStart: BLOCK_EQUATION_START_REGEX,
   regExpEnd: {
@@ -35,10 +40,10 @@ export const BLOCK_EQUATION: MultilineElementTransformer = {
     _startMatch,
     endMatch,
     linesInBetween,
-    isImport
+    isImport,
   ) => {
     let blockEquationNode: BlockEquationNode;
-    
+
     if (!children && linesInBetween) {
       if (isImport && !endMatch) {
         return;
@@ -48,14 +53,16 @@ export const BLOCK_EQUATION: MultilineElementTransformer = {
       // We hide the equation editor node if it's an import.
       const equation = linesInBetween.join("\n");
       blockEquationNode = $createBlockEquationNode(equation, isImport);
+
       rootNode.append(blockEquationNode);
     } else if (children) {
-      const equation = children.map((child) => child.getTextContent()).join("\n");
+      const equation = children
+        .map((child) => child.getTextContent())
+        .join("\n");
       blockEquationNode = $createBlockEquationNode(equation);
-      rootNode.append(blockEquationNode);
-      blockEquationNode.select(0,0);
+      rootNode.replace(blockEquationNode);
+      blockEquationNode.select(0, 0);
     }
   },
   type: "multiline-element",
-}
-
+};

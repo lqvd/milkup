@@ -1,7 +1,17 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $wrapNodeInElement } from "@lexical/utils";
-import { $createParagraphNode, $insertNodes, $isRootOrShadowRoot, COMMAND_PRIORITY_EDITOR, createCommand, LexicalCommand } from "lexical";
-import { $createBlockEquationNode, BlockEquationNode } from './BlockEquationNode';
+import {
+  $createParagraphNode,
+  $insertNodes,
+  $isRootOrShadowRoot,
+  COMMAND_PRIORITY_EDITOR,
+  createCommand,
+  LexicalCommand,
+} from "lexical";
+import {
+  $createBlockEquationNode,
+  BlockEquationNode,
+} from "./BlockEquationNode";
 import { EquationEditorNode } from "./EquationEditorNode";
 import { BlockEquationRendererNode } from "./BlockEquationRendererNode";
 import { useEffect } from "react";
@@ -9,7 +19,7 @@ import { useEffect } from "react";
 type CommandPayload = {
   equation: string;
   inline: boolean;
-}
+};
 
 export const INSERT_EQUATION_COMMAND: LexicalCommand<CommandPayload> =
   createCommand("INSERT_EQUATION_COMMAND");
@@ -30,9 +40,8 @@ export default function EquationsPlugin(): JSX.Element | null {
       INSERT_EQUATION_COMMAND,
       (payload) => {
         const { equation, inline } = payload;
-        
-        if (inline) {
 
+        if (inline) {
         } else {
           const equationNode = $createBlockEquationNode(equation);
           $insertNodes([equationNode]);
@@ -40,7 +49,7 @@ export default function EquationsPlugin(): JSX.Element | null {
             $wrapNodeInElement(equationNode, $createParagraphNode).selectEnd();
           }
         }
-        
+
         return true;
       },
       COMMAND_PRIORITY_EDITOR,
@@ -54,4 +63,4 @@ export const EQUATION_NODES = [
   BlockEquationNode,
   EquationEditorNode,
   BlockEquationRendererNode,
-]
+];

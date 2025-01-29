@@ -1,5 +1,5 @@
 import { DASH_SPACE, HR, YOUTUBE } from "./customTransformers";
-import { BLOCK_EQUATION } from '../../../../packages/milkup-equations/src/transfomers';
+import { BLOCK_EQUATION } from "../../../../packages/milkup-equations/src/transfomers";
 
 import {
   // Element transformers

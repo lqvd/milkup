@@ -1,13 +1,14 @@
 # milkup-equations
 
-A Math rendering plugin for Lexical.
+A Math rendering plugin for Lexical, using `react-katex` for rendering.
 
 To use, register `...EQUATION_NODES` into your config and add the `BLOCK_EQUATION`
 and `INLINE_EQUATION` transformers to your transformers if using Markdown.
 
-## A brief rundown
+## How does it work?
 
-`milkup-equations` uses `react-katex` for rendering.
+Before running through how to customise the styling, it is useful to know the
+structure of maths blocks.
 
 ### Block equations
 
@@ -33,3 +34,17 @@ on whether the user has clicked on equation-renderer or not.
 
 `EquationRendererNode` takes in the Lexical key of the `EquationEditorNode`
 on creation and listens to text mutations within it.
+
+## CSS
+
+### Block equations
+
+The block equation editor is wrapped in a div with class `editor-block-equation-editor`.
+**Do not override the hidden component**, this is used to show/hide the editor.
+
+The KaTeX preview is wrapped in 
+
+### Inline equations
+
+
+

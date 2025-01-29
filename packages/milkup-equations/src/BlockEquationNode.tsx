@@ -11,7 +11,7 @@ import type {
 import { addClassNamesToElement } from "@lexical/utils";
 import { ElementNode, TextNode } from "lexical";
 import { $createEquationEditorNode } from "./EquationEditorNode";
-import { $createEquationRendererNode } from "./BlockEquationRendererNode";
+import { $createBlockEquationRendererNode } from "./BlockEquationRendererNode";
 
 /** @noInheritDoc */
 export class BlockEquationNode extends ElementNode {
@@ -30,7 +30,7 @@ export class BlockEquationNode extends ElementNode {
   /* View */
   createDOM(_config: EditorConfig): HTMLElement {
     const element = document.createElement("div");
-    addClassNamesToElement(element, "block-equation");
+    addClassNamesToElement(element, "editor-block-equation");
     return element;
   }
 
@@ -44,14 +44,14 @@ export class BlockEquationNode extends ElementNode {
 
   exportDOM(_editor: LexicalEditor): DOMExportOutput {
     const element = document.createElement("div");
-    addClassNamesToElement(element, "block-equation");
+    addClassNamesToElement(element, "editor-block-equation");
     return { element };
   }
 
   static importDOM(): DOMConversionMap | null {
     return {
       div: (domNode: HTMLElement) => {
-        if (!domNode.classList.contains("block-equation")) {
+        if (!domNode.classList.contains("editor-block-equation")) {
           return null;
         }
         return {
@@ -67,6 +67,15 @@ export class BlockEquationNode extends ElementNode {
       .map((child) => child.getTextContent())
       .join("");
   }
+
+  /* Overrides for ElementNode */
+  override canInsertTextAfter(): boolean {
+    return false;
+  }
+
+  override canInsertTextBefore(): boolean {
+    return false;
+  }
 }
 
 function $convertBlockEquationElement(): DOMConversionOutput {
@@ -74,14 +83,14 @@ function $convertBlockEquationElement(): DOMConversionOutput {
 }
 
 export function $isBlockEquationNode(
-  node: LexicalNode | null | undefined
+  node: LexicalNode | null | undefined,
 ): node is BlockEquationNode {
   return node instanceof BlockEquationNode;
 }
 
 export function $createBlockEquationNode(
   equation?: string | null | undefined,
-  hidden?: boolean | null | undefined
+  hidden?: boolean | null | undefined,
 ): BlockEquationNode {
   const blockEquationNode = new BlockEquationNode();
   const equationEditorNode = $createEquationEditorNode(hidden);
@@ -92,15 +101,15 @@ export function $createBlockEquationNode(
     blockEquationNode.append(equationEditorNode);
   } else {
     equation.split("\n").forEach((line) => {
-      equationEditorNode.append(new TextNode(line));
+      equationEditorNode.append(new TextNode(line || " "));
     });
   }
 
-  const equationRendererNode = $createEquationRendererNode(
+  const equationRendererNode = $createBlockEquationRendererNode(
     equation || "(empty)",
-    equationEditorNodeKey
+    equationEditorNodeKey,
   );
-  
+
   blockEquationNode.append(equationEditorNode);
   blockEquationNode.append(equationRendererNode);
 

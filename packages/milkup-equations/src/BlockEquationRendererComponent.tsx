@@ -1,31 +1,50 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getNodeByKey, NodeKey, TextNode } from "lexical";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import 'katex/dist/katex.min.css';
-import { BlockMath } from 'react-katex';
+import "katex/dist/katex.min.css";
+import { BlockMath } from "react-katex";
+
+import "./BlockEquationRendererComponent.css";
+import { EquationEditorNode } from "./EquationEditorNode";
 
 const DEFAULT_PLACEHOLDER = "\\text{\\color{gray}(empty)}";
 
-
-export function BlockEquationRendererComponent({ equationEditorKey, placeholder = DEFAULT_PLACEHOLDER }: { equationEditorKey: NodeKey, placeholder?: string }): JSX.Element {
+export function BlockEquationRendererComponent({
+  equationEditorKey,
+  placeholder = DEFAULT_PLACEHOLDER,
+}: {
+  equationEditorKey: NodeKey;
+  placeholder?: string;
+}): JSX.Element {
   const [editor] = useLexicalComposerContext();
   const [equation, setEquation] = useState<string>("");
+  const editorNodeRef = useRef<EquationEditorNode | null>(null);
 
-  // Set placeholder when equation is empty.
+  // Initialize node reference and set placeholder.
   useEffect(() => {
-    setEquation(placeholder);
-  }, [placeholder]);
+    editor.getEditorState().read(() => {
+      editorNodeRef.current = $getNodeByKey(
+        equationEditorKey,
+      ) as EquationEditorNode;
+      if (editorNodeRef.current) {
+        setEquation(editorNodeRef.current.getTextContent() || placeholder);
+      }
+    });
+  }, [editor, equationEditorKey, placeholder]);
 
   useEffect(() => {
     return editor.registerMutationListener(TextNode, (mutations) => {
       editor.update(() => {
-        const editorNode = $getNodeByKey(equationEditorKey);
-        if (!editorNode) {
-          throw new Error("BlockEquationRendererComponent: editor node not found");
+        const node = $getNodeByKey(equationEditorKey);
+
+        if (!node) {
+          throw new Error(
+            "BlockEquationRendererComponent: editor node not found",
+          );
         }
-  
-        const newText = editorNode.getTextContent();
+
+        const newText = node.getTextContent();
         setEquation(newText);
       });
     });
@@ -33,20 +52,26 @@ export function BlockEquationRendererComponent({ equationEditorKey, placeholder 
 
   return (
     <button
-          onClick={() => alert(`Formula clicked: ${equation}`)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            border: "1px solid #ddd",
-            borderRadius: "8px",
-            padding: "4px 8px",
-            backgroundColor: "#f5f5f5",
-            cursor: "pointer",
-          }}
-        >
-          <BlockMath>{
-            equation ? equation : placeholder
-          }</BlockMath>
-      </button>
-  )
+      onClick={() => {
+        // Toggle editor visibility and move selection to text after renderer node.
+        editor.update(() => {
+          editorNodeRef.current?.show();
+        });
+      }}
+      style={{
+        display: "block",
+        width: "100%",
+        border: "1px solid #000",
+        borderRadius: "0",
+        padding: "4px 8px",
+        backgroundColor: "#fff",
+        cursor: "pointer",
+        textAlign: "left",
+      }}
+      onMouseOver={(e) => (e.currentTarget.style.borderColor = "#ccc")}
+      onMouseOut={(e) => (e.currentTarget.style.borderColor = "#fff")}
+    >
+      <BlockMath>{equation || placeholder}</BlockMath>
+    </button>
+  );
 }

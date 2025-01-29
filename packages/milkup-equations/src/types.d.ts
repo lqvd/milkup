@@ -2,26 +2,26 @@
 // I am unsure why this is necessary, as it worked before without this file!
 // But alas now it is needed!
 
-declare module 'react-katex' {
-  import * as React from 'react'
+declare module "react-katex" {
+  import * as React from "react";
 
   interface KatexProps {
-    children: string
-    math?: string
-    block?: boolean
-    errorColor?: string
-    renderError?: (error: Error) => React.ReactNode
+    children: string;
+    math?: string;
+    block?: boolean;
+    errorColor?: string;
+    renderError?: (error: Error) => React.ReactNode;
     settings?: {
-      throwOnError?: boolean
-      errorColor?: string
-      macros?: object
-      colorIsTextColor?: boolean
-      maxSize?: number
-      maxExpand?: number
-      strict?: boolean | string | 'error' | 'ignore' | 'warn'
-    }
+      throwOnError?: boolean;
+      errorColor?: string;
+      macros?: object;
+      colorIsTextColor?: boolean;
+      maxSize?: number;
+      maxExpand?: number;
+      strict?: boolean | string | "error" | "ignore" | "warn";
+    };
   }
 
-  export const BlockMath: React.FC<KatexProps>
-  export const InlineMath: React.FC<KatexProps>
+  export const BlockMath: React.FC<KatexProps>;
+  export const InlineMath: React.FC<KatexProps>;
 }

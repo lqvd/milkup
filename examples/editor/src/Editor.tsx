@@ -16,8 +16,6 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 
-
-
 import { YouTubeNode } from "../../../packages/milkup-youtube/src/index";
 import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
 
@@ -29,7 +27,9 @@ import TreeViewPlugin from "./plugins/TreeViewPlugin";
 import "./lexical-styling.css";
 import ToolbarPlugin from "./plugins/toolbar-plugin";
 import MarkdownAction from "./plugins/MarkdownAction";
-import EquationsPlugin, { EQUATION_NODES } from '../../../packages/milkup-equations/src/EquationsPlugin';
+import EquationsPlugin, {
+  EQUATION_NODES,
+} from "../../../packages/milkup-equations/src/EquationsPlugin";
 
 const theme = {
   ltr: "ltr",

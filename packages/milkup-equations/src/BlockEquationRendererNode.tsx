@@ -7,14 +7,25 @@ import {
   $applyNodeReplacement,
   LexicalNode,
   DOMConversionOutput,
+  Spread,
+  LexicalUpdateJSON,
+  SerializedLexicalNode,
 } from "lexical";
 import { addClassNamesToElement } from "@lexical/utils";
 
-import 'katex/dist/katex.min.css';
+import "katex/dist/katex.min.css";
 import { JSX, Suspense } from "react";
-import { BlockMath } from 'react-katex';
+import { BlockMath } from "react-katex";
 import { createRoot } from "react-dom/client";
 import { BlockEquationRendererComponent } from "./BlockEquationRendererComponent";
+
+export type SerializedBlockEquationRendererNode = Spread<
+  {
+    equation: string;
+    editorKey: NodeKey;
+  },
+  SerializedLexicalNode
+>;
 
 export class BlockEquationRendererNode extends DecoratorNode<JSX.Element> {
   /** @internal */
@@ -27,7 +38,11 @@ export class BlockEquationRendererNode extends DecoratorNode<JSX.Element> {
   }
 
   static clone(node: BlockEquationRendererNode): BlockEquationRendererNode {
-    return new BlockEquationRendererNode(node.__equation, node.__editorKey, node.__key);
+    return new BlockEquationRendererNode(
+      node.__equation,
+      node.__editorKey,
+      node.__key,
+    );
   }
 
   constructor(equation: string, editorKey: NodeKey, key?: NodeKey) {
@@ -39,23 +54,19 @@ export class BlockEquationRendererNode extends DecoratorNode<JSX.Element> {
   /* View */
   createDOM(_config: EditorConfig): HTMLElement {
     const element = document.createElement("math");
-    addClassNamesToElement(element, "equation-renderer");
+    addClassNamesToElement(element, "editor-block-equation-renderer");
     return element;
   }
 
   exportDOM(): DOMExportOutput {
     const element = document.createElement("math");
-    addClassNamesToElement(element, "equation-renderer");
+    addClassNamesToElement(element, "editor-block-equation-renderer");
     const equation = btoa(this.__equation);
 
     element.setAttribute("data-lexical-equation", equation);
 
     const root = createRoot(element!);
-    root.render(
-      <BlockMath>
-        {this.__equation}
-      </BlockMath>
-    )
+    root.render(<BlockMath>{this.__equation}</BlockMath>);
 
     return { element };
   }
@@ -73,11 +84,7 @@ export class BlockEquationRendererNode extends DecoratorNode<JSX.Element> {
       dom.setAttribute("data-lexical-equation", equation);
 
       const root = createRoot(dom);
-      root.render(
-        <BlockMath>
-          {this.__equation}
-        </BlockMath>
-      )
+      root.render(<BlockMath>{this.__equation}</BlockMath>);
     }
 
     return false;
@@ -97,6 +104,30 @@ export class BlockEquationRendererNode extends DecoratorNode<JSX.Element> {
     };
   }
 
+  /* JSON */
+  static importJSON(
+    serializedNode: SerializedBlockEquationRendererNode,
+  ): BlockEquationRendererNode {
+    return $createBlockEquationRendererNode(
+      serializedNode.equation,
+      serializedNode.editorKey,
+    ).updateFromJSON(serializedNode);
+  }
+
+  updateFromJSON(
+    serializedNode: LexicalUpdateJSON<SerializedBlockEquationRendererNode>,
+  ): this {
+    return super.updateFromJSON(serializedNode);
+  }
+
+  exportJSON(): SerializedBlockEquationRendererNode {
+    return {
+      ...super.exportJSON(),
+      equation: this.__equation,
+      editorKey: this.__editorKey,
+    };
+  }
+
   getTextContent(): string {
     return "";
   }
@@ -111,11 +142,13 @@ export class BlockEquationRendererNode extends DecoratorNode<JSX.Element> {
   }
 }
 
-export function $createEquationRendererNode(
+export function $createBlockEquationRendererNode(
   equation: string = "",
   editorKey: NodeKey,
 ): BlockEquationRendererNode {
-  return $applyNodeReplacement(new BlockEquationRendererNode(equation, editorKey));
+  return $applyNodeReplacement(
+    new BlockEquationRendererNode(equation, editorKey),
+  );
 }
 
 export function $convertEquationRendererElement(
@@ -126,7 +159,9 @@ export function $convertEquationRendererElement(
   equation = atob(equation || "");
 
   if (equation) {
-    return { node: $createEquationRendererNode(equation, editorKey || "") };
+    return {
+      node: $createBlockEquationRendererNode(equation, editorKey || ""),
+    };
   }
 
   return null;
