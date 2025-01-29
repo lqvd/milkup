@@ -5,9 +5,7 @@ import {
   INLINE_EQUATION,
 } from "../../../../packages/milkup-equations/src/transformers";
 
-import {
-  AUDIO_EMBED,
-} from "../../../../packages/milkup-audio/src/transformers";
+import { AUDIO_EMBED } from "../../../../packages/milkup-audio/src/transformers";
 
 import {
   // Element transformers

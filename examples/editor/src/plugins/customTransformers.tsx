@@ -1,7 +1,4 @@
-import {
-  ElementTransformer,
-  TextMatchTransformer,
-} from "@lexical/markdown";
+import { ElementTransformer, TextMatchTransformer } from "@lexical/markdown";
 import {
   HorizontalRuleNode,
   $isHorizontalRuleNode,

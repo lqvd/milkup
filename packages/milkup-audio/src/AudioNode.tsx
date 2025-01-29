@@ -1,4 +1,4 @@
-import { 
+import {
   $applyNodeReplacement,
   DecoratorNode,
   DOMConversionMap,
@@ -7,8 +7,8 @@ import {
   LexicalNode,
   NodeKey,
   type DOMConversionOutput,
-  type SerializedLexicalNode, 
-  type Spread 
+  type SerializedLexicalNode,
+  type Spread,
 } from "lexical";
 import React, { Suspense } from "react";
 
@@ -52,9 +52,9 @@ export class AudioNode extends DecoratorNode<JSX.Element> {
   }
 
   static importJSON(serializedNode: SerializedAudioNode): AudioNode {
-    return $createAudioNode(
-      serializedNode.source
-    ).updateFromJSON(serializedNode);
+    return $createAudioNode(serializedNode.source).updateFromJSON(
+      serializedNode,
+    );
   }
 
   exportJSON(): SerializedAudioNode {
@@ -84,14 +84,14 @@ export class AudioNode extends DecoratorNode<JSX.Element> {
 
   static importDOM(): DOMConversionMap | null {
     return {
-      div: (domNode: HTMLElement) => { 
+      div: (domNode: HTMLElement) => {
         if (!domNode.getAttribute("data-lexical-audio")) {
           return null;
         }
         return {
           conversion: $convertAudioElement,
           priority: 2,
-        }
+        };
       },
       span: (domNode: HTMLElement) => {
         if (!domNode.getAttribute("data-lexical-audio")) {
@@ -100,9 +100,9 @@ export class AudioNode extends DecoratorNode<JSX.Element> {
         return {
           conversion: $convertAudioElement,
           priority: 1,
-        }
-      }
-    }
+        };
+      },
+    };
   }
 
   getSource(): string {
@@ -120,18 +120,13 @@ export class AudioNode extends DecoratorNode<JSX.Element> {
   decorate(): JSX.Element {
     return (
       <Suspense fallback={<div>Loading...</div>}>
-        <AudioComponent
-          source={this.__source}
-          nodeKey={this.__key}
-        />
+        <AudioComponent source={this.__source} nodeKey={this.__key} />
       </Suspense>
-    )
+    );
   }
 }
 
-export function $createAudioNode(
-  source: string,
-): AudioNode {
+export function $createAudioNode(source: string): AudioNode {
   const node = new AudioNode(source);
   return $applyNodeReplacement(node);
 }

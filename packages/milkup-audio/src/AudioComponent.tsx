@@ -4,9 +4,9 @@ import { NodeKey } from "lexical";
 import { useCallback, useRef, useState } from "react";
 
 type AudioComponentProps = {
-    source: string;
-    nodeKey: NodeKey;
-}
+  source: string;
+  nodeKey: NodeKey;
+};
 
 export default function AudioComponent({
   source,
@@ -27,11 +27,7 @@ export default function AudioComponent({
 
   return (
     <div className="audio-action">
-      <audio 
-        ref={audioRef}
-        controls 
-        src={source} 
-        onEnded={handleEnded}/>
+      <audio ref={audioRef} controls src={source} onEnded={handleEnded} />
     </div>
   );
 }
