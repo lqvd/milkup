@@ -127,7 +127,8 @@ const initialConfig = {
 };
 
 export default function Milkup() {
-  const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLElement | null>(null);
+  const [floatingAnchorElem, setFloatingAnchorElem] =
+    useState<HTMLElement | null>(null);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement | null) => {
     if (_floatingAnchorElem !== null) {
@@ -147,7 +148,11 @@ export default function Milkup() {
               contentEditable={
                 <div className="editor-scroller">
                   <div className="editor-input" ref={onRef}>
-                    <ContentEditable placeholder={<div className="editor-placeholder">Explore!</div>}/>
+                    <ContentEditable
+                      placeholder={
+                        <div className="editor-placeholder">Explore!</div>
+                      }
+                    />
                   </div>
                 </div>
               }

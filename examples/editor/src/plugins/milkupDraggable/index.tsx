@@ -1,7 +1,7 @@
 import { DraggableBlockPlugin_EXPERIMENTAL } from "@lexical/react/LexicalDraggableBlockPlugin";
 import { useRef } from "react";
 
-import './index.css';
+import "./index.css";
 
 const DRAGGABLE_CLASSNAME = "draggable-block-menu";
 
@@ -14,7 +14,6 @@ export default function DraggableBlock({
 }: {
   anchorElem?: HTMLElement;
 }): JSX.Element {
-
   const menuRef = useRef<HTMLDivElement>(null);
   const targetLineRef = useRef<HTMLDivElement>(null);
 
