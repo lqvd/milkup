@@ -41,9 +41,20 @@ export const DASH_SPACE: TextMatchTransformer = {
   dependencies: [TextNode],
   regExp: /^---$/,
   replace: (node, _1) => {
-    node.replace($createHorizontalRuleNode());
+    const parentNode = node.getParent();
+    if (parentNode == null) {
+      return;
+    }
+    const line = $createHorizontalRuleNode();
+    if (parentNode.getNextSibling() != null) {
+      parentNode.replace(line);
+    } else {
+      parentNode.insertBefore(line);
+      node.remove();
+    }
+    line.selectNext();
   },
-  // trigger: '-',
+  trigger: "-",
   type: "text-match",
 };
 
