@@ -34,6 +34,7 @@ import { useState } from "react";
 import DraggableBlock from "./plugins/milkupDraggable";
 
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
+import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
 
 const theme = {
   ltr: "ltr",
@@ -173,6 +174,7 @@ export default function Milkup() {
             <EquationsPlugin />
             <YouTubePlugin />
             <AutoEmbedPlugin />
+            <ParagraphPlugin trailingLBMode="paragraph" />
           </div>
         </div>
       </SharedHistoryContext>
