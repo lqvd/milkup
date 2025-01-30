@@ -25,6 +25,7 @@ import {
 import { BlockEquationRendererNode } from "./block/BlockEquationRendererNode";
 import { useEffect, useRef } from "react";
 import { $getNodeByKey } from "lexical";
+import { $createInlineEquationNode } from "./inline/InlineEquationNode";
 
 type CommandPayload = {
   equation: string;
@@ -36,38 +37,76 @@ export const INSERT_EQUATION_COMMAND: LexicalCommand<CommandPayload> =
 
 export default function EquationsPlugin(): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
-  const prevEquationEditorKeyRef = useRef<string | null>(null);
+  const requestIdRef = useRef<number | null>(null);
+  const currentEquationEditorKeyRef = useRef<string | null>(null);
+  const wasHiddenRef = useRef<boolean>(true);
 
-  // Hide the active equation editor when the selection changes.
   const hideActiveEquationEditor = () => {
     editor.update(() => {
-      if (prevEquationEditorKeyRef.current) {
-        const node = $getNodeByKey(prevEquationEditorKeyRef.current);
+      if (currentEquationEditorKeyRef.current) {
+        const node = $getNodeByKey(currentEquationEditorKeyRef.current);
         if ($isEquationEditorNode(node)) {
           node.hide();
+          wasHiddenRef.current = true;
         }
-        prevEquationEditorKeyRef.current = null;
+        currentEquationEditorKeyRef.current = null;
+      }
+    });
+  };
+
+  const showActiveEquationEditor = (key: string) => {
+    editor.update(() => {
+      const node = $getNodeByKey(key);
+      if ($isEquationEditorNode(node)) {
+        const wasHidden = wasHiddenRef.current;
+        node.show();
+        if (wasHidden) {
+          // Only set selection if transitioning from hidden
+          node.selectStart();
+          wasHiddenRef.current = false;
+        }
+      }
+    });
+  };
+
+  // Handle selection changes, hiding and showing equation editors
+  const handleSelectionChange = () => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const equationEditorNode = $getEquationEditorNodeOrNull(anchorNode);
+        if (equationEditorNode) {
+          const key = equationEditorNode.getKey();
+          currentEquationEditorKeyRef.current = key;
+          showActiveEquationEditor(key);
+        } else if (currentEquationEditorKeyRef.current) {
+          hideActiveEquationEditor();
+        }
       }
     });
   };
 
   // Listen for selection changes.
+  // Use animation frames to debounce selection changes
   useEffect(() => {
-    return editor.registerUpdateListener(({ editorState }) => {
-      editorState.read(() => {
-        const selection = $getSelection();
-        if ($isRangeSelection(selection)) {
-          const anchorNode = selection.anchor.getNode();
-          const equationEditorNode = $getEquationEditorNodeOrNull(anchorNode);
-
-          if (equationEditorNode) {
-            prevEquationEditorKeyRef.current = equationEditorNode.getKey();
-          } else if (prevEquationEditorKeyRef.current) {
-            hideActiveEquationEditor();
-          }
-        }
+    const unregister = editor.registerUpdateListener(({ editorState }) => {
+      if (requestIdRef.current) {
+        cancelAnimationFrame(requestIdRef.current);
+      }
+      requestIdRef.current = requestAnimationFrame(() => {
+        editorState.read(() => {
+          handleSelectionChange();
+        });
       });
     });
+
+    return () => {
+      unregister();
+      if (requestIdRef.current) {
+        cancelAnimationFrame(requestIdRef.current);
+      }
+    };
   }, [editor]);
 
   // Register the insert equation command and all nodes.
@@ -85,13 +124,13 @@ export default function EquationsPlugin(): JSX.Element | null {
       (payload) => {
         const { equation, inline } = payload;
 
-        if (inline) {
-        } else {
-          const equationNode = $createBlockEquationNode(equation);
-          $insertNodes([equationNode]);
-          if ($isRootOrShadowRoot(equationNode.getParentOrThrow())) {
-            $wrapNodeInElement(equationNode, $createParagraphNode).selectEnd();
-          }
+        const equationNode = inline
+          ? $createInlineEquationNode(equation)
+          : $createBlockEquationNode(equation);
+
+        $insertNodes([equationNode]);
+        if ($isRootOrShadowRoot(equationNode.getParentOrThrow())) {
+          $wrapNodeInElement(equationNode, $createParagraphNode).selectEnd();
         }
 
         return true;
@@ -106,18 +145,11 @@ export default function EquationsPlugin(): JSX.Element | null {
 function $getEquationEditorNodeOrNull(
   node: TextNode | ElementNode,
 ): EquationEditorNode | null {
-  if ($isEquationEditorNode(node)) {
-    return node;
-  }
-
-  if ($isTextNode(node) && $isEquationEditorNode(node.getParent())) {
+  if ($isEquationEditorNode(node)) return node;
+  if ($isTextNode(node) && $isEquationEditorNode(node.getParent()))
     return node.getParent() as EquationEditorNode;
-  }
-
-  if ($isBlockEquationNode(node)) {
+  if ($isBlockEquationNode(node))
     return node.getFirstChild() as EquationEditorNode;
-  }
-
   return null;
 }
 

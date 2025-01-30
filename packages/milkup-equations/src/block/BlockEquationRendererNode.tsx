@@ -18,7 +18,6 @@ import { JSX, Suspense } from "react";
 import { BlockMath } from "react-katex";
 import { createRoot } from "react-dom/client";
 import { BlockEquationRendererComponent } from "./BlockEquationRendererComponent";
-import { $isBlockEquationNode } from "./BlockEquationNode";
 
 export type SerializedBlockEquationRendererNode = Spread<
   {
@@ -56,6 +55,8 @@ export class BlockEquationRendererNode extends DecoratorNode<JSX.Element> {
   createDOM(_config: EditorConfig): HTMLElement {
     const element = document.createElement("math");
     addClassNamesToElement(element, "editor-block-equation-renderer");
+    element.setAttribute("data-lexical-decorator", "true");
+    element.setAttribute("contenteditable", "false");
     return element;
   }
 
@@ -131,6 +132,10 @@ export class BlockEquationRendererNode extends DecoratorNode<JSX.Element> {
 
   getTextContent(): string {
     return "";
+  }
+
+  override isInline(): boolean {
+    return false;
   }
 
   decorate(): JSX.Element {

@@ -6,6 +6,7 @@ import type {
   LexicalEditor,
   LexicalNode,
   NodeKey,
+  RangeSelection,
 } from "lexical";
 
 import { addClassNamesToElement } from "@lexical/utils";
@@ -76,12 +77,12 @@ export class BlockEquationNode extends ElementNode {
       .join("");
   }
 
-  /* Overrides for ElementNode */
-  override canInsertTextAfter(): boolean {
+  isInline(): boolean {
     return false;
   }
 
-  override canInsertTextBefore(): boolean {
+  /* Overrides for ElementNode */
+  override canInsertTextAfter(): boolean {
     return false;
   }
 
@@ -100,11 +101,6 @@ export class BlockEquationNode extends ElementNode {
 
     this.replace(paragraph);
     return true;
-  }
-
-  override remove(): void {
-    super.remove();
-    console.log("BlockEquationNode removed");
   }
 }
 

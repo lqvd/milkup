@@ -23,16 +23,27 @@ $$
 ```
 have the following form in nodes:
 ```
-block-equation
-├ equation-editor { hidden: <true/false> }
-| ├ text "2x - 5y &= 8"
-| └ text "3x + 9y &= -12"
-└ equation-renderer
+root
+└ block-equation
+  ├ equation-editor { hidden: <true/false> }
+  | ├ code-highlight "2x - 5y &= 8"
+  | └ code-highlight "3x + 9y &= -12"
+  └ equation-renderer
 ```
-
 
 `EquationRendererNode` takes in the Lexical key of the `EquationEditorNode`
 on creation and listens to text mutations within it.
+
+### Inline equations
+
+Inline equations, i.e. `$\alpha+\beta=\gamma`, are stored as
+```
+root
+└ paragraph
+  └ inline-equation { equation: "2x - 5y &= 8" }
+```
+
+`InlineEquationNode` is a `DecoratorNode`. It handles editing and rendering.
 
 ## CSS
 
@@ -40,12 +51,16 @@ on creation and listens to text mutations within it.
 
 ### Block equations
 
+#### Editor
+
 `EquationEditorNode` is just a Lexical `CodeNode` with language set to $\LaTeX$.
 It will inherit the CSS of `editor-code` by default. 
 
 To style just the maths editors, use `.editor-block-equation-editor`.
 You may need to exclude maths editors from other code stylings with the `not` 
 CSS keyword, i.e., `.editor-code:not(.editor-block-equation-editor) { style... }`.
+
+#### Renderer
 
 The KaTeX preview is wrapped in 
 

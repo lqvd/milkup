@@ -5,10 +5,15 @@ import { useEffect, useRef, useState } from "react";
 import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
 
-import { EquationEditorNode } from "./EquationEditorNode";
+import { EquationEditorNode } from "../block/EquationEditorNode";
 import { CodeHighlightNode } from "@lexical/code";
 
-const DEFAULT_PLACEHOLDER = "\\text{\\color{gray}(empty)}";
+export const DEFAULT_PLACEHOLDER = "\\text{\\color{gray}(empty)}";
+
+type EquationRendererComponentProps = {
+  equationEditorKey: NodeKey;
+  placeholder?: string;
+};
 
 export function BlockEquationRendererComponent({
   equationEditorKey,
@@ -39,14 +44,10 @@ export function BlockEquationRendererComponent({
       editor.update(() => {
         const node = $getNodeByKey(equationEditorKey);
 
-        if (!node) {
-          throw new Error(
-            "BlockEquationRendererComponent: editor node not found",
-          );
+        if (node) {
+          const newText = node.getTextContent();
+          setEquation(newText);
         }
-
-        const newText = node.getTextContent();
-        setEquation(newText);
       });
     });
   }, [editor, equationEditorKey]);
@@ -63,7 +64,7 @@ export function BlockEquationRendererComponent({
       style={{
         display: "block",
         width: "100%",
-        border: "1px solid #000",
+        border: "1px solid #fff",
         borderRadius: "0",
         padding: "4px 8px",
         backgroundColor: "#fff",
