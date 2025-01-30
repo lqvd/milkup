@@ -31,6 +31,10 @@ import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import EquationsPlugin, {
   EQUATION_NODES,
 } from "../../../packages/milkup-equations/src/EquationsPlugin";
+import { BlockEquationNode } from "../../../packages/milkup-equations/src/block/BlockEquationNode";
+import { EquationEditorNode } from "../../../packages/milkup-equations/src/block/EquationEditorNode";
+import { BlockEquationRendererNode } from "../../../packages/milkup-equations/src/block/BlockEquationRendererNode";
+import { InlineEquationNode } from "../../../packages/milkup-equations/src/inline/InlineEquationNode";
 
 const theme = {
   ltr: "ltr",
@@ -121,7 +125,10 @@ const initialConfig = {
     HorizontalRuleNode,
     LinkNode,
     YouTubeNode,
-    ...EQUATION_NODES,
+    BlockEquationNode,
+    EquationEditorNode,
+    BlockEquationRendererNode,
+    InlineEquationNode,
   ],
 };
 
