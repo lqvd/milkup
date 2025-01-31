@@ -1,12 +1,7 @@
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { ContentEditable } from "@lexical/react/LexicalContentEditable";
-import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
-import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 // import './Editor.css';
-import { TRANSFORMERS } from "./plugins/transformers";
-import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
+
+
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
@@ -32,8 +27,9 @@ import { ImagePlugin } from '../../../packages/milkup-image/ImagePlugin'
 import {ImageToolbarPlugin}  from '../../../packages/milkup-image/ImageToolBarPlugin'
 
 import { ImageNode } from '../../../packages/milkup-image/ImageNode'
-import YouTubePlugin from '../../../packages/milkup-youtube/index';
-import { YouTubeNode } from '../../../packages/milkup-youtube/YoutubeNode';
+
+import YouTubePlugin from '../../../packages/milkup-youtube/src/YoutubePlugin';
+import { YouTubeNode } from '../../../packages/milkup-youtube/src/YoutubeNode';
 
 import AutoEmbedPlugin from "../../../packages/milkup-autoembed/src/index";
 
@@ -54,7 +50,7 @@ import TableCellActionMenuPlugin from '../../../packages/milkup-table/TableActio
 import TableCellResizer from '../../../packages/milkup-table/TableCellResizer';
 import TableHoverActionsPlugin from '../../../packages/milkup-table/TableHoverActionsPlugin'
 
-import { useState } from 'react';
+
 
 
 const theme = {

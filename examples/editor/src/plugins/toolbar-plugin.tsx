@@ -215,6 +215,22 @@ export default function ToolbarPlugin() {
       >
         <i className="format justify-align" />
       </button>{' '}
+
+      {/* Add Table Button */}
+      <button
+        onClick={() => setShowTableDialog(true)}
+        className="toolbar-item spaced"
+        aria-label="Insert Table">
+        <i className="format table" />
+      </button>{showTableDialog && (
+        <div className="dialog-container">
+          <InsertTableDialog 
+            activeEditor={editor}
+            onClose={() => setShowTableDialog(false)}
+          />
+        </div>
+      )}
+
       <DropDown
         buttonClassName="toolbar-item"
         buttonLabel="Insert"
