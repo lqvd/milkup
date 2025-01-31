@@ -6,7 +6,6 @@ import type {
   LexicalEditor,
   LexicalNode,
   NodeKey,
-  RangeSelection,
 } from "lexical";
 
 import { addClassNamesToElement } from "@lexical/utils";

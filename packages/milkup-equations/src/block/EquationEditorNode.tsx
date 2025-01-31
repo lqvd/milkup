@@ -21,8 +21,6 @@ import {
 } from "lexical";
 import { addClassNamesToElement } from "@lexical/utils";
 
-import "prismjs/components/prism-latex";
-
 export class EquationEditorNode extends CodeNode {
   /** @internal */
   __hidden: boolean;
@@ -156,6 +154,10 @@ export class EquationEditorNode extends CodeNode {
 
   override collapseAtStart(): boolean {
     const paragraph = $createParagraphNode();
+    const children = this.getChildren();
+    children.forEach((child) => {
+      paragraph.append(child);
+    });
     this.getParentOrThrow().replace(paragraph);
     paragraph.select();
     return true;
