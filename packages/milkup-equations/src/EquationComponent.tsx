@@ -6,30 +6,28 @@
  *
  */
 
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {useLexicalEditable} from '@lexical/react/useLexicalEditable';
-import {mergeRegister} from '@lexical/utils';
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { useLexicalEditable } from "@lexical/react/useLexicalEditable";
+import { mergeRegister } from "@lexical/utils";
 import {
   $getNodeByKey,
   $getSelection,
   $isNodeSelection,
-  COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_EDITOR,
   COMMAND_PRIORITY_HIGH,
-  COMMAND_PRIORITY_LOW,
   KEY_ARROW_LEFT_COMMAND,
   KEY_ARROW_RIGHT_COMMAND,
   KEY_ESCAPE_COMMAND,
   NodeKey,
   SELECTION_CHANGE_COMMAND,
-} from 'lexical';
-import * as React from 'react';
-import {JSX, useCallback, useEffect, useRef, useState} from 'react';
-import {ErrorBoundary} from 'react-error-boundary';
+} from "lexical";
+import * as React from "react";
+import { JSX, useCallback, useEffect, useRef, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
-import EquationEditor from '../ui/EquationEditor';
-import KatexRenderer from '../ui/KatexRenderer';
-import {$isEquationNode} from './EquationNode';
+import EquationEditor from "./ui/EquationEditor";
+import KatexRenderer from "./ui/KatexRenderer";
+import { $isEquationNode } from "./EquationNode";
 
 type EquationComponentProps = {
   equation: string;
@@ -78,7 +76,7 @@ export default function EquationComponent({
       return mergeRegister(
         editor.registerCommand(
           SELECTION_CHANGE_COMMAND,
-          (payload) => {
+          (_) => {
             const activeElement = document.activeElement;
             const inputElem = inputRef.current;
             if (inputElem !== activeElement) {
@@ -107,14 +105,17 @@ export default function EquationComponent({
             const activeElement = document.activeElement;
             const inputElem = inputRef.current;
             if (inputElem === activeElement) {
-              if (inputElem && inputElem.selectionStart === inputElem.value.length) {
+              if (
+                inputElem &&
+                inputElem.selectionStart === inputElem.value.length
+              ) {
                 onHide(true);
                 return true;
               }
             }
             return false;
           },
-          COMMAND_PRIORITY_EDITOR
+          COMMAND_PRIORITY_EDITOR,
         ),
         editor.registerCommand(
           KEY_ARROW_LEFT_COMMAND,
@@ -129,11 +130,11 @@ export default function EquationComponent({
             }
             return false;
           },
-          COMMAND_PRIORITY_EDITOR
+          COMMAND_PRIORITY_EDITOR,
         ),
       );
     } else {
-      return editor.registerUpdateListener(({editorState}) => {
+      return editor.registerUpdateListener(({ editorState }) => {
         const isSelected = editorState.read(() => {
           const selection = $getSelection();
           return (

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {mergeRegister} from '@lexical/utils';
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { mergeRegister } from "@lexical/utils";
 import { InsertTableDialog } from '../../../../packages/milkup-table/TablePlugin';
 
 import {
@@ -19,13 +19,21 @@ import {
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
-} from 'lexical';
+} from "lexical";
 
-import {useCallback, useEffect, useRef, useState} from 'react';
-import DropDown, {DropDownItem} from '../../../../ui/dropdown';
+import { useCallback, useEffect, useRef, useState } from "react";
+import DropDown, { DropDownItem } from "../../../../packages/core/ui/dropdown";
 
-import {INSERT_EMBED_COMMAND} from '@lexical/react/LexicalAutoEmbedPlugin';
-import {EmbedConfigs} from '../../../../packages/milkup-autoembed/index';
+import { INSERT_EMBED_COMMAND } from "@lexical/react/LexicalAutoEmbedPlugin";
+import { EmbedConfigs } from "../../../../packages/milkup-autoembed/src/index";
+
+import { $isListNode } from "@lexical/list";
+import {
+  INSERT_UNORDERED_LIST_COMMAND,
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_CHECK_LIST_COMMAND,
+  REMOVE_LIST_COMMAND,
+} from "@lexical/list";
 
 const LowPriority = 1;
 
@@ -48,23 +56,45 @@ export default function ToolbarPlugin() {
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
       // Update text format
-      setIsBold(selection.hasFormat('bold'));
-      setIsItalic(selection.hasFormat('italic'));
-      setIsUnderline(selection.hasFormat('underline'));
-      setIsStrikethrough(selection.hasFormat('strikethrough'));
+      setIsBold(selection.hasFormat("bold"));
+      setIsItalic(selection.hasFormat("italic"));
+      setIsUnderline(selection.hasFormat("underline"));
+      setIsStrikethrough(selection.hasFormat("strikethrough"));
     }
   }, []);
 
+  const toggleList = (
+    listType: "bullet" | "number" | "check",
+    command:
+      | typeof INSERT_UNORDERED_LIST_COMMAND
+      | typeof INSERT_ORDERED_LIST_COMMAND
+      | typeof INSERT_CHECK_LIST_COMMAND,
+  ) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const element = anchorNode.getTopLevelElementOrThrow();
+        if ($isListNode(element) && element.getListType() === listType) {
+          console.log(element.getListType());
+          editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
+        } else {
+          editor.dispatchCommand(command, undefined);
+        }
+      }
+    });
+  };
+
   useEffect(() => {
     return mergeRegister(
-      editor.registerUpdateListener(({editorState}) => {
+      editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
           $updateToolbar();
         });
       }),
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
-        (_payload, _newEditor) => {
+        () => {
           $updateToolbar();
           return false;
         },
@@ -97,7 +127,8 @@ export default function ToolbarPlugin() {
           editor.dispatchCommand(UNDO_COMMAND, undefined);
         }}
         className="toolbar-item spaced"
-        aria-label="Undo">
+        aria-label="Undo"
+      >
         <i className="format undo" />
       </button>
       <button
@@ -106,110 +137,105 @@ export default function ToolbarPlugin() {
           editor.dispatchCommand(REDO_COMMAND, undefined);
         }}
         className="toolbar-item"
-        aria-label="Redo">
+        aria-label="Redo"
+      >
         <i className="format redo" />
       </button>
       <Divider />
       <button
         onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
         }}
-        className={'toolbar-item spaced ' + (isBold ? 'active' : '')}
-        aria-label="Format Bold">
+        className={"toolbar-item spaced " + (isBold ? "active" : "")}
+        aria-label="Format Bold"
+      >
         <i className="format bold" />
       </button>
       <button
         onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
         }}
-        className={'toolbar-item spaced ' + (isItalic ? 'active' : '')}
-        aria-label="Format Italics">
+        className={"toolbar-item spaced " + (isItalic ? "active" : "")}
+        aria-label="Format Italics"
+      >
         <i className="format italic" />
       </button>
       <button
         onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
         }}
-        className={'toolbar-item spaced ' + (isUnderline ? 'active' : '')}
-        aria-label="Format Underline">
+        className={"toolbar-item spaced " + (isUnderline ? "active" : "")}
+        aria-label="Format Underline"
+      >
         <i className="format underline" />
       </button>
       <button
         onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
         }}
-        className={'toolbar-item spaced ' + (isStrikethrough ? 'active' : '')}
-        aria-label="Format Strikethrough">
+        className={"toolbar-item spaced " + (isStrikethrough ? "active" : "")}
+        aria-label="Format Strikethrough"
+      >
         <i className="format strikethrough" />
       </button>
       <Divider />
       <button
         onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
+          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
         }}
         className="toolbar-item spaced"
-        aria-label="Left Align">
+        aria-label="Left Align"
+      >
         <i className="format left-align" />
       </button>
       <button
         onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
+          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
         }}
         className="toolbar-item spaced"
-        aria-label="Center Align">
+        aria-label="Center Align"
+      >
         <i className="format center-align" />
       </button>
       <button
         onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
+          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
         }}
         className="toolbar-item spaced"
-        aria-label="Right Align">
+        aria-label="Right Align"
+      >
         <i className="format right-align" />
       </button>
       <button
         onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
+          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
         }}
         className="toolbar-item"
-        aria-label="Justify Align">
+        aria-label="Justify Align"
+      >
         <i className="format justify-align" />
       </button>{' '}
-      <Divider />
-      
-      {/* Add Table Button */}
-      <button
-        onClick={() => setShowTableDialog(true)}
-        className="toolbar-item spaced"
-        aria-label="Insert Table">
-        <i className="format table" />
-      </button>{showTableDialog && (
-        <div className="dialog-container">
-          <InsertTableDialog 
-            activeEditor={editor}
-            onClose={() => setShowTableDialog(false)}
-          />
-        </div>
-      )}
-
       <DropDown
-        buttonClassName="toolbar-item spaced"
+        buttonClassName="toolbar-item"
         buttonLabel="Insert"
         buttonAriaLabel="Insert specialized editor node"
-        buttonIconClassName="icon plus">
+        buttonIconClassName="icon plus"
+      >
         {EmbedConfigs.map((embedConfig) => (
           <DropDownItem
             key={embedConfig.type}
             onClick={() => {
-              console.log('Inserting embed:', embedConfig.type);
+              console.log("Inserting embed:", embedConfig.type);
               editor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type);
             }}
-            className="item">
+            className="item"
+          >
             {embedConfig.icon}
             <span className="text">{embedConfig.contentName}</span>
           </DropDownItem>
         ))}
       </DropDown>
+      <Divider />
     </div>
   );
 }

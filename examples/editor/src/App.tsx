@@ -1,11 +1,11 @@
-import Milkup from './Editor'
+import Milkup from "./Editor";
 
 function App() {
   return (
     <div>
       <Milkup />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
