@@ -55,3 +55,8 @@ export const YOUTUBE: ElementTransformer = {
   },
   type: 'element',
 };
+
+export const IMAGE: ElementTransformer = {
+  dependencies: [TextNode], 
+  
+}

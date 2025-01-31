@@ -19,6 +19,7 @@ import EquationsPlugin from '../../../packages/milkup-equations/src/index';
 import { EquationNode } from '../../../packages/milkup-equations/src/EquationNode';
 
 import { ImagePlugin } from '../../../packages/milkup-image/ImagePlugin'
+
 import {ImageToolbarPlugin}  from '../../../packages/milkup-image/ImageToolBarPlugin'
 
 import { ImageNode } from '../../../packages/milkup-image/ImageNode'
@@ -33,6 +34,14 @@ import TreeViewPlugin from './plugins/TreeViewPlugin';
 import "./lexical-styling.css"
 import ToolbarPlugin from './plugins/toolbar-plugin';
 import MarkdownAction from './plugins/MarkdownAction';
+
+import { TablePlugin  } from '@lexical/react/LexicalTablePlugin';
+import TableCellActionMenuPlugin from '../../../packages/milkup-table/TableActionMenuPlugin';
+import TableCellResizer from '../../../packages/milkup-table/TableCellResizer';
+import TableHoverActionsPlugin from '../../../packages/milkup-table/TableHoverActionsPlugin'
+
+import { useState } from 'react';
+
 
 const theme = {
   ltr: 'ltr',
@@ -148,6 +157,16 @@ export default function Milkup() {
             <EquationsPlugin />
             <YouTubePlugin />
             <AutoEmbedPlugin />
+            <TablePlugin
+              hasCellMerge={true}
+              hasCellBackgroundColor={true}
+              hasHorizontalScroll={true}
+            />
+            <TableCellResizer />
+            <TableHoverActionsPlugin />
+            <TableCellActionMenuPlugin
+              cellMerge={true}
+            />
           </div>
         </div>
       </SharedHistoryContext>

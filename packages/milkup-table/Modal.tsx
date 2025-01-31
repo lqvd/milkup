@@ -6,12 +6,13 @@
  *
  */
 
-import './modal.css';
+import type {JSX} from 'react';
+
+import './Modal.css';
 
 import {isDOMNode} from 'lexical';
 import * as React from 'react';
 import {ReactNode, useEffect, useRef} from 'react';
-// @ts-ignore
 import {createPortal} from 'react-dom';
 
 function PortalImpl({

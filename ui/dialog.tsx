@@ -1,4 +1,4 @@
-import './Dialog.css';
+import './dialog.css';
 
 import * as React from 'react';
 import {ReactNode} from 'react';

@@ -7,6 +7,8 @@
  */
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {mergeRegister} from '@lexical/utils';
+import { InsertTableDialog } from '../../../../packages/milkup-table/TablePlugin';
+
 import {
   $getSelection,
   $isRangeSelection,
@@ -40,6 +42,7 @@ export default function ToolbarPlugin() {
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
+  const [showTableDialog, setShowTableDialog] = useState(false);
 
   const $updateToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -172,6 +175,23 @@ export default function ToolbarPlugin() {
         aria-label="Justify Align">
         <i className="format justify-align" />
       </button>{' '}
+      <Divider />
+      
+      {/* Add Table Button */}
+      <button
+        onClick={() => setShowTableDialog(true)}
+        className="toolbar-item spaced"
+        aria-label="Insert Table">
+        <i className="format table" />
+      </button>{showTableDialog && (
+        <div className="dialog-container">
+          <InsertTableDialog 
+            activeEditor={editor}
+            onClose={() => setShowTableDialog(false)}
+          />
+        </div>
+      )}
+
       <DropDown
         buttonClassName="toolbar-item spaced"
         buttonLabel="Insert"
