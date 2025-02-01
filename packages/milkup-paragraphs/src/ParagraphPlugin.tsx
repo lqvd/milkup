@@ -75,6 +75,10 @@ export function isSelectAll(
 // a paragraph. This also results in the unintuitive behavior that when we press up arrow
 // we will move to the trailing blank line, and we can type there as well, reducing the
 // space between the two paragraphs.
+//
+// Currently, 'paragraph' will require special handling in a list environment. Fortunately,
+// since node types are defined as strings we do not require the list plugin to be actually
+// enabled.
 
 type ParagraphPluginProps = {
   trailingLBMode: "keep" | "remove" | "paragraph";
@@ -94,9 +98,10 @@ export default function ParagraphPlugin({
         const selection = $getSelection();
         if (
           $isRangeSelection(selection) &&
-          selection.focus.getNode().getType() === "paragraph" &&
+          selection.focus.getNode().getType() !== "text" &&
           selection.isCollapsed()
         ) {
+          const focusType = selection.focus.getNode().getType();
           if (trailingLBMode !== "keep") {
             selection.getNodes().forEach((node) => {
               if (
@@ -107,7 +112,7 @@ export default function ParagraphPlugin({
               }
             });
           }
-          if (trailingLBMode === "paragraph") {
+          if (trailingLBMode === "paragraph" && focusType !== "listitem") {
             editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
           }
           return editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
