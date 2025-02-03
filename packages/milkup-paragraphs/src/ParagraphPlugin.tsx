@@ -130,8 +130,7 @@ export default function ParagraphPlugin({
           ) {
             editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
           }
-          return false;
-          // return editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
+          return editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
         } else {
           return editor.dispatchCommand(INSERT_LINE_BREAK_COMMAND, false);
         }
