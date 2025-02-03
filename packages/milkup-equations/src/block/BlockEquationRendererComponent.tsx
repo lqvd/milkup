@@ -95,12 +95,7 @@ export function BlockEquationRendererComponent({
         const wasHidden = wasHiddenRef.current;
         node.show();
         if (wasHidden) {
-          // Only set selection if transitioning from hidden
-          if (fromBelow) {
-            node.getLastChild()?.selectEnd();
-          } else {
-            node.getFirstChild()?.selectStart();
-          }
+          node.selectStart();
           wasHiddenRef.current = false;
         }
       }
@@ -156,17 +151,16 @@ export function BlockEquationRendererComponent({
         () => {
           const selection = $getSelection();
           if (!$isRangeSelection(selection)) return false;
-
+  
           const node = selection.anchor.getNode();
-          const parent = node.getParentOrThrow();
-          const blockEquation = parent.getPreviousSibling();
-
-          // Ideally, these would use the helper functions (e.g. $isBlockEquationNode)
-          // but they just do not seem to work! I am not sure why.
+          // Use the container node if the selected node is text.
+          const container = $isTextNode(node) ? node.getParentOrThrow() : node;
+          const blockEquation = container.getPreviousSibling();
+  
           if (!blockEquation || blockEquation.getType() !== "block-equation") {
             return false;
           }
-
+  
           const equationEditor = (blockEquation as ElementNode).getFirstChild();
           if (
             !equationEditor ||
@@ -174,12 +168,12 @@ export function BlockEquationRendererComponent({
           ) {
             return false;
           }
-
+  
           const codeHighlight = (equationEditor as ElementNode).getFirstChild();
           if (!$isCodeHighlightNode(codeHighlight)) {
             return false;
           }
-
+  
           showActiveEquationEditor(equationEditor.getKey(), false);
           requestAnimationFrame(() => {
             editor.update(() => {
@@ -190,21 +184,22 @@ export function BlockEquationRendererComponent({
         },
         COMMAND_PRIORITY_HIGH,
       ),
-
+  
       editor.registerCommand(
         KEY_ARROW_DOWN_COMMAND,
         () => {
           const selection = $getSelection();
           if (!$isRangeSelection(selection)) return false;
-
+  
           const node = selection.anchor.getNode();
-          const parent = node.getParentOrThrow();
-          const blockEquation = parent.getNextSibling();
-
+          // Use the container node if the selected node is text.
+          const container = $isTextNode(node) ? node.getParentOrThrow() : node;
+          const blockEquation = container.getNextSibling();
+  
           if (!blockEquation || blockEquation.getType() !== "block-equation") {
             return false;
           }
-
+  
           const equationEditor = (blockEquation as ElementNode).getFirstChild();
           if (
             !equationEditor ||
@@ -212,12 +207,12 @@ export function BlockEquationRendererComponent({
           ) {
             return false;
           }
-
+  
           const codeHighlight = (equationEditor as ElementNode).getFirstChild();
           if (!codeHighlight || codeHighlight.getType() !== "code-highlight") {
             return false;
           }
-
+  
           showActiveEquationEditor(equationEditor.getKey(), true);
           requestAnimationFrame(() => {
             editor.update(() => {
