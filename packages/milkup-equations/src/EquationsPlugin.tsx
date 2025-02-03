@@ -42,8 +42,9 @@ export type CommandPayload = {
 export const INSERT_EQUATION_COMMAND: LexicalCommand<CommandPayload> =
   createCommand("INSERT_EQUATION_COMMAND");
 
-export const EXIT_EQUATION_COMMAND: LexicalCommand<void> =
-  createCommand("EXIT_EQUATION_COMMAND");
+export const EXIT_EQUATION_COMMAND: LexicalCommand<void> = createCommand(
+  "EXIT_EQUATION_COMMAND",
+);
 
 export const EQUATION_NODES = [
   BlockEquationNode,
@@ -60,7 +61,7 @@ export default function EquationsPlugin(): JSX.Element | null {
     for (const node of EQUATION_NODES) {
       if (!editor.hasNodes([node])) {
         throw new Error(
-          "EquationsPlugin: please register all equation nodes on the editor"
+          "EquationsPlugin: please register all equation nodes on the editor",
         );
       }
     }
@@ -79,7 +80,7 @@ export default function EquationsPlugin(): JSX.Element | null {
         }
         return true;
       },
-      COMMAND_PRIORITY_EDITOR
+      COMMAND_PRIORITY_EDITOR,
     );
   }, [editor]);
 
@@ -102,10 +103,10 @@ export default function EquationsPlugin(): JSX.Element | null {
           // If caret is at end of content, exit.
           if (
             editorChildren.length > 0 &&
-            ((editorChildren[editorChildren.length - 1] === anchorNode ||
+            (editorChildren[editorChildren.length - 1] === anchorNode ||
               anchorNode.getParent() ===
                 editorChildren[editorChildren.length - 1]) &&
-              selection.anchor.offset === anchorNode.getTextContentSize())
+            selection.anchor.offset === anchorNode.getTextContentSize()
           ) {
             // Dispatch exit command which shares identical logic.
             editor.dispatchCommand(EXIT_EQUATION_COMMAND, undefined);
@@ -142,7 +143,7 @@ export default function EquationsPlugin(): JSX.Element | null {
       });
       return true;
     },
-    [editor]
+    [editor],
   );
 
   // Register arrow navigation commands.
@@ -150,17 +151,17 @@ export default function EquationsPlugin(): JSX.Element | null {
     const unregisterRight = editor.registerCommand(
       KEY_ARROW_RIGHT_COMMAND,
       () => handleEquationNavigation(Direction.RIGHT),
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
     const unregisterDown = editor.registerCommand(
       KEY_ARROW_DOWN_COMMAND,
       () => handleEquationNavigation(Direction.DOWN),
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
     const unregisterUp = editor.registerCommand(
       KEY_ARROW_UP_COMMAND,
       () => handleEquationNavigation(Direction.UP),
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
 
     return () => {
@@ -200,7 +201,7 @@ export default function EquationsPlugin(): JSX.Element | null {
         });
         return true;
       },
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
     return unregisterExit;
   }, [editor]);
@@ -238,7 +239,7 @@ export default function EquationsPlugin(): JSX.Element | null {
         }
         return false;
       },
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
     return unregister;
   }, [editor]);
