@@ -85,6 +85,10 @@ export class BlockEquationNode extends ElementNode {
     return false;
   }
 
+  override canInsertTextBefore(): boolean {
+    return false;
+  }
+
   override collapseAtStart(): boolean {
     const paragraph = $createParagraphNode();
     const editorNode = this.getFirstChild();

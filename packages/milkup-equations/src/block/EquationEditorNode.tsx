@@ -21,6 +21,8 @@ import {
 } from "lexical";
 import { addClassNamesToElement } from "@lexical/utils";
 
+import "prismjs/components/prism-latex";
+
 export class EquationEditorNode extends CodeNode {
   /** @internal */
   __hidden: boolean;
@@ -68,6 +70,10 @@ export class EquationEditorNode extends CodeNode {
 
   show() {
     this.setHidden(false);
+  }
+
+  override canInsertTextAfter(): boolean {
+    return true;
   }
 
   /* Mutation */

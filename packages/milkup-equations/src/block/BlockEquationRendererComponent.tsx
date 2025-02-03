@@ -110,7 +110,7 @@ export function BlockEquationRendererComponent({
   };
 
   // Listen for selection changes.
-  // Use animation frames to debounce selection changes
+  // Use animation frames to debounce selection changes.
   useEffect(() => {
     const unregister = editor.registerUpdateListener(({ editorState }) => {
       if (requestIdRef.current) {
@@ -144,6 +144,8 @@ export function BlockEquationRendererComponent({
           const parent = node.getParentOrThrow();
           const blockEquation = parent.getPreviousSibling();
   
+          // Ideally, these would use the helper functions (e.g. $isBlockEquationNode)
+          // but they just do not seem to work! I am not sure why.
           if (!blockEquation || blockEquation.getType() !== 'block-equation') {
             return false;
           }

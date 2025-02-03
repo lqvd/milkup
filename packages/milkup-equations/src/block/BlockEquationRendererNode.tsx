@@ -138,6 +138,10 @@ export class BlockEquationRendererNode extends DecoratorNode<JSX.Element> {
     return false;
   }
 
+  override isKeyboardSelectable(): boolean {
+    return false;
+  }
+
   decorate(): JSX.Element {
     const equation = this.__equation;
     return (
