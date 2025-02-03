@@ -19,6 +19,7 @@ import {
   $getRoot,
   $isElementNode,
   $selectAll,
+  ElementNode,
 } from "lexical";
 import { CAN_USE_DOM } from "@lexical/utils";
 import { useCallback, useEffect } from "react";
@@ -75,16 +76,30 @@ export function isSelectAll(
 // a paragraph. This also results in the unintuitive behavior that when we press up arrow
 // we will move to the trailing blank line, and we can type there as well, reducing the
 // space between the two paragraphs.
+//
+// Currently, 'paragraph' will require special handling in a list environment. Fortunately,
+// since node types are defined as strings we do not require the list plugin to be actually
+// enabled.
 
 type ParagraphPluginProps = {
-  trailingLBMode: "keep" | "remove" | "paragraph";
+  trailingLBMode?: "keep" | "remove" | "paragraph";
+  paragraphModeExemption?: string[];
 };
 
+/**
+ * Changes default line/paragraph break behaviour for the editor, where a single carriage
+ * return will insert a simple line break whereas two carriage returns will insert a new
+ * paragraph.
+ * @param trailingLBMode - The behaviour of trailing line breaks at the end of each paragraph.
+ * @param paragraphModeExemption - For the 'paragraph' `trailingLBMode` only, when the last
+ * node is a type specified by this parameter, the plugin will not attempt to insert the
+ * additional paragraphspecified by the 'paragraph' `trailingLBMode`.
+ */
 export default function ParagraphPlugin({
   trailingLBMode = "paragraph",
+  paragraphModeExemption = ["listitem"],
 }: ParagraphPluginProps): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
-
   useEffect(() => {
     editor.registerCommand(
       KEY_ENTER_COMMAND,
@@ -94,20 +109,25 @@ export default function ParagraphPlugin({
         const selection = $getSelection();
         if (
           $isRangeSelection(selection) &&
-          selection.focus.getNode().getType() === "paragraph" &&
+          selection.focus.getNode().getType() !== "text" &&
           selection.isCollapsed()
         ) {
+          const focusType = selection.focus.getNode().getType();
+          const focusEmpty = (
+            selection.focus.getNode() as ElementNode
+          ).isEmpty();
           if (trailingLBMode !== "keep") {
             selection.getNodes().forEach((node) => {
-              if (
-                node.getType() === "paragraph" ||
-                node.getType() === "linebreak"
-              ) {
+              if (node.getType() == "linebreak") {
                 node.remove();
               }
             });
           }
-          if (trailingLBMode === "paragraph") {
+          if (
+            trailingLBMode === "paragraph" &&
+            !focusEmpty &&
+            !paragraphModeExemption.includes(focusType)
+          ) {
             editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
           }
           return editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
