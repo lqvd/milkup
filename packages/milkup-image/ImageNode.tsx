@@ -1,7 +1,15 @@
 // ImageNode.ts
-import { $applyNodeReplacement, DecoratorNode, DOMExportOutput, EditorConfig, LexicalNode, NodeKey, SerializedLexicalNode } from 'lexical';
-import { $getNodeByKey } from 'lexical';
-import { ImageComponent } from './ImageComponent';
+import {
+  $applyNodeReplacement,
+  DecoratorNode,
+  DOMExportOutput,
+  EditorConfig,
+  LexicalNode,
+  NodeKey,
+  SerializedLexicalNode,
+} from "lexical";
+import { $getNodeByKey } from "lexical";
+import { ImageComponent } from "./ImageComponent";
 
 export interface ImagePayload {
   src: string;
@@ -10,8 +18,8 @@ export interface ImagePayload {
   height?: number;
 }
 
-export type SerializedImageNode = Omit<ImagePayload, 'width' | 'height'> & {
-  type: 'image';
+export type SerializedImageNode = Omit<ImagePayload, "width" | "height"> & {
+  type: "image";
   version: 1;
   width?: number;
   height?: number;
@@ -24,26 +32,32 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
   __height: number;
 
   static getType(): string {
-    return 'image';
+    return "image";
   }
 
   static clone(node: ImageNode): ImageNode {
-    return new ImageNode(node.__src, node.__altText, node.__width, node.__height, node.__key);
+    return new ImageNode(
+      node.__src,
+      node.__altText,
+      node.__width,
+      node.__height,
+      node.__key,
+    );
   }
-  
+
   static importJSON(serializedNode: SerializedImageNode): ImageNode {
     const node = $createImageNode({
       src: serializedNode.src,
       altText: serializedNode.altText,
       width: serializedNode.width,
-      height: serializedNode.height
+      height: serializedNode.height,
     });
     return node;
   }
 
   exportJSON(): SerializedImageNode {
     return {
-      type: 'image',
+      type: "image",
       version: 1,
       src: this.__src,
       altText: this.__altText,
@@ -52,13 +66,12 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     };
   }
 
-
   constructor(
     src: string,
     altText: string,
     width?: number,
     height?: number,
-    key?: NodeKey
+    key?: NodeKey,
   ) {
     super(key);
     this.__src = src;
@@ -68,8 +81,8 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
   }
 
   createDOM(config: EditorConfig): HTMLElement {
-    const div = document.createElement('div');
-    div.style.display = 'contents';
+    const div = document.createElement("div");
+    div.style.display = "contents";
     return div;
   }
 
@@ -101,7 +114,7 @@ export function $createImageNode({
   altText,
   width,
   height,
-  key
+  key,
 }: ImagePayload & { key?: NodeKey }): ImageNode {
   return $applyNodeReplacement(new ImageNode(src, altText, width, height, key));
 }

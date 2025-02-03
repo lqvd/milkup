@@ -6,22 +6,22 @@
  *
  */
 
-import type {JSX} from 'react';
+import type { JSX } from "react";
 
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   INSERT_TABLE_COMMAND,
   TableCellNode,
   TableNode,
   TableRowNode,
-} from '@lexical/table';
-import {EditorThemeClasses, Klass, LexicalEditor, LexicalNode} from 'lexical';
-import {createContext, useContext, useEffect, useMemo, useState} from 'react';
-import invariant from './invariant';
+} from "@lexical/table";
+import { EditorThemeClasses, Klass, LexicalEditor, LexicalNode } from "lexical";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import invariant from "./invariant";
 
-import Button from './Button';
-import {DialogActions} from './Dialog';
-import TextInput from './TextInputs';
+import Button from "./Button";
+import { DialogActions } from "./Dialog";
+import TextInput from "./TextInputs";
 
 export type InsertTableCommandPayload = Readonly<{
   columns: string;
@@ -54,7 +54,7 @@ export const CellContext = createContext<CellContextShape>({
   },
 });
 
-export function TableContext({children}: {children: JSX.Element}) {
+export function TableContext({ children }: { children: JSX.Element }) {
   const [contextValue, setContextValue] = useState<{
     cellEditorConfig: null | CellEditorConfig;
     cellEditorPlugins: null | JSX.Element | Array<JSX.Element>;
@@ -69,11 +69,12 @@ export function TableContext({children}: {children: JSX.Element}) {
           cellEditorConfig: contextValue.cellEditorConfig,
           cellEditorPlugins: contextValue.cellEditorPlugins,
           set: (cellEditorConfig, cellEditorPlugins) => {
-            setContextValue({cellEditorConfig, cellEditorPlugins});
+            setContextValue({ cellEditorConfig, cellEditorPlugins });
           },
         }),
         [contextValue.cellEditorConfig, contextValue.cellEditorPlugins],
-      )}>
+      )}
+    >
       {children}
     </CellContext.Provider>
   );
@@ -86,8 +87,8 @@ export function InsertTableDialog({
   activeEditor: LexicalEditor;
   onClose: () => void;
 }): JSX.Element {
-  const [rows, setRows] = useState('5');
-  const [columns, setColumns] = useState('5');
+  const [rows, setRows] = useState("5");
+  const [columns, setColumns] = useState("5");
   const [isDisabled, setIsDisabled] = useState(true);
 
   useEffect(() => {
@@ -112,7 +113,7 @@ export function InsertTableDialog({
   return (
     <>
       <TextInput
-        placeholder={'# of rows (1-500)'}
+        placeholder={"# of rows (1-500)"}
         label="Rows"
         onChange={setRows}
         value={rows}
@@ -120,7 +121,7 @@ export function InsertTableDialog({
         type="number"
       />
       <TextInput
-        placeholder={'# of columns (1-50)'}
+        placeholder={"# of columns (1-50)"}
         label="Columns"
         onChange={setColumns}
         value={columns}
@@ -149,7 +150,7 @@ export function TablePlugin({
     if (!editor.hasNodes([TableNode, TableRowNode, TableCellNode])) {
       invariant(
         false,
-        'TablePlugin: TableNode, TableRowNode, or TableCellNode is not registered on editor',
+        "TablePlugin: TableNode, TableRowNode, or TableCellNode is not registered on editor",
       );
     }
   }, [editor]);

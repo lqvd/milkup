@@ -1,8 +1,8 @@
-import { useCallback, useRef } from 'react';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { useCallback, useRef } from "react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
-import { $getNodeByKey } from 'lexical';
-import { ImageNode } from './ImageNode';
+import { $getNodeByKey } from "lexical";
+import { ImageNode } from "./ImageNode";
 
 export function ImageComponent({
   src,
@@ -29,7 +29,7 @@ export function ImageComponent({
         }
       });
     },
-    [editor, nodeKey]
+    [editor, nodeKey],
   );
 
   return (
@@ -40,33 +40,36 @@ export function ImageComponent({
         alt={altText}
         width={width}
         height={height}
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: "pointer" }}
       />
-      <div className="resize-handle" onMouseDown={(e) => {
-        const startX = e.clientX;
-        const startY = e.clientY;
-        const startWidth = width;
-        const startHeight = height;
-        
-        const onMouseMove = (e: MouseEvent) => {
-          const deltaX = e.clientX - startX;
-          const deltaY = e.clientY - startY;
-          const aspectRatio = startWidth / startHeight;
-          
-          const newWidth = startWidth + deltaX;
-          const newHeight = newWidth / aspectRatio;
-          
-          onResize(newWidth, newHeight);
-        };
-        
-        const onMouseUp = () => {
-          document.removeEventListener('mousemove', onMouseMove);
-          document.removeEventListener('mouseup', onMouseUp);
-        };
-        
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-      }} />
+      <div
+        className="resize-handle"
+        onMouseDown={(e) => {
+          const startX = e.clientX;
+          const startY = e.clientY;
+          const startWidth = width;
+          const startHeight = height;
+
+          const onMouseMove = (e: MouseEvent) => {
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            const aspectRatio = startWidth / startHeight;
+
+            const newWidth = startWidth + deltaX;
+            const newHeight = newWidth / aspectRatio;
+
+            onResize(newWidth, newHeight);
+          };
+
+          const onMouseUp = () => {
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+          };
+
+          document.addEventListener("mousemove", onMouseMove);
+          document.addEventListener("mouseup", onMouseUp);
+        }}
+      />
     </div>
   );
 }

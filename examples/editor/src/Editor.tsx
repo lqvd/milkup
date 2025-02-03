@@ -1,14 +1,13 @@
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 // import './Editor.css';
 
-
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
-import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
-import './Editor.css';
-import { TRANSFORMERS } from './plugins/transformers';
-import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
+import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import "./Editor.css";
+import { TRANSFORMERS } from "./plugins/transformers";
+import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
@@ -22,14 +21,14 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/index";
 import { EquationNode } from "../../../packages/milkup-equations/src/EquationNode";
 
-import { ImagePlugin } from '../../../packages/milkup-image/ImagePlugin'
+import { ImagePlugin } from "../../../packages/milkup-image/ImagePlugin";
 
-import {ImageToolbarPlugin}  from '../../../packages/milkup-image/ImageToolBarPlugin'
+import { ImageToolbarPlugin } from "../../../packages/milkup-image/ImageToolBarPlugin";
 
-import { ImageNode } from '../../../packages/milkup-image/ImageNode'
+import { ImageNode } from "../../../packages/milkup-image/ImageNode";
 
-import YouTubePlugin from '../../../packages/milkup-youtube/src/YoutubePlugin';
-import { YouTubeNode } from '../../../packages/milkup-youtube/src/YoutubeNode';
+import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
+import { YouTubeNode } from "../../../packages/milkup-youtube/src/YoutubeNode";
 
 import AutoEmbedPlugin from "../../../packages/milkup-autoembed/src/index";
 
@@ -45,13 +44,10 @@ import DraggableBlock from "./plugins/milkupDraggable";
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
 import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
 
-import { TablePlugin  } from '@lexical/react/LexicalTablePlugin';
-import TableCellActionMenuPlugin from '../../../packages/milkup-table/TableActionMenuPlugin';
-import TableCellResizer from '../../../packages/milkup-table/TableCellResizer';
-import TableHoverActionsPlugin from '../../../packages/milkup-table/TableHoverActionsPlugin'
-
-
-
+import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
+import TableCellActionMenuPlugin from "../../../packages/milkup-table/TableActionMenuPlugin";
+import TableCellResizer from "../../../packages/milkup-table/TableCellResizer";
+import TableHoverActionsPlugin from "../../../packages/milkup-table/TableHoverActionsPlugin";
 
 const theme = {
   ltr: "ltr",
@@ -162,7 +158,7 @@ export default function Milkup() {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <SharedHistoryContext>
-        <ImageToolbarPlugin/>
+        <ImageToolbarPlugin />
         <div className="editor-container">
           <ToolbarPlugin />
           <div className="editor-inner">
@@ -200,9 +196,7 @@ export default function Milkup() {
             />
             <TableCellResizer />
             <TableHoverActionsPlugin />
-            <TableCellActionMenuPlugin
-              cellMerge={true}
-            />
+            <TableCellActionMenuPlugin cellMerge={true} />
             <ParagraphPlugin trailingLBMode="paragraph" />
           </div>
         </div>
