@@ -1,28 +1,20 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
-  $createParagraphNode,
-  $insertNodes,
-  $isRootOrShadowRoot,
   COMMAND_PRIORITY_EDITOR,
   KEY_ENTER_COMMAND,
-  createCommand,
-  LexicalCommand,
-  LexicalEditor,
   INSERT_LINE_BREAK_COMMAND,
-  COMMAND_PRIORITY_HIGH,
-  COMMAND_PRIORITY_CRITICAL,
   $getSelection,
   $isRangeSelection,
   INSERT_PARAGRAPH_COMMAND,
   KEY_DOWN_COMMAND,
   COMMAND_PRIORITY_LOW,
-  $getRoot,
-  $isElementNode,
   $selectAll,
   ElementNode,
+  $getRoot,
 } from "lexical";
 import { CAN_USE_DOM } from "@lexical/utils";
 import { useCallback, useEffect } from "react";
+import { $isParagraphNode } from "lexical";
 
 // Credit to a workaround found in https://github.com/facebook/lexical/issues/4358,
 // Lexical issue #4358, which as of now is still open, for the following code snippet
@@ -104,36 +96,55 @@ export default function ParagraphPlugin({
     editor.registerCommand(
       KEY_ENTER_COMMAND,
       (payload) => {
-        const event: KeyboardEvent = payload!;
-        event.preventDefault();
+        const event = payload as KeyboardEvent;
         const selection = $getSelection();
-        if (
-          $isRangeSelection(selection) &&
-          selection.focus.getNode().getType() !== "text" &&
-          selection.isCollapsed()
-        ) {
-          const focusType = selection.focus.getNode().getType();
-          const focusEmpty = (
-            selection.focus.getNode() as ElementNode
-          ).isEmpty();
-          if (trailingLBMode !== "keep") {
-            selection.getNodes().forEach((node) => {
-              if (node.getType() == "linebreak") {
-                node.remove();
-              }
-            });
-          }
-          if (
-            trailingLBMode === "paragraph" &&
-            !focusEmpty &&
-            !paragraphModeExemption.includes(focusType)
-          ) {
-            editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
-          }
-          return editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
-        } else {
-          return editor.dispatchCommand(INSERT_LINE_BREAK_COMMAND, false);
+        if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+          return false;
         }
+
+        // Traverse upward to find the nearest paragraph node.
+        let paragraphNode = selection.focus.getNode();
+        while (paragraphNode && !$isParagraphNode(paragraphNode)) {
+          const parent = paragraphNode.getParent();
+          if (!parent) break;
+          paragraphNode = parent;
+        }
+
+        // Only trigger custom behavior if found paragraph is a direct child of the root.
+        if (paragraphNode && paragraphNode.getParent() === $getRoot()) {
+          event.preventDefault();
+          if (
+            $isRangeSelection(selection) &&
+            selection.isCollapsed() &&
+            selection.focus.getNode().getType() !== "text"
+          ) {
+            // Otherwise, use paragraph insertion behavior.
+            const focusType = selection.focus.getNode().getType();
+            const focusEmpty = (
+              selection.focus.getNode() as ElementNode
+            ).isEmpty();
+            if (trailingLBMode !== "keep") {
+              selection.getNodes().forEach((node) => {
+                if (node.getType() === "linebreak") {
+                  node.remove();
+                }
+              });
+            }
+
+            if (
+              trailingLBMode === "paragraph" &&
+              !focusEmpty &&
+              !paragraphModeExemption.includes(focusType)
+            ) {
+              editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
+            }
+            return editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
+          } else {
+            return editor.dispatchCommand(INSERT_LINE_BREAK_COMMAND, false);
+          }
+        }
+        // Otherwise, use default behavior.
+        return false;
       },
       COMMAND_PRIORITY_EDITOR,
     );
