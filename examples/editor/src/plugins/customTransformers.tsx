@@ -9,6 +9,7 @@ import {
   $createYouTubeNode,
   $isYouTubeNode,
 } from "../../../../packages/milkup-youtube/src/YoutubeNode";
+import { ImageNode } from "../../../../packages/milkup-image/ImageNode";
 
 /* Horizontal line transformers. */
 
