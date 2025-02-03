@@ -1,8 +1,4 @@
-import {
-  ElementTransformer,
-  MultilineElementTransformer,
-  TextMatchTransformer,
-} from "@lexical/markdown";
+import { ElementTransformer, TextMatchTransformer } from "@lexical/markdown";
 import {
   HorizontalRuleNode,
   $isHorizontalRuleNode,
@@ -41,9 +37,20 @@ export const DASH_SPACE: TextMatchTransformer = {
   dependencies: [TextNode],
   regExp: /^---$/,
   replace: (node, _1) => {
-    node.replace($createHorizontalRuleNode());
+    const parentNode = node.getParent();
+    if (parentNode == null) {
+      return;
+    }
+    const line = $createHorizontalRuleNode();
+    if (parentNode.getNextSibling() != null) {
+      parentNode.replace(line);
+    } else {
+      parentNode.insertBefore(line);
+      node.remove();
+    }
+    line.selectNext();
   },
-  // trigger: '-',
+  trigger: "-",
   type: "text-match",
 };
 
@@ -56,7 +63,7 @@ export const YOUTUBE: ElementTransformer = {
       : null;
   },
   regExp:
-    /^\[YOUTUBE\_EMBED\]\(https:\/\/www\.((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9_-]{11})\)$/,
+    /^\[YOUTUBE_EMBED\]\(https:\/\/www\.((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9_-]{11})\)$/,
   replace: (parentNode, _1, match, isImport) => {
     if (isImport || parentNode.getNextSibling() != null) {
       parentNode.replace($createYouTubeNode(match[4]));
