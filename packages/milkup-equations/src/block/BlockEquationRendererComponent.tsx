@@ -1,14 +1,31 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getNodeByKey, NodeKey, TextNode, $getRoot, $getSelection, $isRangeSelection, ElementNode, $isTextNode, COMMAND_PRIORITY_LOW, KEY_ARROW_UP_COMMAND, KEY_ARROW_DOWN_COMMAND, KEY_BACKSPACE_COMMAND, COMMAND_PRIORITY_HIGH } from 'lexical';
+import {
+  $getNodeByKey,
+  NodeKey,
+  TextNode,
+  $getRoot,
+  $getSelection,
+  $isRangeSelection,
+  ElementNode,
+  $isTextNode,
+  COMMAND_PRIORITY_LOW,
+  KEY_ARROW_UP_COMMAND,
+  KEY_ARROW_DOWN_COMMAND,
+  KEY_BACKSPACE_COMMAND,
+  COMMAND_PRIORITY_HIGH,
+} from "lexical";
 import { useEffect, useRef, useState } from "react";
 
 import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
 
-import { $isEquationEditorNode, EquationEditorNode } from "../block/EquationEditorNode";
+import {
+  $isEquationEditorNode,
+  EquationEditorNode,
+} from "../block/EquationEditorNode";
 import { $isCodeHighlightNode, CodeHighlightNode } from "@lexical/code";
 import { $isBlockEquationNode } from "./BlockEquationNode";
-import { mergeRegister } from '@lexical/utils';
+import { mergeRegister } from "@lexical/utils";
 import { $isEquationRendererNode } from "./BlockEquationRendererNode";
 
 export const DEFAULT_PLACEHOLDER = "\\text{\\color{gray}(empty)}";
@@ -100,7 +117,8 @@ export function BlockEquationRendererComponent({
         if (equationEditorNode) {
           const key = equationEditorNode.getKey();
           currentEquationEditorKeyRef.current = key;
-          const fromBelow = selection.anchor.getNode().getKey() > equationEditorNode.getKey();
+          const fromBelow =
+            selection.anchor.getNode().getKey() > equationEditorNode.getKey();
           showActiveEquationEditor(key, fromBelow);
         } else if (currentEquationEditorKeyRef.current) {
           hideActiveEquationEditor();
@@ -131,7 +149,6 @@ export function BlockEquationRendererComponent({
     };
   }, [editor]);
 
-
   useEffect(() => {
     return mergeRegister(
       editor.registerCommand(
@@ -139,27 +156,30 @@ export function BlockEquationRendererComponent({
         () => {
           const selection = $getSelection();
           if (!$isRangeSelection(selection)) return false;
-  
+
           const node = selection.anchor.getNode();
           const parent = node.getParentOrThrow();
           const blockEquation = parent.getPreviousSibling();
-  
+
           // Ideally, these would use the helper functions (e.g. $isBlockEquationNode)
           // but they just do not seem to work! I am not sure why.
-          if (!blockEquation || blockEquation.getType() !== 'block-equation') {
+          if (!blockEquation || blockEquation.getType() !== "block-equation") {
             return false;
           }
-  
+
           const equationEditor = (blockEquation as ElementNode).getFirstChild();
-          if (!equationEditor || equationEditor.getType() !== 'equation-editor') {
+          if (
+            !equationEditor ||
+            equationEditor.getType() !== "equation-editor"
+          ) {
             return false;
           }
-  
+
           const codeHighlight = (equationEditor as ElementNode).getFirstChild();
           if (!$isCodeHighlightNode(codeHighlight)) {
             return false;
           }
-  
+
           showActiveEquationEditor(equationEditor.getKey(), false);
           requestAnimationFrame(() => {
             editor.update(() => {
@@ -168,33 +188,36 @@ export function BlockEquationRendererComponent({
           });
           return true;
         },
-        COMMAND_PRIORITY_HIGH
+        COMMAND_PRIORITY_HIGH,
       ),
-  
+
       editor.registerCommand(
         KEY_ARROW_DOWN_COMMAND,
         () => {
           const selection = $getSelection();
           if (!$isRangeSelection(selection)) return false;
-  
+
           const node = selection.anchor.getNode();
           const parent = node.getParentOrThrow();
           const blockEquation = parent.getNextSibling();
-  
-          if (!blockEquation || blockEquation.getType() !== 'block-equation') {
+
+          if (!blockEquation || blockEquation.getType() !== "block-equation") {
             return false;
           }
-  
+
           const equationEditor = (blockEquation as ElementNode).getFirstChild();
-          if (!equationEditor || equationEditor.getType() !== 'equation-editor') {
+          if (
+            !equationEditor ||
+            equationEditor.getType() !== "equation-editor"
+          ) {
             return false;
           }
-  
+
           const codeHighlight = (equationEditor as ElementNode).getFirstChild();
-          if (!codeHighlight || codeHighlight.getType() !== 'code-highlight') {
+          if (!codeHighlight || codeHighlight.getType() !== "code-highlight") {
             return false;
           }
-  
+
           showActiveEquationEditor(equationEditor.getKey(), true);
           requestAnimationFrame(() => {
             editor.update(() => {
@@ -203,8 +226,8 @@ export function BlockEquationRendererComponent({
           });
           return true;
         },
-        COMMAND_PRIORITY_HIGH
-      )
+        COMMAND_PRIORITY_HIGH,
+      ),
     );
   }, [editor]);
 

@@ -82,7 +82,10 @@ export default function EquationsPlugin(): JSX.Element | null {
         const anchorNode = selection.anchor.getNode();
 
         // If the anchor is inside an EquationEditorNode and is at the end...
-        if ($isEquationEditorNode(anchorNode) || $isEquationEditorNode(anchorNode.getParent())) {
+        if (
+          $isEquationEditorNode(anchorNode) ||
+          $isEquationEditorNode(anchorNode.getParent())
+        ) {
           // Use the editor update to search for the containing block-equation.
           editor.update(() => {
             // Find the BlockEquationNode that is the parent.
@@ -94,18 +97,21 @@ export default function EquationsPlugin(): JSX.Element | null {
               // Assume children order: [EquationEditorNode, BlockEquationRendererNode]
               const children = parent.getChildren();
               if (children.length >= 2) {
-              const equationEditor = children[0];
-              // Check if selection is at the end of the editor.
-              if (equationEditor.getTextContent().length === selection.anchor.offset) {
-                const nextSibling = parent.getNextSibling();
-                if (nextSibling) {
-                  nextSibling.selectStart();
-                } else {
-                  const paragraphNode = $createParagraphNode();
-                  parent.insertAfter(paragraphNode);
-                  paragraphNode.selectStart();
+                const equationEditor = children[0];
+                // Check if selection is at the end of the editor.
+                if (
+                  equationEditor.getTextContent().length ===
+                  selection.anchor.offset
+                ) {
+                  const nextSibling = parent.getNextSibling();
+                  if (nextSibling) {
+                    nextSibling.selectStart();
+                  } else {
+                    const paragraphNode = $createParagraphNode();
+                    parent.insertAfter(paragraphNode);
+                    paragraphNode.selectStart();
+                  }
                 }
-              }
               }
             }
           });
@@ -133,7 +139,7 @@ export default function EquationsPlugin(): JSX.Element | null {
         // Look for a BlockEquationNode in the current selection position.
         // This example assumes that if the previous node is a block equation, backspace should remove it.
         const prevSibling = anchorNode.getPreviousSibling();
-        if(prevSibling && $isBlockEquationNode(prevSibling)) {
+        if (prevSibling && $isBlockEquationNode(prevSibling)) {
           editor.update(() => {
             prevSibling.remove();
           });
