@@ -248,6 +248,7 @@ export function BlockEquationRendererComponent({
         backgroundColor: "#fff",
         cursor: "pointer",
         textAlign: "left",
+        fontSize: "inherit",
       }}
       onMouseOver={(e) => (e.currentTarget.style.borderColor = "#ccc")}
       onMouseOut={(e) => (e.currentTarget.style.borderColor = "#fff")}
