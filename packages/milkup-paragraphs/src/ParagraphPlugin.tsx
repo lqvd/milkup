@@ -88,7 +88,7 @@ type ParagraphPluginProps = {
  * additional paragraphspecified by the 'paragraph' `trailingLBMode`.
  */
 export default function ParagraphPlugin({
-  trailingLBMode = "paragraph",
+  trailingLBMode = "remove",
   paragraphModeExemption = ["listitem"],
 }: ParagraphPluginProps): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
