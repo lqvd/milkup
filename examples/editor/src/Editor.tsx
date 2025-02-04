@@ -31,7 +31,10 @@ import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import MarkdownAction from "./plugins/MarkdownAction";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/EquationsPlugin";
-import { BlockEquationNode } from "../../../packages/milkup-equations/src/block/BlockEquationNode";
+import {
+  $createBlockEquationNode,
+  BlockEquationNode,
+} from "../../../packages/milkup-equations/src/block/BlockEquationNode";
 import { EquationEditorNode } from "../../../packages/milkup-equations/src/block/EquationEditorNode";
 import { BlockEquationRendererNode } from "../../../packages/milkup-equations/src/block/BlockEquationRendererNode";
 import { InlineEquationNode } from "../../../packages/milkup-equations/src/inline/InlineEquationNode";
@@ -40,6 +43,7 @@ import DraggableBlock from "./plugins/milkupDraggable";
 
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
 import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
+import { $getRoot } from "lexical";
 
 const theme = {
   ltr: "ltr",
@@ -112,10 +116,13 @@ const theme = {
   },
 };
 
+const EDITABLE = true;
+
 const initialConfig = {
   namespace: "Milkup",
   theme,
-  editable: true,
+  editable: EDITABLE,
+  editorState: EDITABLE ? undefined : $prepopulatedrichtext,
   onError: (error: Error) => console.error(error),
   nodes: [
     HeadingNode,
@@ -138,6 +145,15 @@ const initialConfig = {
     AudioNode,
   ],
 };
+
+function $prepopulatedrichtext() {
+  const root = $getRoot();
+
+  if (root.getFirstChild() === null) {
+    const node = $createBlockEquationNode("x^2 + y^2 = z^2", true);
+    root.append(node);
+  }
+}
 
 export default function Milkup() {
   const { historyState } = useSharedHistoryContext();

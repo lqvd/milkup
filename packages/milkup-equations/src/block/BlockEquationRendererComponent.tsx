@@ -49,7 +49,7 @@ export function BlockEquationRendererComponent({
   const wasHiddenRef = useRef<boolean>(true);
   const editorNodeRef = useRef<EquationEditorNode | null>(null);
 
-  const isEditable = editor.isEditable();
+  const isEditable = editor._editable;
 
   // Initialize node reference and set placeholder.
   useEffect(() => {
