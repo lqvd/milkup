@@ -16,15 +16,15 @@ type DropdownContextType = {
 const DropdownContext = React.createContext<DropdownContextType | null>(null);
 
 export function DropdownItem({
-  children,
-  className,
   onClick,
+  icon,
   title,
+  className,
 }: {
-  children: React.ReactNode;
-  className: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  icon?: JSX.Element;
   title?: string;
+  className?: string;
 }) {
   const ref = useRef<HTMLButtonElement>(null);
 
@@ -44,13 +44,15 @@ export function DropdownItem({
 
   return (
     <button
-      className={className}
+      className={className ? className : "item wide"}
       onClick={onClick}
       ref={ref}
-      title={title}
       type="button"
     >
-      {children}
+      <div className="icon-text-container">
+        {icon}
+        <span className="text">{title}</span>
+      </div>
     </button>
   );
 }

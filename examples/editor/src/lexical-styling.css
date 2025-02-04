@@ -578,6 +578,10 @@ i.check-list {
   background-image: url(/icons/plus.svg);
 }
 
+.icon.paragraph {
+  background-image: url(/icons/text-paragraph.svg);
+}
+
 .icon.h1 {
   background-image: url(/icons/text-h1.svg);
 }

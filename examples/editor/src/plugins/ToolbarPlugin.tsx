@@ -7,6 +7,7 @@
  */
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
+  $createParagraphNode,
   $getSelection,
   $isRangeSelection,
   FORMAT_TEXT_COMMAND,
@@ -78,39 +79,45 @@ export default function ToolbarPlugin() {
 
       <ToolbarDropdown
         buttonLabel="Text"
-        buttonIconClassName="plus"
+        buttonIconClassName="paragraph"
         items={[
           <DropdownItem
             key="h1"
-            className={"item wide"}
+            onClick={() =>
+              editor.update(() => {
+                const selection = $getSelection();
+                if ($isRangeSelection(selection)) {
+                  $setBlocksType(selection, () => $createParagraphNode());
+                }
+              })
+            }
+            icon={<i className="icon paragraph" />}
+            title="Paragraph"
+          />,
+
+          <DropdownItem
+            key="h1"
             onClick={() =>
               editor.update(() => {
                 const selection = $getSelection();
                 $setBlocksType(selection, () => $createHeadingNode("h1"));
               })
             }
-          >
-            <div className="icon-text-container">
-              <i className="icon h1" />
-              <span className="text">Heading 1</span>
-            </div>
-          </DropdownItem>,
+            icon={<i className="icon h1" />}
+            title="Heading 1"
+          />,
 
           <DropdownItem
             key="h2"
-            className={"item wide"}
             onClick={() =>
               editor.update(() => {
                 const selection = $getSelection();
                 $setBlocksType(selection, () => $createHeadingNode("h2"));
               })
             }
-          >
-            <div className="icon-text-container">
-              <i className="icon h2" />
-              <span className="text">Heading 2</span>
-            </div>
-          </DropdownItem>,
+            icon={<i className="icon h2" />}
+            title="Heading 2"
+          />,
         ]}
       ></ToolbarDropdown>
 
@@ -166,16 +173,12 @@ export default function ToolbarPlugin() {
         items={EmbedConfigs.map((embedConfig) => (
           <DropdownItem
             key={embedConfig.type}
-            className="item wide"
             onClick={() => {
               editor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type);
             }}
-          >
-            <div className="icon-text-container">
-              {embedConfig.icon}
-              <span className="text">{embedConfig.contentName}</span>
-            </div>
-          </DropdownItem>
+            icon={embedConfig.icon}
+            title={embedConfig.contentName}
+          />
         ))}
       />
 
