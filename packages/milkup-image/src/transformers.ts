@@ -20,7 +20,8 @@ export const IMAGE: ElementTransformer = {
       return null;
     }
     // Use the size parameter stored in the node.
-    const size = node.__size != null ? `${Math.trunc(node.__size)}` : "";
+    const size = node.getSize() != null ? `${Math.trunc(node.getSize())}` : "";
+
     return `![${node.__altText}][${size}](${node.__src})`;
   },
 
@@ -54,7 +55,7 @@ const isImageURL = (url: string): boolean => {
 
 export const LINK: TextMatchTransformer = {
   dependencies: [LinkNode],
-  export: (node, exportChildren, exportFormat) => {
+  export: (node, _exportChildren, exportFormat) => {
     if (!$isLinkNode(node)) {
       return null;
     }

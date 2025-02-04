@@ -38,7 +38,6 @@ export function ImageComponent({
         const rootEl = editor.getRootElement();
         const editorWidth = rootEl ? rootEl.clientWidth : initialWidth;
         const newSizePct = (newWidth / editorWidth) * 100;
-        console.log("commitResize", newSizePct);
         editor.dispatchCommand(RESIZE_IMAGE_COMMAND, {
           nodeKey,
           newSize: newSizePct,

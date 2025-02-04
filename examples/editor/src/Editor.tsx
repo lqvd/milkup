@@ -30,7 +30,10 @@ import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import MarkdownAction from "./plugins/MarkdownAction";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/EquationsPlugin";
-import { BlockEquationNode } from "../../../packages/milkup-equations/src/block/BlockEquationNode";
+import {
+  $createBlockEquationNode,
+  BlockEquationNode,
+} from "../../../packages/milkup-equations/src/block/BlockEquationNode";
 import { EquationEditorNode } from "../../../packages/milkup-equations/src/block/EquationEditorNode";
 import { BlockEquationRendererNode } from "../../../packages/milkup-equations/src/block/BlockEquationRendererNode";
 import { InlineEquationNode } from "../../../packages/milkup-equations/src/inline/InlineEquationNode";
@@ -40,7 +43,8 @@ import DraggableBlock from "./plugins/milkupDraggable";
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
 import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
 import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
-import { LexicalTypeaheadMenuPlugin } from "@lexical/react/LexicalTypeaheadMenuPlugin";
+import { $getRoot } from "lexical";
+import { ImagePlugin } from "../../../packages/milkup-image/src/ImagePlugin";
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -112,10 +116,13 @@ const theme = {
   },
 };
 
+const EDITABLE = true;
+
 const initialConfig = {
   namespace: "Milkup",
   theme,
-  editable: true,
+  editable: EDITABLE,
+  editorState: EDITABLE ? undefined : $prepopulatedrichtext,
   onError: (error: Error) => console.error(error),
   nodes: [
     ImageNode,
@@ -137,6 +144,15 @@ const initialConfig = {
   ],
 };
 
+function $prepopulatedrichtext() {
+  const root = $getRoot();
+
+  if (root.getFirstChild() === null) {
+    const node = $createBlockEquationNode("x^2 + y^2 = z^2", true);
+    root.append(node);
+  }
+}
+
 export default function Milkup() {
   const { historyState } = useSharedHistoryContext();
 
@@ -147,6 +163,15 @@ export default function Milkup() {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
     }
+  };
+
+  // Included for testing purposes only.
+  const defaultGenerateSrc = async (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsDataURL(file);
+    });
   };
 
   return (
@@ -175,6 +200,7 @@ export default function Milkup() {
               <DraggableBlock anchorElem={floatingAnchorElem} />
             </>
           )}
+          <ImagePlugin generateSrc={defaultGenerateSrc}/>
           <ListPlugin />
           <CheckListPlugin />
           <LinkPlugin />

@@ -49,7 +49,7 @@ export function BlockEquationRendererComponent({
   const wasHiddenRef = useRef<boolean>(true);
   const editorNodeRef = useRef<EquationEditorNode | null>(null);
 
-  const isEditable = editor.isEditable();
+  const isEditable = editor._editable;
 
   // Initialize node reference and set placeholder.
   useEffect(() => {
@@ -79,17 +79,18 @@ export function BlockEquationRendererComponent({
 
   const hideActiveEquationEditor = () => {
     editor.update(() => {
-      if (currentEquationEditorKeyRef.current) {
-        const node = $getNodeByKey(currentEquationEditorKeyRef.current);
-        if ($isEquationEditorNode(node)) {
-          node.hide();
-          wasHiddenRef.current = true;
-        }
-        currentEquationEditorKeyRef.current = null;
+      const node = currentEquationEditorKeyRef.current
+        ? $getNodeByKey(currentEquationEditorKeyRef.current)
+        : $getNodeByKey(equationEditorKey);
+      if ($isEquationEditorNode(node)) {
+        node.hide();
+        wasHiddenRef.current = true;
       }
+      currentEquationEditorKeyRef.current = null;
     });
   };
 
+  // Change in showActiveEquationEditor:
   const showActiveEquationEditor = (key: string, fromBelow: boolean) => {
     editor.update(() => {
       const node = $getNodeByKey(key);
@@ -104,7 +105,7 @@ export function BlockEquationRendererComponent({
     });
   };
 
-  // Handle selection changes, hiding and showing equation editors
+  // Change in handleSelectionChange:
   const handleSelectionChange = () => {
     editor.update(() => {
       const selection = $getSelection();
@@ -113,12 +114,20 @@ export function BlockEquationRendererComponent({
         const equationEditorNode = $getEquationEditorNodeOrNull(anchorNode);
         if (equationEditorNode) {
           const key = equationEditorNode.getKey();
+          // Only update if the node has changed or if it was previously hidden.
+          if (
+            currentEquationEditorKeyRef.current === key &&
+            !wasHiddenRef.current
+          ) {
+            return;
+          }
           currentEquationEditorKeyRef.current = key;
           const fromBelow =
             selection.anchor.getNode().getKey() > equationEditorNode.getKey();
           showActiveEquationEditor(key, fromBelow);
         } else if (currentEquationEditorKeyRef.current) {
           hideActiveEquationEditor();
+          currentEquationEditorKeyRef.current = null;
         }
       }
     });

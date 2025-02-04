@@ -80,6 +80,10 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     writable.__size = Math.min(newSize, 100);
   }
 
+  getSize(): number {
+    return this.__size;
+  }
+
   override isInline(): boolean {
     return false;
   }
@@ -100,9 +104,8 @@ export function $createImageNode({
   src,
   altText,
   size,
-  key,
-}: ImagePayload & { key?: NodeKey }): ImageNode {
-  return $applyNodeReplacement(new ImageNode(src, altText, size, key));
+}: ImagePayload): ImageNode {
+  return $applyNodeReplacement(new ImageNode(src, altText, size));
 }
 
 export function $isImageNode(

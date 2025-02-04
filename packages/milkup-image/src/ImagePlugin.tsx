@@ -5,28 +5,16 @@ import {
   COMMAND_PRIORITY_EDITOR,
   $getNodeByKey,
 } from "lexical";
-import { $createImageNode, ImageNode } from "./ImageNode";
-import { useCallback } from "react";
+import { $createImageNode, $isImageNode, ImageNode } from "./ImageNode";
 import { createCommand, $getRoot } from "lexical";
 import { useEffect } from "react";
 
-const IMAGE_MAX_SIZE_RATIO = 0.8;
 
 export const INSERT_IMAGE_COMMAND = createCommand<File>();
 export const RESIZE_IMAGE_COMMAND = createCommand<{
   nodeKey: string;
   newSize: number;
 }>();
-
-// Included for testing purposes only.
-// Using this *will break the transformers*.
-// const defaultGenerateSrc = async (file: File): Promise<string> => {
-//   return new Promise((resolve) => {
-//     const reader = new FileReader();
-//     reader.onload = () => resolve(reader.result as string);
-//     reader.readAsDataURL(file);
-//   });
-// };
 
 type ImagePluginProps = {
   generateSrc: (file: File) => Promise<string>;
@@ -90,7 +78,7 @@ export function ImagePlugin({
         const { nodeKey, newSize } = payload;
         editor.update(() => {
           const node = $getNodeByKey(nodeKey);
-          if (node instanceof ImageNode) {
+          if ($isImageNode(node)) {
             node.setSize(newSize);
           }
         });
