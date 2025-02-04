@@ -11,11 +11,15 @@ interface ToolbarButtonProps {
   icon: string;
   textFormat?: 'bold' | 'italic' | 'underline' | 'strikethrough';
   listType?: 'bullet' | 'number' | 'check',
+  isUndo?: boolean;
+  isRedo?: boolean;
 }
 
-export function ToolbarButton({ disabled, onClick, label, icon, textFormat, listType }: ToolbarButtonProps) {
+export function ToolbarButton({ disabled, onClick, label, icon, textFormat, listType, isUndo, isRedo }: ToolbarButtonProps) {
   const [editor] = useLexicalComposerContext();
   const [isActive, setIsActive] = useState(false);
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
   const LowPriority = 1;
 
   useEffect(() => {
@@ -47,16 +51,16 @@ export function ToolbarButton({ disabled, onClick, label, icon, textFormat, list
       ),
       editor.registerCommand(
         CAN_UNDO_COMMAND,
-        () => {
-          updateButtonState();
+        (payload) => {
+          setCanUndo(payload);
           return false;
         },
         LowPriority,
       ),
       editor.registerCommand(
         CAN_REDO_COMMAND,
-        () => {
-          updateButtonState();
+        (payload) => {
+          setCanRedo(payload);
           return false;
         },
         LowPriority,
@@ -70,7 +74,7 @@ export function ToolbarButton({ disabled, onClick, label, icon, textFormat, list
   
   return (
     <button
-      disabled={disabled}
+      disabled={disabled || (isUndo && !canUndo) || (isRedo && !canRedo)}
       onClick={onClick}
       className={`toolbar-item spaced ${isActive ? 'active' : ''}`}
       aria-label={label}

@@ -24,11 +24,13 @@ import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
 
 import AutoEmbedPlugin from "../../../packages/milkup-autoembed/src/index";
 
-import { SharedHistoryContext } from "./plugins/SharedHistoryContext";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import {useSharedHistoryContext} from './plugins/SharedHistoryContext';
+
 import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
 import "./lexical-styling.css";
-import ToolbarPlugin from "./plugins/toolbar-plugin";
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import MarkdownAction from "./plugins/MarkdownAction";
 import { useState } from "react";
 import DraggableBlock from "./plugins/milkupDraggable";
@@ -131,6 +133,8 @@ const initialConfig = {
 };
 
 export default function Milkup() {
+  const { historyState } = useSharedHistoryContext();
+
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLElement | null>(null);
 
@@ -143,7 +147,7 @@ export default function Milkup() {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <SharedHistoryContext>
+      <HistoryPlugin externalHistoryState={historyState} />
         <div className="editor-container">
           <ToolbarPlugin />
           <div className="editor-inner">
@@ -177,7 +181,7 @@ export default function Milkup() {
             <ParagraphPlugin trailingLBMode="paragraph" />
           </div>
         </div>
-      </SharedHistoryContext>
+      <HistoryPlugin />
       <TreeViewPlugin />
       <MarkdownAction shouldPreserveNewLinesInMarkdown={true} />
     </LexicalComposer>

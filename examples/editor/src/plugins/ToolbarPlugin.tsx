@@ -64,10 +64,10 @@ export default function ToolbarPlugin() {
     <ToolbarWrapper>
       <ToolbarButton
         onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
-        label="Undo" icon="undo" />
+        label="Undo" icon="undo" isUndo={true} />
       <ToolbarButton
         onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
-        label="Redo" icon="redo" />
+        label="Redo" icon="redo" isRedo={true} />
 
       <Divider />
 
