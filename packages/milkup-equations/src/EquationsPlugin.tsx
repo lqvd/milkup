@@ -153,7 +153,8 @@ export default function EquationsPlugin(): JSX.Element | null {
   useEffect(() => {
     const unregisterRight = editor.registerCommand(
       KEY_ARROW_RIGHT_COMMAND,
-      (event: KeyboardEvent) => handleEquationNavigation(event, Direction.RIGHT),
+      (event: KeyboardEvent) =>
+        handleEquationNavigation(event, Direction.RIGHT),
       COMMAND_PRIORITY_HIGH,
     );
     const unregisterDown = editor.registerCommand(

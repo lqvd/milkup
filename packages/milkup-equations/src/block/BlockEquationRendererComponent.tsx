@@ -48,7 +48,7 @@ export function BlockEquationRendererComponent({
   const currentEquationEditorKeyRef = useRef<string | null>(null);
   const wasHiddenRef = useRef<boolean>(true);
   const editorNodeRef = useRef<EquationEditorNode | null>(null);
-  
+
   const isEditable = editor.isEditable();
 
   // Initialize node reference and set placeholder.
@@ -254,8 +254,16 @@ export function BlockEquationRendererComponent({
         textAlign: "left",
         fontSize: "inherit",
       }}
-      onMouseOver={isEditable ? (e) => (e.currentTarget.style.borderColor = "#ccc") : undefined}
-      onMouseOut={isEditable ? (e) => (e.currentTarget.style.borderColor = "#fff") : undefined}
+      onMouseOver={
+        isEditable
+          ? (e) => (e.currentTarget.style.borderColor = "#ccc")
+          : undefined
+      }
+      onMouseOut={
+        isEditable
+          ? (e) => (e.currentTarget.style.borderColor = "#fff")
+          : undefined
+      }
     >
       <BlockMath>{equation || placeholder}</BlockMath>
     </button>
