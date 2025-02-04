@@ -547,3 +547,7 @@ i.check-list {
 .icon.h2 {
   background-image: url(/icons/text-h2.svg);
 }
+
+.icon.youtube {
+  background-image: url(/icons/youtube.svg);
+}

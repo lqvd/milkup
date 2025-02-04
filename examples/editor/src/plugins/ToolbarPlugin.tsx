@@ -126,33 +126,22 @@ export default function ToolbarPlugin() {
         label="Check List" icon="check-list" listType='check' />
 
       <Divider />
-
+      
       <ToolbarDropdown
         buttonLabel="Insert"
         buttonIconClassName="plus"
-        // List of ToolbarButtons
-        items = {[
-        // <ToolbarButton
-        //   onClick={() => toggleList("bullet", INSERT_UNORDERED_LIST_COMMAND)}
-        //   label="Bullet List" icon="bullet-list" listType='bullet' />,
-        <DropdownItem
-          className={'item wide'}
-          onClick={() => toggleList("bullet", INSERT_UNORDERED_LIST_COMMAND)}>
-          <div className="icon-text-container">
-            <i className="icon bullet-list" />
-            <span className="text">Bullet List</span>
-          </div>
-        </DropdownItem>,
 
-        <DropdownItem
-        className={'item wide'}
-        onClick={() => toggleList("number", INSERT_ORDERED_LIST_COMMAND)}>
-        <div className="icon-text-container">
-          <i className="icon numbered-list" />
-          <span className="text">Numbered List</span>
-        </div>
-        </DropdownItem> 
-        ]}
+        items = {EmbedConfigs.map((embedConfig) => (
+          <DropdownItem
+            key={embedConfig.type}
+            className="item wide"
+            onClick={() => { editor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type) }}>
+            <div className="icon-text-container">
+              {embedConfig.icon}
+              <span className="text">{embedConfig.contentName}</span>
+            </div>
+          </DropdownItem>
+        ))}
       />
 
       <Divider />
