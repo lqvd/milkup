@@ -1,9 +1,9 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import useLexicalEditable from "@lexical/react/useLexicalEditable";
-import { NodeKey } from "lexical";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { $getSelection, $isRangeSelection, COMMAND_PRIORITY_HIGH, KEY_BACKSPACE_COMMAND, NodeKey } from "lexical";
+import { JSX, useEffect, useRef, useState } from "react";
 
 import { CirclePlay, CirclePause } from "lucide-react";
+import { $isAudioNode } from "./AudioNode";
 
 interface CustomAudioProps {
   source: string;
@@ -83,6 +83,32 @@ export default function AudioComponent({
   source,
   nodeKey,
 }: AudioComponentProps): JSX.Element {
+
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+      const unregister = editor.registerCommand(
+        KEY_BACKSPACE_COMMAND,
+        () => {
+          const selection = $getSelection();
+          if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+            return false;
+          }
+          const anchorNode = selection.anchor.getNode();
+          const prevSibling = anchorNode.getPreviousSibling();
+          if (prevSibling && $isAudioNode(prevSibling)) {
+            editor.update(() => {
+              prevSibling.remove();
+            });
+            return true;
+          }
+          return false;
+        },
+        COMMAND_PRIORITY_HIGH,
+      );
+      return unregister;
+    }, [editor]);
+
   return (
     <div className="audio-action">
       <CustomAudio source={source} />
