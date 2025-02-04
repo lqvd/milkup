@@ -23,9 +23,9 @@ import { EquationNode } from "../../../packages/milkup-equations/src/EquationNod
 
 import { ImagePlugin } from "../../../packages/milkup-image/ImagePlugin";
 
-import { ImageToolbarPlugin } from "../../../packages/milkup-image/ImageToolBarPlugin";
+import { ImageToolbarPlugin } from "../../../packages/milkup-image/src/ImageToolBarPlugin";
 
-import { ImageNode } from "../../../packages/milkup-image/ImageNode";
+import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
 
 import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
 import { YouTubeNode } from "../../../packages/milkup-youtube/src/YoutubeNode";

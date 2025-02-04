@@ -80,7 +80,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     this.__height = height || 200;
   }
 
-  createDOM(config: EditorConfig): HTMLElement {
+  createDOM(_config: EditorConfig): HTMLElement {
     const div = document.createElement("div");
     div.style.display = "contents";
     return div;
@@ -94,6 +94,10 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     const writable = this.getWritable();
     writable.__width = width;
     writable.__height = height;
+  }
+  
+  override isInline(): boolean {
+    return false;
   }
 
   decorate(): JSX.Element {
@@ -117,4 +121,8 @@ export function $createImageNode({
   key,
 }: ImagePayload & { key?: NodeKey }): ImageNode {
   return $applyNodeReplacement(new ImageNode(src, altText, width, height, key));
+}
+
+export function $isImageNode(node: LexicalNode | undefined | null): node is ImageNode {
+  return node instanceof ImageNode;
 }

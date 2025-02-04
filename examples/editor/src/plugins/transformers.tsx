@@ -1,4 +1,4 @@
-import { DASH_SPACE, HR, YOUTUBE, IMAGE} from "./customTransformers";
+import { DASH_SPACE, HR, YOUTUBE} from "./customTransformers";
 import {
   EQUATION_BLOCK,
   EQUATION_BLOCK_ML,
@@ -6,6 +6,8 @@ import {
 } from "../../../../packages/milkup-equations/src/transformers";
 
 import { AUDIO_EMBED } from "../../../../packages/milkup-audio/src/transformers";
+
+import { IMAGE } from "../../../../packages/milkup-image/src/transformers";
 
 import {
   // Element transformers

@@ -40,7 +40,7 @@ export function ImageComponent({
         alt={altText}
         width={width}
         height={height}
-        style={{ cursor: "pointer" }}
+        style={{ display: "block", marginLeft: "auto", marginRight: "auto", cursor: "pointer" }}
       />
       <div
         className="resize-handle"
