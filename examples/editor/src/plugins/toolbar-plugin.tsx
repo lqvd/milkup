@@ -35,6 +35,8 @@ import {
   REMOVE_LIST_COMMAND,
 } from "@lexical/list";
 
+import { ImageToolbarPlugin } from "../../../../packages/milkup-image/src/ImageToolBarPlugin"; // Import ImageNode creator function
+
 const LowPriority = 1;
 
 function Divider() {
@@ -215,7 +217,6 @@ export default function ToolbarPlugin() {
       >
         <i className="format justify-align" />
       </button>{" "}
-      {/* Add Table Button */}
       <button
         onClick={() => setShowTableDialog(true)}
         className="toolbar-item spaced"
@@ -231,6 +232,7 @@ export default function ToolbarPlugin() {
           />
         </div>
       )}
+      <ImageToolbarPlugin />
       <DropDown
         buttonClassName="toolbar-item"
         buttonLabel="Insert"

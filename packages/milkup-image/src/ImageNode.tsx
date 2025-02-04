@@ -82,7 +82,9 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
 
   createDOM(_config: EditorConfig): HTMLElement {
     const div = document.createElement("div");
-    div.style.display = "contents";
+    div.style.display = "flex";
+    div.style.justifyContent = "center"; // Centers the image horizontally
+    div.style.alignItems = "center"; // Aligns content in the center (optional)
     return div;
   }
 
@@ -95,7 +97,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     writable.__width = width;
     writable.__height = height;
   }
-  
+
   override isInline(): boolean {
     return false;
   }
@@ -123,6 +125,8 @@ export function $createImageNode({
   return $applyNodeReplacement(new ImageNode(src, altText, width, height, key));
 }
 
-export function $isImageNode(node: LexicalNode | undefined | null): node is ImageNode {
+export function $isImageNode(
+  node: LexicalNode | undefined | null,
+): node is ImageNode {
   return node instanceof ImageNode;
 }

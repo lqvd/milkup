@@ -13,7 +13,11 @@ const defaultGenerateSrc = async (file: File): Promise<string> => {
   });
 };
 
-export function ImageToolbarPlugin({ generateSrc = defaultGenerateSrc }: { generateSrc?: (file: File) => Promise<string> }): JSX.Element {
+export function ImageToolbarPlugin({
+  generateSrc = defaultGenerateSrc,
+}: {
+  generateSrc?: (file: File) => Promise<string>;
+}): JSX.Element {
   const [editor] = useLexicalComposerContext();
 
   const handleImageUpload = useCallback(
@@ -28,7 +32,9 @@ export function ImageToolbarPlugin({ generateSrc = defaultGenerateSrc }: { gener
           image.onload = () => {
             editor.update(() => {
               const selection = $getSelection();
-              const maxWidth = (editor.getRootElement()?.clientWidth ?? 100) * IMAGE_MAX_SIZE_RATIO;
+              const maxWidth =
+                (editor.getRootElement()?.clientWidth ?? 100) *
+                IMAGE_MAX_SIZE_RATIO;
               const width = Math.min(image.width, maxWidth);
               const height = (image.height / image.width) * width;
 
@@ -40,7 +46,9 @@ export function ImageToolbarPlugin({ generateSrc = defaultGenerateSrc }: { gener
                   height: height,
                 });
                 selection.insertNodes([imageNode]);
-                const imageElement = editor.getRootElement()?.querySelector(`[data-node-key="${imageNode.getKey()}"]`);
+                const imageElement = editor
+                  .getRootElement()
+                  ?.querySelector(`[data-node-key="${imageNode.getKey()}"]`);
                 if (imageElement) {
                   (imageElement as HTMLElement).style.textAlign = "center";
                 }
@@ -52,7 +60,7 @@ export function ImageToolbarPlugin({ generateSrc = defaultGenerateSrc }: { gener
         }
       }
     },
-    [editor, generateSrc]
+    [editor, generateSrc],
   );
 
   return (

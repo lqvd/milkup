@@ -158,7 +158,6 @@ export default function Milkup() {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <SharedHistoryContext>
-        <ImageToolbarPlugin />
         <div className="editor-container">
           <ToolbarPlugin />
           <div className="editor-inner">

@@ -1,4 +1,4 @@
-import { DASH_SPACE, HR, YOUTUBE} from "./customTransformers";
+import { DASH_SPACE, HR, YOUTUBE } from "./customTransformers";
 import {
   EQUATION_BLOCK,
   EQUATION_BLOCK_ML,
@@ -32,6 +32,7 @@ import {
 } from "@lexical/markdown";
 
 export const TRANSFORMERS = [
+  IMAGE,
   AUDIO_EMBED,
   CHECK_LIST,
   HR,
@@ -54,5 +55,4 @@ export const TRANSFORMERS = [
   STRIKETHROUGH,
   LINK,
   YOUTUBE,
-  IMAGE,
 ];
