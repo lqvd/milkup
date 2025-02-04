@@ -35,6 +35,7 @@ import {
   DropdownItem,
   ToolbarWrapper,
 } from "../../../../packages/milkup-toolbar/src/index";
+import toggleMarkdown from "./MarkdownAction";
 
 export default function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
@@ -73,6 +74,14 @@ export default function ToolbarPlugin() {
         label="Redo"
         icon="redo"
         isRedo={true}
+      />
+
+      <Divider />
+
+      <ToolbarButton
+       onClick={() => toggleMarkdown(editor, { shouldPreserveNewLinesInMarkdown: true })}
+       label="Markdown"
+       icon="markdown"
       />
 
       <Divider />

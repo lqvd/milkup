@@ -206,7 +206,6 @@ export default function Milkup() {
       <HistoryPlugin />
       <CodeHighlightPlugin />
       <TreeViewPlugin />
-      <MarkdownAction shouldPreserveNewLinesInMarkdown={true} />
     </LexicalComposer>
   );
 }
