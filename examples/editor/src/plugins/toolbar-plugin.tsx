@@ -6,20 +6,19 @@
  *
  */
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { mergeRegister } from "@lexical/utils";
 import {
   $getSelection,
   $isRangeSelection,
-  CAN_REDO_COMMAND,
-  CAN_UNDO_COMMAND,
-  FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
   REDO_COMMAND,
-  SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
 } from "lexical";
+import {
+  $createHeadingNode,
+} from '@lexical/rich-text';
+import { $setBlocksType } from '@lexical/selection';
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import DropDown, { DropDownItem } from "../../../../packages/core/ui/dropdown";
 
 import { INSERT_EMBED_COMMAND } from "@lexical/react/LexicalAutoEmbedPlugin";
@@ -33,32 +32,12 @@ import {
   REMOVE_LIST_COMMAND,
 } from "@lexical/list";
 
-const LowPriority = 1;
-
-function Divider() {
-  return <div className="divider" />;
-}
+import { Divider, ToolbarButton, ToolbarDropdown, DropdownItem, ToolbarWrapper } from "../../../../packages/milkup-toolbar/src/index";
 
 export default function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
-  const toolbarRef = useRef(null);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
-  const [isBold, setIsBold] = useState(false);
-  const [isItalic, setIsItalic] = useState(false);
-  const [isUnderline, setIsUnderline] = useState(false);
-  const [isStrikethrough, setIsStrikethrough] = useState(false);
-
-  const $updateToolbar = useCallback(() => {
-    const selection = $getSelection();
-    if ($isRangeSelection(selection)) {
-      // Update text format
-      setIsBold(selection.hasFormat("bold"));
-      setIsItalic(selection.hasFormat("italic"));
-      setIsUnderline(selection.hasFormat("underline"));
-      setIsStrikethrough(selection.hasFormat("strikethrough"));
-    }
-  }, []);
 
   const toggleList = (
     listType: "bullet" | "number" | "check",
@@ -73,7 +52,6 @@ export default function ToolbarPlugin() {
         const anchorNode = selection.anchor.getNode();
         const element = anchorNode.getTopLevelElementOrThrow();
         if ($isListNode(element) && element.getListType() === listType) {
-          console.log(element.getListType());
           editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
         } else {
           editor.dispatchCommand(command, undefined);
@@ -82,160 +60,107 @@ export default function ToolbarPlugin() {
     });
   };
 
-  useEffect(() => {
-    return mergeRegister(
-      editor.registerUpdateListener(({ editorState }) => {
-        editorState.read(() => {
-          $updateToolbar();
-        });
-      }),
-      editor.registerCommand(
-        SELECTION_CHANGE_COMMAND,
-        () => {
-          $updateToolbar();
-          return false;
-        },
-        LowPriority,
-      ),
-      editor.registerCommand(
-        CAN_UNDO_COMMAND,
-        (payload) => {
-          setCanUndo(payload);
-          return false;
-        },
-        LowPriority,
-      ),
-      editor.registerCommand(
-        CAN_REDO_COMMAND,
-        (payload) => {
-          setCanRedo(payload);
-          return false;
-        },
-        LowPriority,
-      ),
-    );
-  }, [editor, $updateToolbar]);
-
   return (
-    <div className="toolbar" ref={toolbarRef}>
-      <button
-        disabled={!canUndo}
-        onClick={() => {
-          editor.dispatchCommand(UNDO_COMMAND, undefined);
-        }}
-        className="toolbar-item spaced"
-        aria-label="Undo"
-      >
-        <i className="format undo" />
-      </button>
-      <button
-        disabled={!canRedo}
-        onClick={() => {
-          editor.dispatchCommand(REDO_COMMAND, undefined);
-        }}
-        className="toolbar-item"
-        aria-label="Redo"
-      >
-        <i className="format redo" />
-      </button>
+    <ToolbarWrapper>
+      <ToolbarButton
+        onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
+        label="Undo" icon="undo" />
+      <ToolbarButton
+        onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
+        label="Redo" icon="redo" />
+
       <Divider />
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
-        }}
-        className={"toolbar-item spaced " + (isBold ? "active" : "")}
-        aria-label="Format Bold"
-      >
-        <i className="format bold" />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
-        }}
-        className={"toolbar-item spaced " + (isItalic ? "active" : "")}
-        aria-label="Format Italics"
-      >
-        <i className="format italic" />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
-        }}
-        className={"toolbar-item spaced " + (isUnderline ? "active" : "")}
-        aria-label="Format Underline"
-      >
-        <i className="format underline" />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
-        }}
-        className={"toolbar-item spaced " + (isStrikethrough ? "active" : "")}
-        aria-label="Format Strikethrough"
-      >
-        <i className="format strikethrough" />
-      </button>
+
+      <ToolbarDropdown
+        buttonLabel="Text"
+        buttonIconClassName="plus"
+        items = {[
+          <DropdownItem
+            className={'item wide'}
+            onClick={() => editor.update(() => {
+              const selection = $getSelection();
+              $setBlocksType(selection, () => $createHeadingNode('h1'));
+            })}>
+            <div className="icon-text-container">
+              <i className="icon h1" />
+              <span className="text">Heading 1</span>
+            </div>
+          </DropdownItem>,
+
+          <DropdownItem
+            className={'item wide'}
+            onClick={() => editor.update(() => {
+              const selection = $getSelection();
+              $setBlocksType(selection, () => $createHeadingNode('h2'));
+            })}>
+            <div className="icon-text-container">
+              <i className="icon h2" />
+              <span className="text">Heading 2</span>
+            </div>
+          </DropdownItem>,
+        ]}>
+      </ToolbarDropdown>
+
       <Divider />
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
-        }}
-        className="toolbar-item spaced"
-        aria-label="Left Align"
-      >
-        <i className="format left-align" />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
-        }}
-        className="toolbar-item spaced"
-        aria-label="Center Align"
-      >
-        <i className="format center-align" />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
-        }}
-        className="toolbar-item spaced"
-        aria-label="Right Align"
-      >
-        <i className="format right-align" />
-      </button>
-      <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
-        }}
-        className="toolbar-item"
-        aria-label="Justify Align"
-      >
-        <i className="format justify-align" />
-      </button>
+
+      <ToolbarButton
+        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")}
+        label="Format Bold" icon="bold" textFormat="bold" />
+      <ToolbarButton
+        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")}
+        label="Format Italics" icon="italic" textFormat="italic" />
+      <ToolbarButton
+        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough")}
+        label="Format Strikethrough" icon="strikethrough" textFormat="strikethrough" />
+
       <Divider />
-      <button
+
+      <ToolbarButton
         onClick={() => toggleList("bullet", INSERT_UNORDERED_LIST_COMMAND)}
-        className="toolbar-item spaced"
-        aria-label="Bullet List"
-      >
-        <i className="format bullet-list" />
-      </button>
-      <button
+        label="Bullet List" icon="bullet-list" listType='bullet' />
+      <ToolbarButton
         onClick={() => toggleList("number", INSERT_ORDERED_LIST_COMMAND)}
-        className="toolbar-item spaced"
-        aria-label="Numbered List"
-      >
-        <i className="format numbered-list" />
-      </button>
-      <button
+        label="Numbered List" icon="numbered-list" listType='number' />
+      <ToolbarButton
         onClick={() => toggleList("check", INSERT_CHECK_LIST_COMMAND)}
-        className="toolbar-item"
-        aria-label="Check List"
-      >
-        <i className="format check-list" />
-      </button>
+        label="Check List" icon="check-list" listType='check' />
+
       <Divider />
-      <DropDown
+
+      <ToolbarDropdown
+        buttonLabel="Insert"
+        buttonIconClassName="plus"
+        // List of ToolbarButtons
+        items = {[
+        // <ToolbarButton
+        //   onClick={() => toggleList("bullet", INSERT_UNORDERED_LIST_COMMAND)}
+        //   label="Bullet List" icon="bullet-list" listType='bullet' />,
+        <DropdownItem
+          className={'item wide'}
+          onClick={() => toggleList("bullet", INSERT_UNORDERED_LIST_COMMAND)}>
+          <div className="icon-text-container">
+            <i className="icon bullet-list" />
+            <span className="text">Bullet List</span>
+          </div>
+        </DropdownItem>,
+
+        <DropdownItem
+        className={'item wide'}
+        onClick={() => toggleList("number", INSERT_ORDERED_LIST_COMMAND)}>
+        <div className="icon-text-container">
+          <i className="icon numbered-list" />
+          <span className="text">Numbered List</span>
+        </div>
+        </DropdownItem> 
+        ]}
+      />
+
+      <Divider />
+    </ToolbarWrapper>
+  );
+}
+
+{/* <DropDown
         buttonClassName="toolbar-item"
         buttonLabel="Insert"
         buttonAriaLabel="Insert specialized editor node"
@@ -254,8 +179,4 @@ export default function ToolbarPlugin() {
             <span className="text">{embedConfig.contentName}</span>
           </DropDownItem>
         ))}
-      </DropDown>
-      <Divider />
-    </div>
-  );
-}
+      </DropDown> */}
