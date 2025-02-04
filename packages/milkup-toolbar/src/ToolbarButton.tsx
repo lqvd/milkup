@@ -1,7 +1,13 @@
-import { useEffect, useState } from 'react';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { useEffect, useState } from "react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { mergeRegister } from "@lexical/utils";
-import { $getSelection, $isRangeSelection, SELECTION_CHANGE_COMMAND, CAN_UNDO_COMMAND, CAN_REDO_COMMAND } from "lexical";
+import {
+  $getSelection,
+  $isRangeSelection,
+  SELECTION_CHANGE_COMMAND,
+  CAN_UNDO_COMMAND,
+  CAN_REDO_COMMAND,
+} from "lexical";
 import { $isListNode } from "@lexical/list";
 
 interface ToolbarButtonProps {
@@ -9,13 +15,22 @@ interface ToolbarButtonProps {
   onClick: () => void;
   label: string;
   icon: string;
-  textFormat?: 'bold' | 'italic' | 'underline' | 'strikethrough';
-  listType?: 'bullet' | 'number' | 'check',
+  textFormat?: "bold" | "italic" | "underline" | "strikethrough";
+  listType?: "bullet" | "number" | "check";
   isUndo?: boolean;
   isRedo?: boolean;
 }
 
-export function ToolbarButton({ disabled, onClick, label, icon, textFormat, listType, isUndo, isRedo }: ToolbarButtonProps) {
+export function ToolbarButton({
+  disabled,
+  onClick,
+  label,
+  icon,
+  textFormat,
+  listType,
+  isUndo,
+  isRedo,
+}: ToolbarButtonProps) {
   const [editor] = useLexicalComposerContext();
   const [isActive, setIsActive] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
@@ -27,14 +42,16 @@ export function ToolbarButton({ disabled, onClick, label, icon, textFormat, list
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
         if (textFormat) {
-        setIsActive(selection.hasFormat(textFormat));
+          setIsActive(selection.hasFormat(textFormat));
         } else if (listType) {
           const anchorNode = selection.anchor.getNode();
           const element = anchorNode.getTopLevelElementOrThrow();
-          setIsActive(($isListNode(element) && element.getListType() === listType));
+          setIsActive(
+            $isListNode(element) && element.getListType() === listType,
+          );
         }
       }
-    }
+    };
     const unregister = mergeRegister(
       editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
@@ -71,12 +88,12 @@ export function ToolbarButton({ disabled, onClick, label, icon, textFormat, list
       unregister();
     };
   }, [editor, textFormat, listType]);
-  
+
   return (
     <button
       disabled={disabled || (isUndo && !canUndo) || (isRedo && !canRedo)}
       onClick={onClick}
-      className={`toolbar-item spaced ${isActive ? 'active' : ''}`}
+      className={`toolbar-item spaced ${isActive ? "active" : ""}`}
       aria-label={label}
     >
       <i className={`format ${icon}`} />

@@ -1,7 +1,7 @@
 import { isDOMNode } from "lexical";
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import './toolbar.css';
+import "./toolbar.css";
 import { DropdownItems } from "./ToolbarDropdownItem";
 
 const dropdownPadding = 4;
@@ -12,18 +12,14 @@ interface ToolbarDropdownProps {
   items: React.ReactNode[];
 }
 
-export function ToolbarDropdown({ buttonLabel, buttonIconClassName, items }: ToolbarDropdownProps) {
+export function ToolbarDropdown({
+  buttonLabel,
+  buttonIconClassName,
+  items,
+}: ToolbarDropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [showDropdown, setShowDropdown] = useState(false);
-
-  function dropdownActiveClass(active: boolean) {
-    if (active) {
-      return 'active dropdown-item-active';
-    } else {
-      return '';
-    }
-  }
 
   const toggleDropdown = () => {
     console.log("toggled");
@@ -104,7 +100,9 @@ export function ToolbarDropdown({ buttonLabel, buttonIconClassName, items }: Too
         aria-label={buttonLabel}
         ref={buttonRef}
       >
-        {buttonIconClassName && <span className={`icon ${buttonIconClassName}`} />}   
+        {buttonIconClassName && (
+          <span className={`icon ${buttonIconClassName}`} />
+        )}
         {buttonLabel && (
           <span className="text dropdown-button-text">{buttonLabel}</span>
         )}
@@ -117,7 +115,7 @@ export function ToolbarDropdown({ buttonLabel, buttonIconClassName, items }: Too
             {items}
           </DropdownItems>,
           document.body,
-      )}
+        )}
     </>
   );
 }

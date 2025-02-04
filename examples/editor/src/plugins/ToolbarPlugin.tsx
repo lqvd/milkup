@@ -13,13 +13,8 @@ import {
   REDO_COMMAND,
   UNDO_COMMAND,
 } from "lexical";
-import {
-  $createHeadingNode,
-} from '@lexical/rich-text';
-import { $setBlocksType } from '@lexical/selection';
-
-import { useState } from "react";
-import DropDown, { DropDownItem } from "../../../../packages/core/ui/dropdown";
+import { $createHeadingNode } from "@lexical/rich-text";
+import { $setBlocksType } from "@lexical/selection";
 
 import { INSERT_EMBED_COMMAND } from "@lexical/react/LexicalAutoEmbedPlugin";
 import { EmbedConfigs } from "../../../../packages/milkup-autoembed/src/index";
@@ -32,12 +27,16 @@ import {
   REMOVE_LIST_COMMAND,
 } from "@lexical/list";
 
-import { Divider, ToolbarButton, ToolbarDropdown, DropdownItem, ToolbarWrapper } from "../../../../packages/milkup-toolbar/src/index";
+import {
+  Divider,
+  ToolbarButton,
+  ToolbarDropdown,
+  DropdownItem,
+  ToolbarWrapper,
+} from "../../../../packages/milkup-toolbar/src/index";
 
 export default function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
-  const [canUndo, setCanUndo] = useState(false);
-  const [canRedo, setCanRedo] = useState(false);
 
   const toggleList = (
     listType: "bullet" | "number" | "check",
@@ -64,23 +63,33 @@ export default function ToolbarPlugin() {
     <ToolbarWrapper>
       <ToolbarButton
         onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
-        label="Undo" icon="undo" isUndo={true} />
+        label="Undo"
+        icon="undo"
+        isUndo={true}
+      />
       <ToolbarButton
         onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
-        label="Redo" icon="redo" isRedo={true} />
+        label="Redo"
+        icon="redo"
+        isRedo={true}
+      />
 
       <Divider />
 
       <ToolbarDropdown
         buttonLabel="Text"
         buttonIconClassName="plus"
-        items = {[
+        items={[
           <DropdownItem
-            className={'item wide'}
-            onClick={() => editor.update(() => {
-              const selection = $getSelection();
-              $setBlocksType(selection, () => $createHeadingNode('h1'));
-            })}>
+            key="h1"
+            className={"item wide"}
+            onClick={() =>
+              editor.update(() => {
+                const selection = $getSelection();
+                $setBlocksType(selection, () => $createHeadingNode("h1"));
+              })
+            }
+          >
             <div className="icon-text-container">
               <i className="icon h1" />
               <span className="text">Heading 1</span>
@@ -88,54 +97,80 @@ export default function ToolbarPlugin() {
           </DropdownItem>,
 
           <DropdownItem
-            className={'item wide'}
-            onClick={() => editor.update(() => {
-              const selection = $getSelection();
-              $setBlocksType(selection, () => $createHeadingNode('h2'));
-            })}>
+            key="h2"
+            className={"item wide"}
+            onClick={() =>
+              editor.update(() => {
+                const selection = $getSelection();
+                $setBlocksType(selection, () => $createHeadingNode("h2"));
+              })
+            }
+          >
             <div className="icon-text-container">
               <i className="icon h2" />
               <span className="text">Heading 2</span>
             </div>
           </DropdownItem>,
-        ]}>
-      </ToolbarDropdown>
+        ]}
+      ></ToolbarDropdown>
 
       <Divider />
 
       <ToolbarButton
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")}
-        label="Format Bold" icon="bold" textFormat="bold" />
+        label="Format Bold"
+        icon="bold"
+        textFormat="bold"
+      />
       <ToolbarButton
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")}
-        label="Format Italics" icon="italic" textFormat="italic" />
+        label="Format Italics"
+        icon="italic"
+        textFormat="italic"
+      />
       <ToolbarButton
-        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough")}
-        label="Format Strikethrough" icon="strikethrough" textFormat="strikethrough" />
+        onClick={() =>
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough")
+        }
+        label="Format Strikethrough"
+        icon="strikethrough"
+        textFormat="strikethrough"
+      />
 
       <Divider />
 
       <ToolbarButton
         onClick={() => toggleList("bullet", INSERT_UNORDERED_LIST_COMMAND)}
-        label="Bullet List" icon="bullet-list" listType='bullet' />
+        label="Bullet List"
+        icon="bullet-list"
+        listType="bullet"
+      />
       <ToolbarButton
         onClick={() => toggleList("number", INSERT_ORDERED_LIST_COMMAND)}
-        label="Numbered List" icon="numbered-list" listType='number' />
+        label="Numbered List"
+        icon="numbered-list"
+        listType="number"
+      />
       <ToolbarButton
         onClick={() => toggleList("check", INSERT_CHECK_LIST_COMMAND)}
-        label="Check List" icon="check-list" listType='check' />
+        label="Check List"
+        icon="check-list"
+        listType="check"
+      />
 
       <Divider />
-      
+
       <ToolbarDropdown
         buttonLabel="Insert"
         buttonIconClassName="plus"
-
-        items = {EmbedConfigs.map((embedConfig) => (
+        items={EmbedConfigs.map((embedConfig) => (
           <DropdownItem
             key={embedConfig.type}
             className="item wide"
-            onClick={() => { editor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type) }}>
+            onClick={() => {
+              editor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type);
+            }}
+          >
             <div className="icon-text-container">
               {embedConfig.icon}
               <span className="text">{embedConfig.contentName}</span>
@@ -148,24 +183,3 @@ export default function ToolbarPlugin() {
     </ToolbarWrapper>
   );
 }
-
-{/* <DropDown
-        buttonClassName="toolbar-item"
-        buttonLabel="Insert"
-        buttonAriaLabel="Insert specialized editor node"
-        buttonIconClassName="icon plus"
-      >
-        {EmbedConfigs.map((embedConfig) => (
-          <DropDownItem
-            key={embedConfig.type}
-            onClick={() => {
-              console.log("Inserting embed:", embedConfig.type);
-              editor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type);
-            }}
-            className="item"
-          >
-            {embedConfig.icon}
-            <span className="text">{embedConfig.contentName}</span>
-          </DropDownItem>
-        ))}
-      </DropDown> */}

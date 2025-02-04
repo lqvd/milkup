@@ -22,7 +22,7 @@ import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
 import AutoEmbedPlugin from "../../../packages/milkup-autoembed/src/index";
 
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
-import {useSharedHistoryContext} from './plugins/SharedHistoryContext';
+import { useSharedHistoryContext } from "./plugins/SharedHistoryContext";
 
 import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
@@ -154,39 +154,39 @@ export default function Milkup() {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <HistoryPlugin externalHistoryState={historyState} />
-        <div className="editor-container">
-          <ToolbarPlugin />
-          <div className="editor-inner">
-            <RichTextPlugin
-              // @ts-ignore
-              contentEditable={
-                <div className="editor-scroller">
-                  <div className="editor-input" ref={onRef}>
-                    <ContentEditable
-                      placeholder={
-                        <div className="editor-placeholder">Explore!</div>
-                      }
-                    />
-                  </div>
+      <div className="editor-container">
+        <ToolbarPlugin />
+        <div className="editor-inner">
+          <RichTextPlugin
+            // @ts-ignore
+            contentEditable={
+              <div className="editor-scroller">
+                <div className="editor-input" ref={onRef}>
+                  <ContentEditable
+                    placeholder={
+                      <div className="editor-placeholder">Explore!</div>
+                    }
+                  />
                 </div>
-              }
-              ErrorBoundary={LexicalErrorBoundary}
-            />
-            {floatingAnchorElem && (
-              <>
-                <DraggableBlock anchorElem={floatingAnchorElem} />
-              </>
-            )}
-            <ListPlugin />
-            <CheckListPlugin />
-            <LinkPlugin />
-            <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-            <EquationsPlugin />
-            <YouTubePlugin />
-            <AutoEmbedPlugin />
-            <ParagraphPlugin trailingLBMode="paragraph" />
-          </div>
+              </div>
+            }
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          {floatingAnchorElem && (
+            <>
+              <DraggableBlock anchorElem={floatingAnchorElem} />
+            </>
+          )}
+          <ListPlugin />
+          <CheckListPlugin />
+          <LinkPlugin />
+          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+          <EquationsPlugin />
+          <YouTubePlugin />
+          <AutoEmbedPlugin />
+          <ParagraphPlugin trailingLBMode="paragraph" />
         </div>
+      </div>
       <HistoryPlugin />
       <CodeHighlightPlugin />
       <TreeViewPlugin />
