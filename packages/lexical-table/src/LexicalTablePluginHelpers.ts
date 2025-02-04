@@ -19,6 +19,7 @@ import {
   COMMAND_PRIORITY_EDITOR,
   LexicalEditor,
   NodeKey,
+  $getRoot,
 } from 'lexical';
 import invariant from '../../shared/src/invariant';
 
@@ -51,18 +52,18 @@ function $insertTableCommandListener({
   columns,
   includeHeaders,
 }: InsertTableCommandPayload): boolean {
-  console.log("insert table command listener");
   const tableNode = $createTableNodeWithDimensions(
     Number(rows),
     Number(columns),
     includeHeaders,
   );
-  $insertNodeToNearestRoot(tableNode);
+  const root = $getRoot();
+  root.append(tableNode);
 
-  const firstDescendant = tableNode.getFirstDescendant();
-  if ($isTextNode(firstDescendant)) {
-    firstDescendant.select();
-  }
+  // const firstDescendant = tableNode.getFirstDescendant();
+  // if ($isTextNode(firstDescendant)) {
+  //   firstDescendant.select();
+  // }
 
   return true;
 }
@@ -70,8 +71,6 @@ function $insertTableCommandListener({
 function $tableCellTransform(node: TableCellNode) {
   if (!$isTableRowNode(node.getParent())) {
     node.remove();
-  } else if (node.isEmpty()) {
-    node.append($createTextNode(''));
   }
 }
 

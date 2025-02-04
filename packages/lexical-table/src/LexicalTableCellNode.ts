@@ -296,13 +296,7 @@ export class TableCellNode extends ElementNode {
   }
 
   append(...nodes: LexicalNode[]): this {
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
-      if (!$isTextNode(node)) {
-        throw new Error('TableCellNode only accepts text nodes as children');
-      }
-    }
-    return super.append(...nodes);
+    return super.append(...nodes.filter($isTextNode));
   }
 }
 

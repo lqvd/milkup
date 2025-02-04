@@ -16,6 +16,7 @@ import {
   $getSelection,
   $isRangeSelection,
   LexicalNode,
+  ParagraphNode,
 } from 'lexical';
 import invariant from '../../shared/src/invariant';
 

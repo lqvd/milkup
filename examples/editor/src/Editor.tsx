@@ -48,7 +48,8 @@ import { TablePlugin } from "../../../packages/milkup-table/TablePlugin";
 import TableCellActionMenuPlugin from "../../../packages/milkup-table/TableActionMenuPlugin";
 import TableCellResizer from "../../../packages/milkup-table/TableCellResizer";
 import TableHoverActionsPlugin from "../../../packages/milkup-table/TableHoverActionsPlugin";
-
+import TableFocusPlugin from "../../../packages/milkup-table/TableFocusPlugin";
+import TableOfContentsPlugin from "../../../packages/milkup-table/TableOfContentsPlugin/";
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -197,7 +198,9 @@ export default function Milkup() {
             />
             <TableCellResizer />
             <TableHoverActionsPlugin />
+            <TableFocusPlugin />
             <TableCellActionMenuPlugin cellMerge={true} />
+            <TableOfContentsPlugin />
             <ParagraphPlugin trailingLBMode="paragraph" />
           </div>
         </div>
