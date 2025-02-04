@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useLexicalEditable } from "@lexical/react/useLexicalEditable";
 import { mergeRegister } from "@lexical/utils";
@@ -21,25 +13,22 @@ import {
   NodeKey,
   SELECTION_CHANGE_COMMAND,
 } from "lexical";
-import * as React from "react";
 import { JSX, useCallback, useEffect, useRef, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { InlineMath } from "react-katex";
 
-import EquationEditor from "./ui/EquationEditor";
-import KatexRenderer from "./ui/KatexRenderer";
-import { $isEquationNode } from "./EquationNode";
+import { InlineEquationEditor } from "./InlineEquationEditor";
+import { $isInlineEquationNode } from "./InlineEquationNode";
 
-type EquationComponentProps = {
+type InlineEquationComponentProps = {
   equation: string;
-  inline: boolean;
   nodeKey: NodeKey;
 };
 
-export default function EquationComponent({
+export function InlineEquationComponent({
   equation,
-  inline,
   nodeKey,
-}: EquationComponentProps): JSX.Element {
+}: InlineEquationComponentProps): JSX.Element {
   const [editor] = useLexicalComposerContext();
   const isEditable = useLexicalEditable();
   const [equationValue, setEquationValue] = useState(equation);
@@ -51,7 +40,7 @@ export default function EquationComponent({
       setShowEquationEditor(false);
       editor.update(() => {
         const node = $getNodeByKey(nodeKey);
-        if ($isEquationNode(node)) {
+        if ($isInlineEquationNode(node)) {
           node.setEquation(equationValue);
           if (restoreSelection) {
             node.selectNext(0, 0);
@@ -153,24 +142,24 @@ export default function EquationComponent({
   return (
     <>
       {showEquationEditor && isEditable ? (
-        <EquationEditor
+        <InlineEquationEditor
           equation={equationValue}
           setEquation={setEquationValue}
-          inline={inline}
+          inline={true}
           forwardRef={inputRef}
           editor={editor}
         />
       ) : (
         <ErrorBoundary onError={(e) => editor._onError(e)} fallback={null}>
-          <KatexRenderer
-            equation={equationValue}
-            inline={inline}
-            onDoubleClick={() => {
+          <span
+            onClick={() => {
               if (isEditable) {
                 setShowEquationEditor(true);
               }
             }}
-          />
+          >
+            <InlineMath>{equationValue}</InlineMath>
+          </span>
         </ErrorBoundary>
       )}
     </>
