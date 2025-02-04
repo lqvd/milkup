@@ -19,6 +19,7 @@ import { $setBlocksType } from "@lexical/selection";
 
 import { INSERT_EMBED_COMMAND } from "@lexical/react/LexicalAutoEmbedPlugin";
 import { EmbedConfigs } from "../../../../packages/milkup-autoembed/src/index";
+import { ImageToolbarPlugin } from "../../../../packages/milkup-image/src/ImageToolBarPlugin"; // Import ImageNode creator function
 
 import { $isListNode } from "@lexical/list";
 import {
@@ -164,7 +165,7 @@ export default function ToolbarPlugin() {
         icon="check-list"
         listType="check"
       />
-
+      <ImageToolbarPlugin />
       <Divider />
 
       <ToolbarDropdown

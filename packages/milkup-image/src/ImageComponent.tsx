@@ -98,16 +98,10 @@ export function ImageComponent({
       />
 
       {/* X-only resize handle (right edge) */}
-      <div
-        className="resize-handle-x"
-        onMouseDown={handleResize("x")}
-      />
+      <div className="resize-handle-x" onMouseDown={handleResize("x")} />
 
       {/* Y-only resize handle (bottom edge) */}
-      <div
-        className="resize-handle-y"
-        onMouseDown={handleResize("y")}
-      />
+      <div className="resize-handle-y" onMouseDown={handleResize("y")} />
 
       {/* Constrained ratio resize handle (bottom-right corner) */}
       <div

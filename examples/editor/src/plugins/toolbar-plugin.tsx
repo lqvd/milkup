@@ -26,7 +26,6 @@ import DropDown, { DropDownItem } from "../../../../packages/core/ui/dropdown";
 
 import { INSERT_EMBED_COMMAND } from "@lexical/react/LexicalAutoEmbedPlugin";
 import { EmbedConfigs } from "../../../../packages/milkup-autoembed/src/index";
-
 import { $isListNode } from "@lexical/list";
 import {
   INSERT_UNORDERED_LIST_COMMAND,

@@ -1,11 +1,9 @@
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-// import './Editor.css';
-
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import "./Editor.css";
+// import './Editor.css';
 import { TRANSFORMERS } from "./plugins/transformers";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 
@@ -18,11 +16,8 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 
-import EquationsPlugin from "../../../packages/milkup-equations/src/index";
-import { EquationNode } from "../../../packages/milkup-equations/src/EquationNode";
-
+import { YouTubeNode } from "../../../packages/milkup-youtube/src/index";
 import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
-import { YouTubeNode } from "../../../packages/milkup-youtube/src/YoutubeNode";
 
 import AutoEmbedPlugin from "../../../packages/milkup-autoembed/src/index";
 
@@ -45,12 +40,7 @@ import DraggableBlock from "./plugins/milkupDraggable";
 
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
 import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
-
-import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
-import TableCellActionMenuPlugin from "../../../packages/milkup-table/TableActionMenuPlugin";
-import TableCellResizer from "../../../packages/milkup-table/TableCellResizer";
-import TableHoverActionsPlugin from "../../../packages/milkup-table/TableHoverActionsPlugin";
-
+import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -128,6 +118,7 @@ const initialConfig = {
   editable: true,
   onError: (error: Error) => console.error(error),
   nodes: [
+    ImageNode,
     HeadingNode,
     ListNode,
     ListItemNode,
@@ -140,7 +131,6 @@ const initialConfig = {
     AutoLinkNode,
     HorizontalRuleNode,
     LinkNode,
-    EquationNode,
     YouTubeNode,
     BlockEquationNode,
     EquationEditorNode,

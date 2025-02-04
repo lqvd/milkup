@@ -20,7 +20,6 @@ export const IMAGE: ElementTransformer = {
       const height = Math.trunc(node.__height);
       markdown += ` =${width}x${height}`;
     }
-    
 
     markdown += ")";
     return markdown;
