@@ -147,7 +147,6 @@ export default function Milkup() {
 
   const onRef = (_floatingAnchorElem: HTMLDivElement | null) => {
     if (_floatingAnchorElem !== null) {
-      console.log("floatingAnchorElem", _floatingAnchorElem);
       setFloatingAnchorElem(_floatingAnchorElem);
     }
   };
