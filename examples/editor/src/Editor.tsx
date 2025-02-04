@@ -16,9 +16,6 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 
-import EquationsPlugin from "../../../packages/milkup-equations/src/index";
-import { EquationNode } from "../../../packages/milkup-equations/src/EquationNode";
-
 import { YouTubeNode } from "../../../packages/milkup-youtube/src/index";
 import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
 
@@ -32,6 +29,12 @@ import TreeViewPlugin from "./plugins/TreeViewPlugin";
 import "./lexical-styling.css";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import MarkdownAction from "./plugins/MarkdownAction";
+import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
+import EquationsPlugin from "../../../packages/milkup-equations/src/EquationsPlugin";
+import { BlockEquationNode } from "../../../packages/milkup-equations/src/block/BlockEquationNode";
+import { EquationEditorNode } from "../../../packages/milkup-equations/src/block/EquationEditorNode";
+import { BlockEquationRendererNode } from "../../../packages/milkup-equations/src/block/BlockEquationRendererNode";
+import { InlineEquationNode } from "../../../packages/milkup-equations/src/inline/InlineEquationNode";
 import { useState } from "react";
 import DraggableBlock from "./plugins/milkupDraggable";
 
@@ -126,8 +129,11 @@ const initialConfig = {
     AutoLinkNode,
     HorizontalRuleNode,
     LinkNode,
-    EquationNode,
     YouTubeNode,
+    BlockEquationNode,
+    EquationEditorNode,
+    BlockEquationRendererNode,
+    InlineEquationNode,
     AudioNode,
   ],
 };
@@ -182,6 +188,7 @@ export default function Milkup() {
           </div>
         </div>
       <HistoryPlugin />
+      <CodeHighlightPlugin />
       <TreeViewPlugin />
       <MarkdownAction shouldPreserveNewLinesInMarkdown={true} />
     </LexicalComposer>
