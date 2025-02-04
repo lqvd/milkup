@@ -10,6 +10,7 @@ import {
   $isYouTubeNode,
 } from "../../../../packages/milkup-youtube/src/YoutubeNode";
 import { ImageNode } from "../../../../packages/milkup-image/ImageNode";
+import { $createImageNode } from "../../../../packages/milkup-image/ImageNode";
 
 /* Horizontal line transformers. */
 
@@ -72,5 +73,39 @@ export const YOUTUBE: ElementTransformer = {
       parentNode.insertBefore($createYouTubeNode(match[4]));
     }
   },
+  type: "element",
+};
+
+// Optional helper type guard for clarity
+export function $isImageNode(node: LexicalNode | null | undefined): node is ImageNode {
+  return node instanceof ImageNode;
+}
+
+export const IMAGE: ElementTransformer = {
+  dependencies: [ImageNode],
+  export: (node: LexicalNode) => {
+    if ($isImageNode(node)) {
+      console.log("got here");
+      // You can choose to include width and height information in a custom manner if needed.
+      return `![${node.__altText}](${node.__src})`;
+    }
+    console.log("asfjdksflk");
+    return null;
+  },
+
+  // This regular expression matches the markdown image syntax.
+  // For example: ![alt text](https://example.com/image.png)
+  regExp: /!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/,
+  replace: (parentNode, _props, match, isImport) => {
+    const altText = match[1];
+    const src = match[2];
+    const imageNode = $createImageNode({ src, altText });
+    if (isImport || parentNode.getNextSibling() != null) {
+      parentNode.replace(imageNode);
+    } else {
+      parentNode.insertBefore(imageNode);
+    }
+  },
+
   type: "element",
 };
