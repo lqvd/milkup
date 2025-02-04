@@ -110,6 +110,7 @@ const initialConfig = {
   namespace: "Milkup",
   theme,
   onError: (error: Error) => console.error(error),
+  editable: true,
   nodes: [
     HeadingNode,
     ListNode,
@@ -135,7 +136,6 @@ export default function Milkup() {
 
   const onRef = (_floatingAnchorElem: HTMLDivElement | null) => {
     if (_floatingAnchorElem !== null) {
-      console.log("floatingAnchorElem", _floatingAnchorElem);
       setFloatingAnchorElem(_floatingAnchorElem);
     }
   };
@@ -144,7 +144,7 @@ export default function Milkup() {
     <LexicalComposer initialConfig={initialConfig}>
       <SharedHistoryContext>
         <div className="editor-container">
-          <ToolbarPlugin />
+          {initialConfig.editable && <ToolbarPlugin />}
           <div className="editor-inner">
             <RichTextPlugin
               // @ts-ignore
@@ -161,7 +161,7 @@ export default function Milkup() {
               }
               ErrorBoundary={LexicalErrorBoundary}
             />
-            {floatingAnchorElem && (
+            {initialConfig.editable && floatingAnchorElem && (
               <>
                 <DraggableBlock anchorElem={floatingAnchorElem} />
               </>
