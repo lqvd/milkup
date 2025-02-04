@@ -115,6 +115,7 @@ const theme = {
 const initialConfig = {
   namespace: "Milkup",
   theme,
+  editable: true,
   onError: (error: Error) => console.error(error),
   nodes: [
     HeadingNode,
@@ -155,7 +156,7 @@ export default function Milkup() {
     <LexicalComposer initialConfig={initialConfig}>
       <HistoryPlugin externalHistoryState={historyState} />
       <div className="editor-container">
-        <ToolbarPlugin />
+        {initialConfig.editable && <ToolbarPlugin />}
         <div className="editor-inner">
           <RichTextPlugin
             // @ts-ignore
@@ -172,7 +173,7 @@ export default function Milkup() {
             }
             ErrorBoundary={LexicalErrorBoundary}
           />
-          {floatingAnchorElem && (
+          {initialConfig.editable && floatingAnchorElem && (
             <>
               <DraggableBlock anchorElem={floatingAnchorElem} />
             </>
