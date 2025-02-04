@@ -200,7 +200,7 @@ export default function Milkup() {
               <DraggableBlock anchorElem={floatingAnchorElem} />
             </>
           )}
-          <ImagePlugin generateSrc={defaultGenerateSrc}/>
+          <ImagePlugin generateSrc={defaultGenerateSrc} />
           <ListPlugin />
           <CheckListPlugin />
           <LinkPlugin />

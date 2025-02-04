@@ -9,7 +9,6 @@ import { $createImageNode, $isImageNode, ImageNode } from "./ImageNode";
 import { createCommand, $getRoot } from "lexical";
 import { useEffect } from "react";
 
-
 export const INSERT_IMAGE_COMMAND = createCommand<File>();
 export const RESIZE_IMAGE_COMMAND = createCommand<{
   nodeKey: string;
