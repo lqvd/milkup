@@ -31,7 +31,10 @@ import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import MarkdownAction from "./plugins/MarkdownAction";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/EquationsPlugin";
-import { $createBlockEquationNode, BlockEquationNode } from "../../../packages/milkup-equations/src/block/BlockEquationNode";
+import { 
+  $createBlockEquationNode, 
+  BlockEquationNode 
+} from "../../../packages/milkup-equations/src/block/BlockEquationNode";
 import { EquationEditorNode } from "../../../packages/milkup-equations/src/block/EquationEditorNode";
 import { BlockEquationRendererNode } from "../../../packages/milkup-equations/src/block/BlockEquationRendererNode";
 import { InlineEquationNode } from "../../../packages/milkup-equations/src/inline/InlineEquationNode";
