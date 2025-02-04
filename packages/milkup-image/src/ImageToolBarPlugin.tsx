@@ -5,27 +5,30 @@ import { useCallback } from "react";
 
 const IMAGE_MAX_SIZE_RATIO = 0.8;
 
-export function ImageToolbarPlugin(): JSX.Element {
+const defaultGenerateSrc = async (file: File): Promise<string> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.readAsDataURL(file);
+  });
+};
+
+export function ImageToolbarPlugin({ generateSrc = defaultGenerateSrc }: { generateSrc?: (file: File) => Promise<string> }): JSX.Element {
   const [editor] = useLexicalComposerContext();
 
   const handleImageUpload = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          // Retrieve image height and width.
+        try {
+          const url = await generateSrc(file);
           const image = new Image();
-          const url = reader.result as string;
           image.src = url;
 
           image.onload = () => {
             editor.update(() => {
               const selection = $getSelection();
-              // Clamp image height and width to the editor's width.
-              const maxWidth =
-                (editor.getRootElement()?.clientWidth ?? 100) *
-                IMAGE_MAX_SIZE_RATIO;
+              const maxWidth = (editor.getRootElement()?.clientWidth ?? 100) * IMAGE_MAX_SIZE_RATIO;
               const width = Math.min(image.width, maxWidth);
               const height = (image.height / image.width) * width;
 
@@ -37,14 +40,19 @@ export function ImageToolbarPlugin(): JSX.Element {
                   height: height,
                 });
                 selection.insertNodes([imageNode]);
+                const imageElement = editor.getRootElement()?.querySelector(`[data-node-key="${imageNode.getKey()}"]`);
+                if (imageElement) {
+                  (imageElement as HTMLElement).style.textAlign = "center";
+                }
               }
             });
           };
-        };
-        reader.readAsDataURL(file);
+        } catch (error) {
+          console.error("Error generating image src:", error);
+        }
       }
     },
-    [editor],
+    [editor, generateSrc]
   );
 
   return (
