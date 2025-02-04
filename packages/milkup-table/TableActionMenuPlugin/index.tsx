@@ -36,6 +36,7 @@ import {
 import { mergeRegister } from "@lexical/utils";
 import {
   $createParagraphNode,
+  $createTextNode,
   $getRoot,
   $getSelection,
   $isElementNode,
@@ -50,7 +51,7 @@ import {
 import * as React from "react";
 import { ReactPortal, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import invariant from "../invariant";
+import invariant from "../../core/ui/invariant";
 
 import useModal from "../useModal";
 import ColorPicker from "../ColorPicker";
@@ -294,7 +295,7 @@ function TableActionMenu({
         }
         if (firstCell !== null) {
           if (firstCell.getChildrenSize() === 0) {
-            firstCell.append($createParagraphNode());
+            firstCell.append($createTextNode(""));
           }
           $selectLastDescendant(firstCell);
         }

@@ -1,0 +1,7 @@
+{
+  "name": "@milkup/canvas",
+  "version": "1.0.0",
+  "dependencies": {
+    "@tldraw/tldraw": "^3.7.2"
+  }
+} 

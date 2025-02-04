@@ -9,19 +9,18 @@
 import type { JSX } from "react";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import {
-  INSERT_TABLE_COMMAND,
-  TableCellNode,
-  TableNode,
-  TableRowNode,
-} from "@lexical/table";
+
 import { EditorThemeClasses, Klass, LexicalEditor, LexicalNode } from "lexical";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import invariant from "./invariant";
+import invariant from "../core/ui/invariant";
 
-import Button from "./Button";
-import { DialogActions } from "./Dialog";
+import Button from "../core/ui/button";
+import { DialogActions } from "../core/ui/dialog";
 import TextInput from "./TextInputs";
+
+import { INSERT_TABLE_COMMAND, TableCellNode, TableNode, TableRowNode } from "../lexical-table/src/index";
+import { registerTablePlugin } from "../lexical-table/src/LexicalTablePluginHelpers";
+
 
 export type InsertTableCommandPayload = Readonly<{
   columns: string;
@@ -157,5 +156,8 @@ export function TablePlugin({
   useEffect(() => {
     cellContext.set(cellEditorConfig, children);
   }, [cellContext, cellEditorConfig, children]);
+  useEffect(() => {
+    return registerTablePlugin(editor);
+  }, [editor]);
   return null;
 }
