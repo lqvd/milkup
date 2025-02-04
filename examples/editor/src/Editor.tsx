@@ -28,7 +28,6 @@ import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
 import "./lexical-styling.css";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
-import MarkdownAction from "./plugins/MarkdownAction";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/EquationsPlugin";
 import {
@@ -174,11 +173,13 @@ export default function Milkup() {
         {initialConfig.editable && <ToolbarPlugin />}
         <div className="editor-inner">
           <RichTextPlugin
-            // @ts-ignore
             contentEditable={
               <div className="editor-scroller">
                 <div className="editor-input" ref={onRef}>
+                  {/*
+                  // @ts-expect-error Probably caused by React version differences between examples/editor and milkup packages. */}
                   <ContentEditable
+                    aria-placeholder="Explore!"
                     placeholder={
                       <div className="editor-placeholder">Explore!</div>
                     }
