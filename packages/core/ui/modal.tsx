@@ -6,7 +6,7 @@
  *
  */
 
-import "./Modal.css";
+import "./modal.css";
 
 import { isDOMNode } from "lexical";
 import * as React from "react";

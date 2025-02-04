@@ -7,6 +7,11 @@ import {
 import { AUDIO_EMBED } from "../../../../packages/milkup-audio/src/transformers";
 
 import {
+  IMAGE,
+  LINK,
+} from "../../../../packages/milkup-image/src/transformers";
+
+import {
   // Element transformers
   CHECK_LIST, // Must precede UNORDERED_LIST to avoid conflict (- [] vs -)
   UNORDERED_LIST,
@@ -24,12 +29,10 @@ import {
   ITALIC_STAR,
   ITALIC_UNDERSCORE,
   STRIKETHROUGH,
-
-  // Text match transformers
-  LINK,
 } from "@lexical/markdown";
 
 export const TRANSFORMERS = [
+  IMAGE,
   AUDIO_EMBED,
   CHECK_LIST,
   HR,
