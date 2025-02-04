@@ -1,4 +1,4 @@
-import { DASH_SPACE, HR, YOUTUBE } from "./customTransformers";
+import { DASH_SPACE, HR, YOUTUBE, LINK } from "./customTransformers";
 import {
   BLOCK_EQUATION,
   INLINE_EQUATION,
@@ -26,8 +26,6 @@ import {
   ITALIC_STAR,
   ITALIC_UNDERSCORE,
   STRIKETHROUGH,
-  // Text match transformers
-  LINK,
 } from "@lexical/markdown";
 
 export const TRANSFORMERS = [

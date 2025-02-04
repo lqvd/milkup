@@ -4,11 +4,12 @@ import {
   $isHorizontalRuleNode,
   $createHorizontalRuleNode,
 } from "@lexical/react/LexicalHorizontalRuleNode";
-import { LexicalNode, TextNode } from "lexical";
+import { LexicalNode, TextNode, $createTextNode, $isTextNode } from "lexical";
 import {
   $createYouTubeNode,
   $isYouTubeNode,
 } from "../../../../packages/milkup-youtube/src/YoutubeNode";
+import { $createLinkNode, $isLinkNode, LinkNode } from "@lexical/link";
 /* Horizontal line transformers. */
 
 export const HR: ElementTransformer = {
@@ -71,6 +72,48 @@ export const YOUTUBE: ElementTransformer = {
     }
   },
   type: "element",
+};
+
+const isImageURL = (url: string): boolean => {
+  return /\.(png|jpg|jpeg|gif)$/i.test(url);
+};
+
+export const LINK: TextMatchTransformer = {
+  dependencies: [LinkNode],
+  export: (node, exportChildren, exportFormat) => {
+    if (!$isLinkNode(node)) {
+      return null;
+    }
+    const title = node.getTitle();
+    const linkContent = title
+      ? `[${node.getTextContent()}](${node.getURL()} "${title}")`
+      : `[${node.getTextContent()}](${node.getURL()})`;
+    const firstChild = node.getFirstChild();
+    if (node.getChildrenSize() === 1 && $isTextNode(firstChild)) {
+      return exportFormat(firstChild, linkContent);
+    }
+    return linkContent;
+  },
+  importRegExp:
+    /(?:\[([^[]+)\])(?:\((?:([^()\s]+)(?:\s"((?:[^"]*\\")*[^"]*)"\s*)?)\))/,
+  regExp:
+    /(?:\[([^[]+)\])(?:\((?:([^()\s]+)(?:\s"((?:[^"]*\\")*[^"]*)"\s*)?)\))$/,
+  replace: (textNode, match) => {
+    const [, linkText, linkUrl, linkTitle] = match;
+
+    // Don't create link if URL is an image
+    if (isImageURL(linkUrl)) {
+      return null;
+    }
+
+    const linkNode = $createLinkNode(linkUrl, { title: linkTitle });
+    const linkTextNode = $createTextNode(linkText);
+    linkTextNode.setFormat(textNode.getFormat());
+    linkNode.append(linkTextNode);
+    textNode.replace(linkNode);
+  },
+  trigger: ")",
+  type: "text-match",
 };
 
 // Optional helper type guard for clarity

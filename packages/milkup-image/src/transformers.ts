@@ -1,43 +1,43 @@
-import { ElementTransformer } from "@lexical/markdown";
+import { ElementTransformer, TextMatchTransformer } from "@lexical/markdown";
 import { $createImageNode, $isImageNode, ImageNode } from "./ImageNode";
-import { LexicalNode } from "lexical";
+import { LexicalNode, $isTextNode, $createTextNode } from "lexical";
+import { LinkNode, $isLinkNode, $createLinkNode } from "@lexical/link";
+
+const IMAGE_EXTS_REGEX = "(?:png|jpg|jpeg|gif)";
+const IMAGE_REGEX = new RegExp(
+  "!\\[([^\\]]*)\\](?:\\[([^\\]]*)\\])?\\(((?:https:\\/\\/)[^\\s)]+\\." +
+    IMAGE_EXTS_REGEX +
+    ")\\)",
+);
 
 export const IMAGE: ElementTransformer = {
   dependencies: [ImageNode],
 
-  // When exporting the node, include width and height if they exist.
+  // When exporting, produce markdown of the form:
+  // ![image-alt-text][size](source)
   export: (node: LexicalNode) => {
     if (!$isImageNode(node)) {
       return null;
     }
-
-    // Start with the alt text and src.
-    let markdown = `![${node.__altText}](${node.__src}`;
-
-    // Append the size if both width and height are present.
-    if (node.__width != null && node.__height != null) {
-      const width = Math.trunc(node.__width);
-      const height = Math.trunc(node.__height);
-      markdown += ` =${width}x${height}`;
-    }
-
-    markdown += ")";
-    return markdown;
+    // Use the size parameter stored in the node.
+    const size = node.__size != null ? `${Math.trunc(node.__size)}` : "";
+    return `![${node.__altText}][${size}](${node.__src})`;
   },
 
-  regExp:
-    /!\[([^\]]*)\]\(((?:https?:\/\/|data:)[^\s)]+)(?:\s*=\s*(\d+)x(\d+))?\)/,
+  // Use the IMAGE_REGEX constant.
+  regExp: IMAGE_REGEX,
 
-  // When importing, grab the optional width/height groups and pass them to the image node.
+  // When importing, parse the optional size from the second square-bracket group.
   replace: (parentNode, _props, match, isImport) => {
     const altText = match[1];
-    const src = match[2];
-    // Optional width and height captured as groups 3 and 4:
-    const width = match[3] ? parseInt(match[3], 10) : undefined;
-    const height = match[4] ? parseInt(match[4], 10) : undefined;
-
-    // Create the image node with size if available.
-    const imageNode = $createImageNode({ src, altText, width, height });
+    const sizeText = match[2]; // Expected to be a number (or empty).
+    const src = match[3];
+    let size: number | undefined;
+    if (sizeText) {
+      size = parseInt(sizeText, 10);
+      size = Math.min(100, Math.max(5, size));
+    }
+    const imageNode = $createImageNode({ src, altText, size });
     if (isImport || parentNode.getNextSibling() != null) {
       parentNode.replace(imageNode);
     } else {
@@ -46,4 +46,46 @@ export const IMAGE: ElementTransformer = {
   },
 
   type: "element",
+};
+
+const isImageURL = (url: string): boolean => {
+  return /\.(png|jpg|jpeg|gif)$/i.test(url);
+};
+
+export const LINK: TextMatchTransformer = {
+  dependencies: [LinkNode],
+  export: (node, exportChildren, exportFormat) => {
+    if (!$isLinkNode(node)) {
+      return null;
+    }
+    const title = node.getTitle();
+    const linkContent = title
+      ? `[${node.getTextContent()}](${node.getURL()} "${title}")`
+      : `[${node.getTextContent()}](${node.getURL()})`;
+    const firstChild = node.getFirstChild();
+    if (node.getChildrenSize() === 1 && $isTextNode(firstChild)) {
+      return exportFormat(firstChild, linkContent);
+    }
+    return linkContent;
+  },
+  importRegExp:
+    /(?:\[([^[]+)\])(?:\((?:([^()\s]+)(?:\s"((?:[^"]*\\")*[^"]*)"\s*)?)\))/,
+  regExp:
+    /(?:\[([^[]+)\])(?:\((?:([^()\s]+)(?:\s"((?:[^"]*\\")*[^"]*)"\s*)?)\))$/,
+  replace: (textNode, match) => {
+    const [, linkText, linkUrl, linkTitle] = match;
+
+    // Don't create link if URL is an image
+    if (isImageURL(linkUrl)) {
+      return null;
+    }
+
+    const linkNode = $createLinkNode(linkUrl, { title: linkTitle });
+    const linkTextNode = $createTextNode(linkText);
+    linkTextNode.setFormat(textNode.getFormat());
+    linkNode.append(linkTextNode);
+    textNode.replace(linkNode);
+  },
+  trigger: ")",
+  type: "text-match",
 };

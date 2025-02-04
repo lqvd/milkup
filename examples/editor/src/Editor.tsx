@@ -41,6 +41,7 @@ import DraggableBlock from "./plugins/milkupDraggable";
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
 import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
 import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
+import { ImagePlugin } from "../../../packages/milkup-image/src/ImagePlugin";
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -178,6 +179,7 @@ export default function Milkup() {
               <DraggableBlock anchorElem={floatingAnchorElem} />
             </>
           )}
+          {/* <ImagePlugin /> */}
           <ListPlugin />
           <CheckListPlugin />
           <LinkPlugin />

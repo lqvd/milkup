@@ -1,87 +1,89 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getNodeByKey } from "lexical";
-import { ImageNode } from "./ImageNode";
+import { RESIZE_IMAGE_COMMAND } from "./ImagePlugin";
 import "./ImageComponent.css";
+
 interface ImageComponentProps {
   src: string;
   altText: string;
-  width: number;
-  height: number;
+  size: number;
   nodeKey: string;
 }
 
 export function ImageComponent({
   src,
   altText,
-  width,
-  height,
+  size,
   nodeKey,
 }: ImageComponentProps) {
   const [editor] = useLexicalComposerContext();
-  const imageRef = useRef<HTMLImageElement>(null);
+  // Compute initial width from the size percentage relative to the editor's width.
+  const rootElement = editor.getRootElement();
+  const editorWidth = rootElement ? rootElement.clientWidth : 100;
+  const initialWidth = (size / 100) * editorWidth;
+  const initialHeight = initialWidth * (9 / 16);
 
-  const onResize = useCallback(
-    (newWidth: number, newHeight: number) => {
+  // Use local state in pixels for smooth resizing.
+  const [localSize, setLocalSize] = useState({
+    width: initialWidth,
+    height: initialHeight,
+  });
+  // Use a ref to keep track of the current width for commitResize.
+  const currentWidthRef = useRef(initialWidth);
+
+  // Commit the new size as a percentage of the editor's container width.
+  const commitResize = useCallback(
+    (newWidth: number) => {
       editor.update(() => {
-        const node = $getNodeByKey(nodeKey);
-        if (node instanceof ImageNode) {
-          node.setWidthAndHeight(newWidth, newHeight);
-        }
+        const rootEl = editor.getRootElement();
+        const editorWidth = rootEl ? rootEl.clientWidth : initialWidth;
+        const newSizePct = (newWidth / editorWidth) * 100;
+        console.log("commitResize", newSizePct);
+        editor.dispatchCommand(RESIZE_IMAGE_COMMAND, {
+          nodeKey,
+          newSize: newSizePct,
+        });
       });
     },
-    [editor, nodeKey],
+    [editor, nodeKey, initialWidth],
   );
 
-  /**
-   * Returns an onMouseDown handler for a given resize type.
-   * - "x": Adjusts only the width.
-   * - "y": Adjusts only the height.
-   * - "ratio": Adjusts both while preserving the aspect ratio.
-   */
-  const handleResize =
-    (resizeType: "x" | "y" | "ratio") =>
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      // Capture starting positions and dimensions.
-      const startX = e.clientX;
-      const startY = e.clientY;
-      const startWidth = width;
-      const startHeight = height;
-      const aspectRatio = startWidth / startHeight;
+  const handleResize = () => (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const startY = e.clientY;
+    const startHeight = localSize.height;
+    const startWidth = localSize.width;
+    const aspectRatio = startWidth / startHeight;
 
-      const onMouseMove = (e: MouseEvent) => {
-        let newWidth = startWidth;
-        let newHeight = startHeight;
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
+    // Get editor width for max constraint
+    const rootEl = editor.getRootElement();
+    const maxWidth = rootEl ? rootEl.clientWidth : 100;
 
-        if (resizeType === "x") {
-          newWidth = startWidth + deltaX;
-          // Keep height constant.
-        } else if (resizeType === "y") {
-          newHeight = startHeight + deltaY;
-          // Keep width constant.
-        } else if (resizeType === "ratio") {
-          // Use deltaX as the primary driver and recalc height.
-          newWidth = startWidth + deltaX;
-          newHeight = newWidth / aspectRatio;
-        }
+    const onMouseMove = (e: MouseEvent) => {
+      const deltaY = e.clientY - startY;
+      let newHeight = startHeight + deltaY;
+      newHeight = Math.max(newHeight, 50);
+      // Calculate width and clamp to editor width
+      let newWidth = newHeight * aspectRatio;
+      newWidth = Math.min(newWidth, maxWidth);
+      // Recalculate height to maintain aspect ratio if width was clamped
+      if (newWidth === maxWidth) {
+        newHeight = newWidth / aspectRatio;
+      }
 
-        // Set minimum dimensions.
-        newWidth = Math.max(newWidth, 50);
-        newHeight = Math.max(newHeight, 50);
-        onResize(newWidth, newHeight);
-      };
-
-      const onMouseUp = () => {
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("mouseup", onMouseUp);
-      };
-
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
+      currentWidthRef.current = newWidth;
+      setLocalSize({ width: newWidth, height: newHeight });
     };
+
+    const onMouseUp = () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      commitResize(currentWidthRef.current);
+    };
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  };
 
   return (
     <div
@@ -90,24 +92,12 @@ export function ImageComponent({
       style={{ position: "relative", display: "inline-block" }}
     >
       <img
-        ref={imageRef}
         src={src}
         alt={altText}
-        width={width}
-        height={height}
+        width={localSize.width}
+        height={localSize.height}
       />
-
-      {/* X-only resize handle (right edge) */}
-      <div className="resize-handle-x" onMouseDown={handleResize("x")} />
-
-      {/* Y-only resize handle (bottom edge) */}
-      <div className="resize-handle-y" onMouseDown={handleResize("y")} />
-
-      {/* Constrained ratio resize handle (bottom-right corner) */}
-      <div
-        className="resize-handle-ratio"
-        onMouseDown={handleResize("ratio")}
-      />
+      <div className="resize-handle-ratio" onMouseDown={handleResize()} />
     </div>
   );
 }
