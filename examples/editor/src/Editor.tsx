@@ -21,11 +21,13 @@ import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
 
 import AutoEmbedPlugin from "../../../packages/milkup-autoembed/src/index";
 
-import { SharedHistoryContext } from "./plugins/SharedHistoryContext";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { useSharedHistoryContext } from "./plugins/SharedHistoryContext";
+
 import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
 import "./lexical-styling.css";
-import ToolbarPlugin from "./plugins/toolbar-plugin";
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import MarkdownAction from "./plugins/MarkdownAction";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/EquationsPlugin";
@@ -137,6 +139,8 @@ const initialConfig = {
 };
 
 export default function Milkup() {
+  const { historyState } = useSharedHistoryContext();
+
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLElement | null>(null);
 
@@ -149,41 +153,41 @@ export default function Milkup() {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <SharedHistoryContext>
-        <div className="editor-container">
-          <ToolbarPlugin />
-          <div className="editor-inner">
-            <RichTextPlugin
-              // @ts-ignore
-              contentEditable={
-                <div className="editor-scroller">
-                  <div className="editor-input" ref={onRef}>
-                    <ContentEditable
-                      placeholder={
-                        <div className="editor-placeholder">Explore!</div>
-                      }
-                    />
-                  </div>
+      <HistoryPlugin externalHistoryState={historyState} />
+      <div className="editor-container">
+        <ToolbarPlugin />
+        <div className="editor-inner">
+          <RichTextPlugin
+            // @ts-ignore
+            contentEditable={
+              <div className="editor-scroller">
+                <div className="editor-input" ref={onRef}>
+                  <ContentEditable
+                    placeholder={
+                      <div className="editor-placeholder">Explore!</div>
+                    }
+                  />
                 </div>
-              }
-              ErrorBoundary={LexicalErrorBoundary}
-            />
-            {floatingAnchorElem && (
-              <>
-                <DraggableBlock anchorElem={floatingAnchorElem} />
-              </>
-            )}
-            <ListPlugin />
-            <CheckListPlugin />
-            <LinkPlugin />
-            <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-            <EquationsPlugin />
-            <YouTubePlugin />
-            <AutoEmbedPlugin />
-            <ParagraphPlugin trailingLBMode="paragraph" />
-          </div>
+              </div>
+            }
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          {floatingAnchorElem && (
+            <>
+              <DraggableBlock anchorElem={floatingAnchorElem} />
+            </>
+          )}
+          <ListPlugin />
+          <CheckListPlugin />
+          <LinkPlugin />
+          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+          <EquationsPlugin />
+          <YouTubePlugin />
+          <AutoEmbedPlugin />
+          <ParagraphPlugin trailingLBMode="paragraph" />
         </div>
-      </SharedHistoryContext>
+      </div>
+      <HistoryPlugin />
       <CodeHighlightPlugin />
       <TreeViewPlugin />
       <MarkdownAction shouldPreserveNewLinesInMarkdown={true} />
