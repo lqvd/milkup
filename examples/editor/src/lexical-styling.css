@@ -604,3 +604,7 @@ i.markdown {
 .editor-placeholder {
   margin-left: 16px;
 }
+
+.icon.image {
+  background-image: url(/icons/file-image.svg);
+}
