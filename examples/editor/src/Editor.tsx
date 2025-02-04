@@ -11,7 +11,6 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
-import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
@@ -41,7 +40,7 @@ import DraggableBlock from "./plugins/milkupDraggable";
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
 import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
 import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
-import { ImagePlugin } from "../../../packages/milkup-image/src/ImagePlugin";
+import { LexicalTypeaheadMenuPlugin } from "@lexical/react/LexicalTypeaheadMenuPlugin";
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -126,9 +125,6 @@ const initialConfig = {
     QuoteNode,
     CodeNode,
     CodeHighlightNode,
-    TableNode,
-    TableCellNode,
-    TableRowNode,
     AutoLinkNode,
     HorizontalRuleNode,
     LinkNode,
@@ -179,7 +175,6 @@ export default function Milkup() {
               <DraggableBlock anchorElem={floatingAnchorElem} />
             </>
           )}
-          {/* <ImagePlugin /> */}
           <ListPlugin />
           <CheckListPlugin />
           <LinkPlugin />
