@@ -86,7 +86,7 @@ export default function EquationsPlugin(): JSX.Element | null {
 
   // Navigation handler for arrow keys.
   const handleEquationNavigation = useCallback(
-    (direction: Direction): boolean => {
+    (event: KeyboardEvent, direction: Direction): boolean => {
       const selection = $getSelection();
       if (!$isRangeSelection(selection)) return false;
 
@@ -109,6 +109,7 @@ export default function EquationsPlugin(): JSX.Element | null {
             selection.anchor.offset === anchorNode.getTextContentSize()
           ) {
             // Dispatch exit command which shares identical logic.
+            event.preventDefault();
             editor.dispatchCommand(EXIT_EQUATION_COMMAND, undefined);
           }
         } else if (direction === Direction.DOWN) {
@@ -119,6 +120,7 @@ export default function EquationsPlugin(): JSX.Element | null {
               anchorNode.getParent() ===
                 editorChildren[editorChildren.length - 1])
           ) {
+            event.preventDefault();
             editor.dispatchCommand(EXIT_EQUATION_COMMAND, undefined);
           }
         } else if (direction === Direction.UP) {
@@ -131,6 +133,7 @@ export default function EquationsPlugin(): JSX.Element | null {
                 selection.anchor.offset === 0))
           ) {
             // Jump to previous sibling of BlockEquationNode.
+            event.preventDefault();
             const equationBlock = equationEditor.getParent();
             if (!equationBlock || !$isBlockEquationNode(equationBlock)) return;
             const prevSibling = equationBlock.getPreviousSibling();
@@ -150,17 +153,18 @@ export default function EquationsPlugin(): JSX.Element | null {
   useEffect(() => {
     const unregisterRight = editor.registerCommand(
       KEY_ARROW_RIGHT_COMMAND,
-      () => handleEquationNavigation(Direction.RIGHT),
+      (event: KeyboardEvent) =>
+        handleEquationNavigation(event, Direction.RIGHT),
       COMMAND_PRIORITY_HIGH,
     );
     const unregisterDown = editor.registerCommand(
       KEY_ARROW_DOWN_COMMAND,
-      () => handleEquationNavigation(Direction.DOWN),
+      (event: KeyboardEvent) => handleEquationNavigation(event, Direction.DOWN),
       COMMAND_PRIORITY_HIGH,
     );
     const unregisterUp = editor.registerCommand(
       KEY_ARROW_UP_COMMAND,
-      () => handleEquationNavigation(Direction.UP),
+      (event: KeyboardEvent) => handleEquationNavigation(event, Direction.UP),
       COMMAND_PRIORITY_HIGH,
     );
 
