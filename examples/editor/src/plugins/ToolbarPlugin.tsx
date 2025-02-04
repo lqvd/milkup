@@ -79,9 +79,11 @@ export default function ToolbarPlugin() {
       <Divider />
 
       <ToolbarButton
-       onClick={() => toggleMarkdown(editor, { shouldPreserveNewLinesInMarkdown: true })}
-       label="Markdown"
-       icon="markdown"
+        onClick={() =>
+          toggleMarkdown(editor, { shouldPreserveNewLinesInMarkdown: true })
+        }
+        label="Markdown"
+        icon="markdown"
       />
 
       <Divider />

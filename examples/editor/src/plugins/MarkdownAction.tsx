@@ -8,9 +8,12 @@ import { TRANSFORMERS } from "./transformers";
 
 export type MarkdownProps = {
   shouldPreserveNewLinesInMarkdown: boolean;
-}
+};
 
-export default function toggleMarkdown(editor: LexicalEditor, props: MarkdownProps) {
+export default function toggleMarkdown(
+  editor: LexicalEditor,
+  props: MarkdownProps,
+) {
   const { shouldPreserveNewLinesInMarkdown } = props;
   editor.update(() => {
     const root = $getRoot();
