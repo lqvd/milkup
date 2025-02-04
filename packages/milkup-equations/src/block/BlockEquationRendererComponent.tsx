@@ -79,50 +79,56 @@ export function BlockEquationRendererComponent({
 
   const hideActiveEquationEditor = () => {
     editor.update(() => {
-      if (currentEquationEditorKeyRef.current) {
-        const node = $getNodeByKey(currentEquationEditorKeyRef.current);
-        if ($isEquationEditorNode(node)) {
-          node.hide();
-          wasHiddenRef.current = true;
+      const node = currentEquationEditorKeyRef.current
+        ? $getNodeByKey(currentEquationEditorKeyRef.current)
+        : $getNodeByKey(equationEditorKey);
+      if ($isEquationEditorNode(node)) {
+        node.hide();
+        wasHiddenRef.current = true;
+      }
+      currentEquationEditorKeyRef.current = null;
+    });
+  };
+
+  // Change in showActiveEquationEditor:
+const showActiveEquationEditor = (key: string, fromBelow: boolean) => {
+  editor.update(() => {
+    const node = $getNodeByKey(key);
+    if ($isEquationEditorNode(node)) {
+      const wasHidden = wasHiddenRef.current;
+      node.show();
+      if (wasHidden) {
+        node.selectStart();
+        wasHiddenRef.current = false;
+      }
+    }
+  });
+};
+
+// Change in handleSelectionChange:
+const handleSelectionChange = () => {
+  editor.update(() => {
+    const selection = $getSelection();
+    if ($isRangeSelection(selection)) {
+      const anchorNode = selection.anchor.getNode();
+      const equationEditorNode = $getEquationEditorNodeOrNull(anchorNode);
+      if (equationEditorNode) {
+        const key = equationEditorNode.getKey();
+        // Only update if the node has changed or if it was previously hidden.
+        if (currentEquationEditorKeyRef.current === key && !wasHiddenRef.current) {
+          return;
         }
+        currentEquationEditorKeyRef.current = key;
+        const fromBelow =
+          selection.anchor.getNode().getKey() > equationEditorNode.getKey();
+        showActiveEquationEditor(key, fromBelow);
+      } else if (currentEquationEditorKeyRef.current) {
+        hideActiveEquationEditor();
         currentEquationEditorKeyRef.current = null;
       }
-    });
-  };
-
-  const showActiveEquationEditor = (key: string, fromBelow: boolean) => {
-    editor.update(() => {
-      const node = $getNodeByKey(key);
-      if ($isEquationEditorNode(node)) {
-        const wasHidden = wasHiddenRef.current;
-        node.show();
-        if (wasHidden) {
-          node.selectStart();
-          wasHiddenRef.current = false;
-        }
-      }
-    });
-  };
-
-  // Handle selection changes, hiding and showing equation editors
-  const handleSelectionChange = () => {
-    editor.update(() => {
-      const selection = $getSelection();
-      if ($isRangeSelection(selection)) {
-        const anchorNode = selection.anchor.getNode();
-        const equationEditorNode = $getEquationEditorNodeOrNull(anchorNode);
-        if (equationEditorNode) {
-          const key = equationEditorNode.getKey();
-          currentEquationEditorKeyRef.current = key;
-          const fromBelow =
-            selection.anchor.getNode().getKey() > equationEditorNode.getKey();
-          showActiveEquationEditor(key, fromBelow);
-        } else if (currentEquationEditorKeyRef.current) {
-          hideActiveEquationEditor();
-        }
-      }
-    });
-  };
+    }
+  });
+};
 
   // Listen for selection changes.
   // Use animation frames to debounce selection changes.
