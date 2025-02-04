@@ -600,3 +600,7 @@ i.markdown {
 .icon.youtube {
   background-image: url(/icons/youtube.svg);
 }
+
+.editor-placeholder {
+  margin-left: 16px;
+}
