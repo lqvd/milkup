@@ -48,6 +48,8 @@ export function BlockEquationRendererComponent({
   const currentEquationEditorKeyRef = useRef<string | null>(null);
   const wasHiddenRef = useRef<boolean>(true);
   const editorNodeRef = useRef<EquationEditorNode | null>(null);
+  
+  const isEditable = editor.isEditable();
 
   // Initialize node reference and set placeholder.
   useEffect(() => {
@@ -230,14 +232,16 @@ export function BlockEquationRendererComponent({
     <button
       onClick={() => {
         // Toggle editor visibility and move selection to text after renderer node.
-        editor.update(() => {
-          editorNodeRef.current?.show();
-          setTimeout(() => {
-            editor.update(() => {
-              editorNodeRef.current?.selectStart();
-            });
-          }, 0);
-        });
+        if (isEditable) {
+          editor.update(() => {
+            editorNodeRef.current?.show();
+            setTimeout(() => {
+              editor.update(() => {
+                editorNodeRef.current?.selectStart();
+              });
+            }, 0);
+          });
+        }
       }}
       style={{
         display: "block",
@@ -250,8 +254,8 @@ export function BlockEquationRendererComponent({
         textAlign: "left",
         fontSize: "inherit",
       }}
-      onMouseOver={(e) => (e.currentTarget.style.borderColor = "#ccc")}
-      onMouseOut={(e) => (e.currentTarget.style.borderColor = "#fff")}
+      onMouseOver={isEditable ? (e) => (e.currentTarget.style.borderColor = "#ccc") : undefined}
+      onMouseOut={isEditable ? (e) => (e.currentTarget.style.borderColor = "#fff") : undefined}
     >
       <BlockMath>{equation || placeholder}</BlockMath>
     </button>
