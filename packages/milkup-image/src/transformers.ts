@@ -22,13 +22,15 @@ export const IMAGE: ElementTransformer = {
   },
   regExp: IMAGE_REGEX,
   replace: (parentNode, _children, match) => {
+    console.log("match:");
+    console.log(match);
     const [, beforeText, , altText, sizeText, src, afterText] = match;
 
     // Create paragraph for text before image if exists
     if (beforeText.trim()) {
       const beforeParagraph = $createParagraphNode();
       beforeParagraph.append($createTextNode(beforeText));
-      parentNode.insertAfter(beforeParagraph);
+      parentNode.insertBefore(beforeParagraph);
     }
 
     // Create and insert image node
@@ -38,13 +40,13 @@ export const IMAGE: ElementTransformer = {
       size = Math.min(100, Math.max(5, size));
     }
     const imageNode = $createImageNode({ src, altText, size });
-    parentNode.insertAfter(imageNode);
+    parentNode.insertBefore(imageNode);
 
     // Create paragraph for text after image if exists
     if (afterText.trim()) {
       const afterParagraph = $createParagraphNode();
       afterParagraph.append($createTextNode(afterText));
-      parentNode.insertAfter(afterParagraph);
+      parentNode.insertBefore(afterParagraph);
     }
 
     // Remove the original node
