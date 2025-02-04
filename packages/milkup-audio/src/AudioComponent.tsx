@@ -83,19 +83,6 @@ export default function AudioComponent({
   source,
   nodeKey,
 }: AudioComponentProps): JSX.Element {
-  const [editor] = useLexicalComposerContext();
-  const isEditable = useLexicalEditable();
-  const [audioValue, setAudioValue] = useState(source);
-
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  const handleEnded = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.pause();
-    }
-  }, [audioRef]);
-
   return (
     <div className="audio-action">
       <CustomAudio source={source} />
