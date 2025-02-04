@@ -7,7 +7,7 @@ import {
 } from "lexical";
 import { $createImageNode, ImageNode } from "./ImageNode";
 import { useCallback } from "react";
-import { createCommand } from "lexical";
+import { createCommand, $getRoot } from 'lexical';
 import { useEffect } from "react";
 
 const IMAGE_MAX_SIZE_RATIO = 0.8;
@@ -53,18 +53,15 @@ export function ImagePlugin({
             image.onload = () => {
               editor.update(() => {
                 const selection = $getSelection();
-                const maxWidth =
-                  (editor.getRootElement()?.clientWidth ?? 100) *
-                  IMAGE_MAX_SIZE_RATIO;
-                const width = Math.min(image.width, maxWidth);
-                const height = (image.height / image.width) * width;
+                
+                const imageNode = $createImageNode({
+                  src: url,
+                  altText: file.name,
+                  size: 100,
+                });
 
                 if ($isRangeSelection(selection)) {
-                  const imageNode = $createImageNode({
-                    src: url,
-                    altText: file.name,
-                    size: 100,
-                  });
+                  
                   selection.insertNodes([imageNode]);
                   const imageElement = editor
                     .getRootElement()
@@ -72,6 +69,9 @@ export function ImagePlugin({
                   if (imageElement) {
                     (imageElement as HTMLElement).style.textAlign = "center";
                   }
+                } else {
+                  const root = $getRoot();
+                  root.append(imageNode);
                 }
               });
             };
