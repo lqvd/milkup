@@ -20,19 +20,26 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 
 import EquationsPlugin from "../../../packages/milkup-equations/src/index";
 import { EquationNode } from "../../../packages/milkup-equations/src/EquationNode";
-import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
 
 import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
 import { YouTubeNode } from "../../../packages/milkup-youtube/src/YoutubeNode";
 
 import AutoEmbedPlugin from "../../../packages/milkup-autoembed/src/index";
 
-import { SharedHistoryContext } from "./plugins/SharedHistoryContext";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { useSharedHistoryContext } from "./plugins/SharedHistoryContext";
+
 import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
 import "./lexical-styling.css";
-import ToolbarPlugin from "./plugins/toolbar-plugin";
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import MarkdownAction from "./plugins/MarkdownAction";
+import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
+import EquationsPlugin from "../../../packages/milkup-equations/src/EquationsPlugin";
+import { BlockEquationNode } from "../../../packages/milkup-equations/src/block/BlockEquationNode";
+import { EquationEditorNode } from "../../../packages/milkup-equations/src/block/EquationEditorNode";
+import { BlockEquationRendererNode } from "../../../packages/milkup-equations/src/block/BlockEquationRendererNode";
+import { InlineEquationNode } from "../../../packages/milkup-equations/src/inline/InlineEquationNode";
 import { useState } from "react";
 import DraggableBlock from "./plugins/milkupDraggable";
 
@@ -118,6 +125,7 @@ const theme = {
 const initialConfig = {
   namespace: "Milkup",
   theme,
+  editable: true,
   onError: (error: Error) => console.error(error),
   nodes: [
     HeadingNode,
@@ -133,68 +141,65 @@ const initialConfig = {
     HorizontalRuleNode,
     LinkNode,
     EquationNode,
-    ImageNode, // Register ImageNode
     YouTubeNode,
+    BlockEquationNode,
+    EquationEditorNode,
+    BlockEquationRendererNode,
+    InlineEquationNode,
     AudioNode,
   ],
 };
 
 export default function Milkup() {
+  const { historyState } = useSharedHistoryContext();
+
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLElement | null>(null);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement | null) => {
     if (_floatingAnchorElem !== null) {
-      console.log("floatingAnchorElem", _floatingAnchorElem);
       setFloatingAnchorElem(_floatingAnchorElem);
     }
   };
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <SharedHistoryContext>
-        <div className="editor-container">
-          <ToolbarPlugin />
-          <div className="editor-inner">
-            <RichTextPlugin
-              // @ts-ignore
-              contentEditable={
-                <div className="editor-scroller">
-                  <div className="editor-input" ref={onRef}>
-                    <ContentEditable
-                      placeholder={
-                        <div className="editor-placeholder">Explore!</div>
-                      }
-                    />
-                  </div>
+      <HistoryPlugin externalHistoryState={historyState} />
+      <div className="editor-container">
+        {initialConfig.editable && <ToolbarPlugin />}
+        <div className="editor-inner">
+          <RichTextPlugin
+            // @ts-ignore
+            contentEditable={
+              <div className="editor-scroller">
+                <div className="editor-input" ref={onRef}>
+                  <ContentEditable
+                    placeholder={
+                      <div className="editor-placeholder">Explore!</div>
+                    }
+                  />
                 </div>
-              }
-              ErrorBoundary={LexicalErrorBoundary}
-            />
-            {floatingAnchorElem && (
-              <>
-                <DraggableBlock anchorElem={floatingAnchorElem} />
-              </>
-            )}
-            <ListPlugin />
-            <CheckListPlugin />
-            <LinkPlugin />
-            <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-            <EquationsPlugin />
-            <YouTubePlugin />
-            <AutoEmbedPlugin />
-            <TablePlugin
-              hasCellMerge={true}
-              hasCellBackgroundColor={true}
-              hasHorizontalScroll={true}
-            />
-            <TableCellResizer />
-            <TableHoverActionsPlugin />
-            <TableCellActionMenuPlugin cellMerge={true} />
-            <ParagraphPlugin trailingLBMode="paragraph" />
-          </div>
+              </div>
+            }
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          {initialConfig.editable && floatingAnchorElem && (
+            <>
+              <DraggableBlock anchorElem={floatingAnchorElem} />
+            </>
+          )}
+          <ListPlugin />
+          <CheckListPlugin />
+          <LinkPlugin />
+          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+          <EquationsPlugin />
+          <YouTubePlugin />
+          <AutoEmbedPlugin />
+          <ParagraphPlugin trailingLBMode="paragraph" />
         </div>
-      </SharedHistoryContext>
+      </div>
+      <HistoryPlugin />
+      <CodeHighlightPlugin />
       <TreeViewPlugin />
       <MarkdownAction shouldPreserveNewLinesInMarkdown={true} />
     </LexicalComposer>

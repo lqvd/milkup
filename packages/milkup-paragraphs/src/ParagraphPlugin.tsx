@@ -1,27 +1,20 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
-  $createParagraphNode,
-  $insertNodes,
-  $isRootOrShadowRoot,
   COMMAND_PRIORITY_EDITOR,
   KEY_ENTER_COMMAND,
-  createCommand,
-  LexicalCommand,
-  LexicalEditor,
   INSERT_LINE_BREAK_COMMAND,
-  COMMAND_PRIORITY_HIGH,
-  COMMAND_PRIORITY_CRITICAL,
   $getSelection,
   $isRangeSelection,
   INSERT_PARAGRAPH_COMMAND,
   KEY_DOWN_COMMAND,
   COMMAND_PRIORITY_LOW,
-  $getRoot,
-  $isElementNode,
   $selectAll,
+  ElementNode,
+  $getRoot,
 } from "lexical";
 import { CAN_USE_DOM } from "@lexical/utils";
 import { useCallback, useEffect } from "react";
+import { $isParagraphNode } from "lexical";
 
 // Credit to a workaround found in https://github.com/facebook/lexical/issues/4358,
 // Lexical issue #4358, which as of now is still open, for the following code snippet
@@ -75,45 +68,83 @@ export function isSelectAll(
 // a paragraph. This also results in the unintuitive behavior that when we press up arrow
 // we will move to the trailing blank line, and we can type there as well, reducing the
 // space between the two paragraphs.
+//
+// Currently, 'paragraph' will require special handling in a list environment. Fortunately,
+// since node types are defined as strings we do not require the list plugin to be actually
+// enabled.
 
 type ParagraphPluginProps = {
-  trailingLBMode: "keep" | "remove" | "paragraph";
+  trailingLBMode?: "keep" | "remove" | "paragraph";
+  paragraphModeExemption?: string[];
 };
 
+/**
+ * Changes default line/paragraph break behaviour for the editor, where a single carriage
+ * return will insert a simple line break whereas two carriage returns will insert a new
+ * paragraph.
+ * @param trailingLBMode - The behaviour of trailing line breaks at the end of each paragraph.
+ * @param paragraphModeExemption - For the 'paragraph' `trailingLBMode` only, when the last
+ * node is a type specified by this parameter, the plugin will not attempt to insert the
+ * additional paragraphspecified by the 'paragraph' `trailingLBMode`.
+ */
 export default function ParagraphPlugin({
   trailingLBMode = "paragraph",
+  paragraphModeExemption = ["listitem"],
 }: ParagraphPluginProps): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
-
   useEffect(() => {
     editor.registerCommand(
       KEY_ENTER_COMMAND,
       (payload) => {
-        const event: KeyboardEvent = payload!;
-        event.preventDefault();
+        const event = payload as KeyboardEvent;
         const selection = $getSelection();
-        if (
-          $isRangeSelection(selection) &&
-          selection.focus.getNode().getType() === "paragraph" &&
-          selection.isCollapsed()
-        ) {
-          if (trailingLBMode !== "keep") {
-            selection.getNodes().forEach((node) => {
-              if (
-                node.getType() === "paragraph" ||
-                node.getType() === "linebreak"
-              ) {
-                node.remove();
-              }
-            });
-          }
-          if (trailingLBMode === "paragraph") {
-            editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
-          }
-          return editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
-        } else {
-          return editor.dispatchCommand(INSERT_LINE_BREAK_COMMAND, false);
+        if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+          return false;
         }
+
+        // Traverse upward to find the nearest paragraph node.
+        let paragraphNode = selection.focus.getNode();
+        while (paragraphNode && !$isParagraphNode(paragraphNode)) {
+          const parent = paragraphNode.getParent();
+          if (!parent) break;
+          paragraphNode = parent;
+        }
+
+        // Only trigger custom behavior if found paragraph is a direct child of the root.
+        if (paragraphNode && paragraphNode.getParent() === $getRoot()) {
+          event.preventDefault();
+          if (
+            $isRangeSelection(selection) &&
+            selection.isCollapsed() &&
+            selection.focus.getNode().getType() !== "text"
+          ) {
+            // Otherwise, use paragraph insertion behavior.
+            const focusType = selection.focus.getNode().getType();
+            const focusEmpty = (
+              selection.focus.getNode() as ElementNode
+            ).isEmpty();
+            if (trailingLBMode !== "keep") {
+              selection.getNodes().forEach((node) => {
+                if (node.getType() === "linebreak") {
+                  node.remove();
+                }
+              });
+            }
+
+            if (
+              trailingLBMode === "paragraph" &&
+              !focusEmpty &&
+              !paragraphModeExemption.includes(focusType)
+            ) {
+              editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
+            }
+            return editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
+          } else {
+            return editor.dispatchCommand(INSERT_LINE_BREAK_COMMAND, false);
+          }
+        }
+        // Otherwise, use default behavior.
+        return false;
       },
       COMMAND_PRIORITY_EDITOR,
     );

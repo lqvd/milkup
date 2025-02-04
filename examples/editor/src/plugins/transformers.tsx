@@ -1,9 +1,8 @@
 import { DASH_SPACE, HR, YOUTUBE } from "./customTransformers";
 import {
-  EQUATION_BLOCK,
-  EQUATION_BLOCK_ML,
+  BLOCK_EQUATION,
   INLINE_EQUATION,
-} from "../../../../packages/milkup-equations/src/transformers";
+} from "../../../../packages/milkup-equations/src/transfomers";
 
 import { AUDIO_EMBED } from "../../../../packages/milkup-audio/src/transformers";
 
@@ -36,8 +35,7 @@ export const TRANSFORMERS = [
   AUDIO_EMBED,
   CHECK_LIST,
   HR,
-  EQUATION_BLOCK_ML,
-  EQUATION_BLOCK,
+  BLOCK_EQUATION,
   INLINE_EQUATION,
   DASH_SPACE,
   UNORDERED_LIST,
