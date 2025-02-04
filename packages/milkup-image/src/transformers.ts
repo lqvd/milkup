@@ -2,53 +2,60 @@ import { ElementTransformer, TextMatchTransformer } from "@lexical/markdown";
 import { $createImageNode, $isImageNode, ImageNode } from "./ImageNode";
 import { LexicalNode, $isTextNode, $createTextNode } from "lexical";
 import { LinkNode, $isLinkNode, $createLinkNode } from "@lexical/link";
+import { $createParagraphNode } from "lexical";
 
 const IMAGE_EXTS_REGEX = "(?:png|jpg|jpeg|gif)";
 const IMAGE_REGEX = new RegExp(
-  "!\\[([^\\]]*)\\](?:\\[([^\\]]*)\\])?\\(((?:https:\\/\\/)[^\\s)]+\\." +
+  "(.*?)(!\\[([^\\]]*)\\]\\[([^\\]]*)\\]\\(((?:https:\\/\\/)[^\\s)]+\\." +
     IMAGE_EXTS_REGEX +
-    ")\\)",
+    ")\\))(.*)",
 );
 
 export const IMAGE: ElementTransformer = {
   dependencies: [ImageNode],
-
-  // When exporting, produce markdown of the form:
-  // ![image-alt-text][size](source)
   export: (node: LexicalNode) => {
     if (!$isImageNode(node)) {
       return null;
     }
-    // Use the size parameter stored in the node.
     const size = node.getSize() != null ? `${Math.trunc(node.getSize())}` : "";
-
     return `![${node.__altText}][${size}](${node.__src})`;
   },
-
-  // Use the IMAGE_REGEX constant.
   regExp: IMAGE_REGEX,
+  replace: (parentNode, _children, match) => {
+    const [, beforeText, , altText, sizeText, src, afterText] = match;
 
-  // When importing, parse the optional size from the second square-bracket group.
-  replace: (parentNode, _props, match, isImport) => {
-    const altText = match[1];
-    const sizeText = match[2]; // Expected to be a number (or empty).
-    const src = match[3];
+    // Create paragraph for text before image if exists
+    if (beforeText.trim()) {
+      const beforeParagraph = $createParagraphNode();
+      beforeParagraph.append($createTextNode(beforeText));
+      parentNode.insertAfter(beforeParagraph);
+    }
+
+    // Create and insert image node
     let size: number | undefined;
     if (sizeText) {
       size = parseInt(sizeText, 10);
       size = Math.min(100, Math.max(5, size));
     }
     const imageNode = $createImageNode({ src, altText, size });
-    if (isImport || parentNode.getNextSibling() != null) {
-      parentNode.replace(imageNode);
-    } else {
-      parentNode.insertBefore(imageNode);
+    parentNode.insertAfter(imageNode);
+
+    // Create paragraph for text after image if exists
+    if (afterText.trim()) {
+      const afterParagraph = $createParagraphNode();
+      afterParagraph.append($createTextNode(afterText));
+      parentNode.insertAfter(afterParagraph);
     }
+
+    // Remove the original node
+    parentNode.remove();
   },
 
   type: "element",
 };
 
+/* LINK URL Regex needs to take into account IMAGE. 
+   LINK here does not transform if link ends in an image extension. */
 const isImageURL = (url: string): boolean => {
   return /\.(png|jpg|jpeg|gif)$/i.test(url);
 };
