@@ -201,7 +201,7 @@ export default function Milkup() {
           <EquationsPlugin />
           <YouTubePlugin />
           <AutoEmbedPlugin />
-          <ParagraphPlugin trailingLBMode="paragraph" />
+          <ParagraphPlugin trailingLBMode="remove" />
         </div>
       </div>
       <HistoryPlugin />
