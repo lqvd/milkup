@@ -10,8 +10,6 @@ import {
   $isYouTubeNode,
 } from "../../../../packages/milkup-youtube/src/YoutubeNode";
 import { ImageNode } from "../../../../packages/milkup-image/src/ImageNode";
-import { $createImageNode } from "../../../../packages/milkup-image/src/ImageNode";
-
 /* Horizontal line transformers. */
 
 export const HR: ElementTransformer = {
@@ -77,8 +75,8 @@ export const YOUTUBE: ElementTransformer = {
 };
 
 // Optional helper type guard for clarity
-export function $isImageNode(
-  node: LexicalNode | null | undefined,
-): node is ImageNode {
-  return node instanceof ImageNode;
-}
+// export function $isImageNode(
+//   node: LexicalNode | null | undefined,
+// ): node is ImageNode {
+//   return node instanceof ImageNode;
+// }

@@ -20,11 +20,6 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 
 import EquationsPlugin from "../../../packages/milkup-equations/src/index";
 import { EquationNode } from "../../../packages/milkup-equations/src/EquationNode";
-
-import { ImagePlugin } from "../../../packages/milkup-image/ImagePlugin";
-
-import { ImageToolbarPlugin } from "../../../packages/milkup-image/src/ImageToolBarPlugin";
-
 import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
 
 import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";

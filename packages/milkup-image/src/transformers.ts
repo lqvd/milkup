@@ -16,8 +16,11 @@ export const IMAGE: ElementTransformer = {
 
     // Append the size if both width and height are present.
     if (node.__width != null && node.__height != null) {
-      markdown += ` =${node.__width}x${node.__height}`;
+      const width = Math.trunc(node.__width);
+      const height = Math.trunc(node.__height);
+      markdown += ` =${width}x${height}`;
     }
+    
 
     markdown += ")";
     return markdown;
