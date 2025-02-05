@@ -59,16 +59,6 @@ const CustomAudio: React.FC<CustomAudioProps> = ({ source }) => {
       <button onClick={togglePlay} className="p-2 rounded-full bg-gray-700">
         {isPlaying ? <CirclePause size={20} /> : <CirclePlay size={20} />}
       </button>
-
-      {/* <input
-        type="range"
-        min="0"
-        max={duration}
-        value={currentTime}
-        onChange={handleSeek}
-        className="w-48 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer"
-      /> */}
-
       <audio ref={audioRef} src={source} />
     </div>
   );
@@ -112,7 +102,6 @@ export default function AudioComponent({
   return (
     <div className="audio-action">
       <CustomAudio source={source} />
-      {/* <audio ref={audioRef} controls src={source} onEnded={handleEnded} /> */}
     </div>
   );
 }
