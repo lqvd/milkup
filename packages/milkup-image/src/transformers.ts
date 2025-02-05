@@ -4,12 +4,7 @@ import { LexicalNode, $isTextNode, $createTextNode } from "lexical";
 import { LinkNode, $isLinkNode, $createLinkNode } from "@lexical/link";
 import { $createParagraphNode } from "lexical";
 
-const IMAGE_EXTS_REGEX = "(?:png|jpg|jpeg|gif)";
-const IMAGE_REGEX = new RegExp(
-  "(.*?)(!\\[([^\\]]*)\\]\\[([^\\]]*)\\]\\(((?:https:\\/\\/)[^\\s)]+\\." +
-    IMAGE_EXTS_REGEX +
-    ")\\))(.*)",
-);
+const IMAGE_REGEX = /(.*?)(\!\[([^\]]*)\]\(((?:https:\/\/)[^\s)]+\.(?:png|jpg|jpeg|gif))\)({\s*width\s*=\s*(\d+)%\s*})?)(.*)/
 
 export const IMAGE: ElementTransformer = {
   dependencies: [ImageNode],
@@ -18,16 +13,17 @@ export const IMAGE: ElementTransformer = {
       return null;
     }
     const size = node.getSize() != null ? `${Math.trunc(node.getSize())}` : "";
-    return `![${node.__altText}][${size}](${node.__src})`;
+    return `![${node.__altText}](${node.__src}){ width = ${size}% }`;
   },
   regExp: IMAGE_REGEX,
   replace: (parentNode, _children, match) => {
     console.log("match:");
     console.log(match);
-    const [, beforeText, , altText, sizeText, src, afterText] = match;
+    const [, beforeText, , altText, src, , sizeText, afterText] = match;
+
 
     // Create paragraph for text before image if exists
-    if (beforeText.trim()) {
+    if (beforeText && beforeText.trim()) {
       const beforeParagraph = $createParagraphNode();
       beforeParagraph.append($createTextNode(beforeText));
       parentNode.insertBefore(beforeParagraph);
@@ -36,14 +32,16 @@ export const IMAGE: ElementTransformer = {
     // Create and insert image node
     let size: number | undefined;
     if (sizeText) {
-      size = parseInt(sizeText, 10);
-      size = Math.min(100, Math.max(5, size));
+      size = Math.min(100, Math.max(5, parseInt(sizeText, 10)));
     }
-    const imageNode = $createImageNode({ src, altText, size });
+    if (!src) {
+      return;
+    }
+    const imageNode = $createImageNode({ src, altText: altText ?? '', size})
     parentNode.insertBefore(imageNode);
 
     // Create paragraph for text after image if exists
-    if (afterText.trim()) {
+    if (afterText && afterText.trim()) {
       const afterParagraph = $createParagraphNode();
       afterParagraph.append($createTextNode(afterText));
       parentNode.insertBefore(afterParagraph);
@@ -69,9 +67,16 @@ export const LINK: TextMatchTransformer = {
       return null;
     }
     const title = node.getTitle();
-    const linkContent = title
-      ? `[${node.getTextContent()}](${node.getURL()} "${title}")`
-      : `[${node.getTextContent()}](${node.getURL()})`;
+    let linkContent: string;
+    if (node.getTextContent() === node.getURL()) {
+      linkContent = title
+        ? `<${node.getURL()} "${title}">`
+        : `<${node.getURL()}>`;
+    } else {
+      linkContent = title
+        ? `[${node.getTextContent()}](${node.getURL()} "${title}")`
+        : `[${node.getTextContent()}](${node.getURL()})`;
+    }
     const firstChild = node.getFirstChild();
     if (node.getChildrenSize() === 1 && $isTextNode(firstChild)) {
       return exportFormat(firstChild, linkContent);
