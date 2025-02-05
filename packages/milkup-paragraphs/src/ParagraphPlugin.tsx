@@ -103,10 +103,7 @@ export default function ParagraphPlugin({
           return false;
         }
 
-        let referenceNode: ElementNode | TextNode;
-        if (selection.isCollapsed()) {
-          referenceNode = selection.focus.getNode();
-        } else {
+        if (!selection.isCollapsed()) {
           // *Always* insert a line break.
           event.preventDefault();
           return editor.dispatchCommand(INSERT_LINE_BREAK_COMMAND, false);
