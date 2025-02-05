@@ -78,10 +78,7 @@ export default function EquationsPlugin(): JSX.Element | null {
           : $createBlockEquationNode(equation);
 
         $insertNodes([equationNode]);
-        // If inserted at the root, wrap in a paragraph.
-        if ($isRootOrShadowRoot(equationNode.getParentOrThrow())) {
-          $wrapNodeInElement(equationNode, $createParagraphNode).selectEnd();
-        }
+        equationNode.selectStart();
         return true;
       },
       COMMAND_PRIORITY_EDITOR,
@@ -283,13 +280,7 @@ export default function EquationsPlugin(): JSX.Element | null {
             );
             const equationNode = $createBlockEquationNode("");
             $insertNodes([equationNode]);
-            // If inserted at the root, wrap in a paragraph.
-            if ($isRootOrShadowRoot(equationNode.getParentOrThrow())) {
-              $wrapNodeInElement(
-                equationNode,
-                $createParagraphNode,
-              ).selectEnd();
-            }
+            equationNode.selectStart();
             return true;
           }
         }
