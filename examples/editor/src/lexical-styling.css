@@ -601,6 +601,10 @@ i.markdown {
   background-image: url(/icons/youtube.svg);
 }
 
+.icon.panopto {
+  background-image: url(/icons/panopto.svg);
+}
+
 .editor-placeholder {
   margin-left: 16px;
 }
