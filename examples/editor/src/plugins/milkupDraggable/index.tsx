@@ -17,8 +17,6 @@ export default function DraggableBlock({
   const menuRef = useRef<HTMLDivElement>(null);
   const targetLineRef = useRef<HTMLDivElement>(null);
 
-  console.log("we here boys");
-
   return (
     <DraggableBlockPlugin_EXPERIMENTAL
       anchorElem={anchorElem}

@@ -60,14 +60,14 @@ const CustomAudio: React.FC<CustomAudioProps> = ({ source }) => {
         {isPlaying ? <CirclePause size={20} /> : <CirclePlay size={20} />}
       </button>
 
-      <input
+      {/* <input
         type="range"
         min="0"
         max={duration}
         value={currentTime}
         onChange={handleSeek}
         className="w-48 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer"
-      />
+      /> */}
 
       <audio ref={audioRef} src={source} />
     </div>

@@ -78,8 +78,7 @@ export class AudioNode extends DecoratorNode<JSX.Element> {
   }
 
   updateDOM(prevNode: this): boolean {
-    // If the inline property changes, replace the element
-    return prevNode.__source !== this.__source;
+    return false;
   }
 
   static importDOM(): DOMConversionMap | null {
@@ -117,6 +116,11 @@ export class AudioNode extends DecoratorNode<JSX.Element> {
     return this.getSource();
   }
 
+  override isInline(): boolean {
+    return true;
+  }
+
+
   decorate(): JSX.Element {
     return (
       <Suspense fallback={<div>Loading...</div>}>
@@ -127,8 +131,8 @@ export class AudioNode extends DecoratorNode<JSX.Element> {
 }
 
 export function $createAudioNode(source: string): AudioNode {
-  const node = new AudioNode(source);
-  return $applyNodeReplacement(node);
+  return new AudioNode(source);
+  // return $applyNodeReplacement(node);
 }
 
 export function $isAudioNode(
