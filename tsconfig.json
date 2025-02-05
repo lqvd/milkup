@@ -9,7 +9,11 @@
     "noEmit": true,
     "strict": true,
     "baseUrl": ".",
-    "typeRoots": ["node_modules/@types", "libdefs/globals"],
+    "typeRoots": [
+      "node_modules/@types",
+      "libdefs/globals",
+      "packages/*/src/types.d.ts"
+    ],
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "allowJs": true,
@@ -17,5 +21,12 @@
       "milkup": ["./packages/milkup/src/index.ts"],
       "@milkup/equations": ["./packages/milkup-equations/src/index.ts"]
     }
-  }
+  },
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "packages/**/*.js",
+    "packages/**/*.jsx",
+    "packages/**/*.css"
+  ]
 }

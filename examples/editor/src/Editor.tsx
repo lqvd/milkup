@@ -11,13 +11,9 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
-import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
-
-import EquationsPlugin from "../../../packages/milkup-equations/src/index";
-import { EquationNode } from "../../../packages/milkup-equations/src/EquationNode";
 
 import { YouTubeNode } from "../../../packages/milkup-youtube/src/index";
 import YouTubePlugin from "../../../packages/milkup-youtube/src/YoutubePlugin";
@@ -27,13 +23,30 @@ import AutoEmbedPlugin from "../../../packages/milkup-autoembed/src/index";
 import { PanoptoNode } from "../../../packages/milkup-panopto/src/index";
 import PanoptoPlugin from "../../../packages/milkup-panopto/src/PanoptoPlugin";
 
-import { SharedHistoryContext } from "./plugins/SharedHistoryContext";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { useSharedHistoryContext } from "./plugins/SharedHistoryContext";
+
 import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
 import "./lexical-styling.css";
-import ToolbarPlugin from "./plugins/toolbar-plugin";
-import MarkdownAction from "./plugins/MarkdownAction";
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
+import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
+import EquationsPlugin from "../../../packages/milkup-equations/src/EquationsPlugin";
+import {
+  $createBlockEquationNode,
+  BlockEquationNode,
+} from "../../../packages/milkup-equations/src/block/BlockEquationNode";
+import { EquationEditorNode } from "../../../packages/milkup-equations/src/block/EquationEditorNode";
+import { BlockEquationRendererNode } from "../../../packages/milkup-equations/src/block/BlockEquationRendererNode";
+import { InlineEquationNode } from "../../../packages/milkup-equations/src/inline/InlineEquationNode";
+import { useState } from "react";
+import DraggableBlock from "./plugins/milkupDraggable";
 
+import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
+import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
+import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
+import { $getRoot } from "lexical";
+import { ImagePlugin } from "../../../packages/milkup-image/src/ImagePlugin";
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -105,55 +118,108 @@ const theme = {
   },
 };
 
+const EDITABLE = true;
+
 const initialConfig = {
   namespace: "Milkup",
   theme,
+  editable: EDITABLE,
+  editorState: EDITABLE ? undefined : $prepopulatedrichtext,
   onError: (error: Error) => console.error(error),
   nodes: [
+    ImageNode,
     HeadingNode,
     ListNode,
     ListItemNode,
     QuoteNode,
     CodeNode,
     CodeHighlightNode,
-    TableNode,
-    TableCellNode,
-    TableRowNode,
     AutoLinkNode,
     HorizontalRuleNode,
     LinkNode,
-    EquationNode,
     YouTubeNode,
-    PanoptoNode
+    PanoptoNode,
+    BlockEquationNode,
+    EquationEditorNode,
+    BlockEquationRendererNode,
+    InlineEquationNode,
+    AudioNode,
   ],
 };
 
+function $prepopulatedrichtext() {
+  const root = $getRoot();
+
+  if (root.getFirstChild() === null) {
+    const node = $createBlockEquationNode("x^2 + y^2 = z^2", true);
+    root.append(node);
+  }
+}
+
 export default function Milkup() {
+  const { historyState } = useSharedHistoryContext();
+
+  const [floatingAnchorElem, setFloatingAnchorElem] =
+    useState<HTMLElement | null>(null);
+
+  const onRef = (_floatingAnchorElem: HTMLDivElement | null) => {
+    if (_floatingAnchorElem !== null) {
+      setFloatingAnchorElem(_floatingAnchorElem);
+    }
+  };
+
+  // Included for testing purposes only.
+  const defaultGenerateSrc = async (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsDataURL(file);
+    });
+  };
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <SharedHistoryContext>
-        <div className="editor-container">
-          <ToolbarPlugin />
-          <div className="editor-inner">
-            <RichTextPlugin
-              // @ts-ignore
-              contentEditable={<ContentEditable className="editor-input" />}
-              placeholder={<div className="editor-placeholder">Explore!</div>}
-              ErrorBoundary={LexicalErrorBoundary}
-            />
-            <ListPlugin />
-            <CheckListPlugin />
-            <LinkPlugin />
-            <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-            <EquationsPlugin />
-            <YouTubePlugin />
-            <PanoptoPlugin />
-            <AutoEmbedPlugin />
-          </div>
+      <HistoryPlugin externalHistoryState={historyState} />
+      <div className="editor-container">
+        {initialConfig.editable && <ToolbarPlugin />}
+        <div className="editor-inner">
+          <RichTextPlugin
+            contentEditable={
+              <div className="editor-scroller">
+                <div className="editor-input" ref={onRef}>
+                  {/*
+                  // @ts-expect-error Probably caused by React version differences between examples/editor and milkup packages. */}
+                  <ContentEditable
+                    aria-placeholder="Explore!"
+                    placeholder={
+                      <div className="editor-placeholder">Explore!</div>
+                    }
+                  />
+                </div>
+              </div>
+            }
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          {initialConfig.editable && floatingAnchorElem && (
+            <>
+              <DraggableBlock anchorElem={floatingAnchorElem} />
+            </>
+          )}
+          <ImagePlugin generateSrc={defaultGenerateSrc} />
+          <ListPlugin />
+          <CheckListPlugin />
+          <LinkPlugin />
+          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+          <EquationsPlugin />
+          <YouTubePlugin />
+          <PanoptoPlugin />
+          <AutoEmbedPlugin />
+          <ParagraphPlugin trailingLBMode="remove" />
         </div>
-      </SharedHistoryContext>
+      </div>
+      <HistoryPlugin />
+      <CodeHighlightPlugin />
       <TreeViewPlugin />
-      <MarkdownAction shouldPreserveNewLinesInMarkdown={true} />
     </LexicalComposer>
   );
 }
