@@ -47,6 +47,8 @@ import AutoLinkPlugin from "../../../packages/milkup-autolink/src/AutoLinkPlugin
 import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
 import { $getRoot } from "lexical";
 import { ImagePlugin } from "../../../packages/milkup-image/src/ImagePlugin";
+import FloatingLinkEditorPlugin from "../../../packages/milkup-linkedit/src/FloatingLinkEditorPlugin";
+
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -161,6 +163,8 @@ export default function Milkup() {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLElement | null>(null);
 
+  const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
+
   const onRef = (_floatingAnchorElem: HTMLDivElement | null) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
@@ -187,8 +191,6 @@ export default function Milkup() {
             contentEditable={
               <div className="editor-scroller">
                 <div className="editor-input" ref={onRef}>
-                  {/*
-                  // @ts-expect-error Probably caused by React version differences between examples/editor and milkup packages. */}
                   <ContentEditable
                     aria-placeholder="Explore!"
                     placeholder={
@@ -203,6 +205,11 @@ export default function Milkup() {
           {initialConfig.editable && floatingAnchorElem && (
             <>
               <DraggableBlock anchorElem={floatingAnchorElem} />
+              <FloatingLinkEditorPlugin
+                  anchorElem={floatingAnchorElem}
+                  isLinkEditMode={isLinkEditMode}
+                  setIsLinkEditMode={setIsLinkEditMode}
+                />
             </>
           )}
           <ImagePlugin generateSrc={defaultGenerateSrc} />
