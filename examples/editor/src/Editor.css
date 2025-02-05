@@ -13,10 +13,6 @@
   cursor: se-resize;
 }
 
-.format.table {
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjMiIHk9IjMiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgcng9IjIiIHJ5PSIyIj48L3JlY3Q+PGxpbmUgeDE9IjMiIHkxPSI5IiB4Mj0iMjEiIHkyPSI5Ij48L2xpbmU+PGxpbmUgeDE9IjMiIHkxPSIxNSIgeDI9IjIxIiB5Mj0iMTUiPjwvbGluZT48bGluZSB4MT0iOSIgeTE9IjMiIHgyPSI5IiB5Mj0iMjEiPjwvbGluZT48bGluZSB4MT0iMTUiIHkxPSIzIiB4Mj0iMTUiIHkyPSIyMSI+PC9saW5lPjwvc3ZnPg==);
-}
-
 /* Editor.css */
 .editor-input table {
   border-collapse: collapse;

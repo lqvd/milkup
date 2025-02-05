@@ -4,13 +4,11 @@ import {
   $isHorizontalRuleNode,
   $createHorizontalRuleNode,
 } from "@lexical/react/LexicalHorizontalRuleNode";
-import { LexicalNode, TextNode } from "lexical";
+import { LexicalNode, TextNode, $createTextNode, $isTextNode } from "lexical";
 import {
   $createYouTubeNode,
   $isYouTubeNode,
 } from "../../../../packages/milkup-youtube/src/YoutubeNode";
-import { ImageNode } from "../../../../packages/milkup-image/ImageNode";
-import { $createImageNode } from "../../../../packages/milkup-image/ImageNode";
 
 import {
   $convertToMarkdownString,
@@ -28,9 +26,10 @@ import {
   $createTableRowNode,
   $createTableCellNode,
 } from "@lexical/table";
-import { $isParagraphNode, $isTextNode } from "lexical";
+import { $isParagraphNode } from "lexical";
 import { TRANSFORMERS } from "./transformers";
 
+import { $createLinkNode, $isLinkNode, LinkNode } from "@lexical/link";
 /* Horizontal line transformers. */
 
 export const HR: ElementTransformer = {
@@ -95,41 +94,6 @@ export const YOUTUBE: ElementTransformer = {
   type: "element",
 };
 
-// Optional helper type guard for clarity
-export function $isImageNode(
-  node: LexicalNode | null | undefined,
-): node is ImageNode {
-  return node instanceof ImageNode;
-}
-
-export const IMAGE: ElementTransformer = {
-  dependencies: [ImageNode],
-  export: (node: LexicalNode) => {
-    if ($isImageNode(node)) {
-      console.log("got here");
-      // You can choose to include width and height information in a custom manner if needed.
-      return `![${node.__altText}](${node.__src})`;
-    }
-    console.log("asfjdksflk");
-    return null;
-  },
-
-  // This regular expression matches the markdown image syntax.
-  // For example: ![alt text](https://example.com/image.png)
-  regExp: /!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/,
-  replace: (parentNode, _props, match, isImport) => {
-    const altText = match[1];
-    const src = match[2];
-    const imageNode = $createImageNode({ src, altText });
-    if (isImport || parentNode.getNextSibling() != null) {
-      parentNode.replace(imageNode);
-    } else {
-      parentNode.insertBefore(imageNode);
-    }
-  },
-
-  type: "element",
-};
 
 // Very primitive table setup
 const TABLE_ROW_REG_EXP = /^(?:\|)(.+)(?:\|)\s?$/;
@@ -288,3 +252,52 @@ const mapToTableCells = (textContent: string): Array<TableCellNode> | null => {
   }
   return match[1].split("|").map((text) => $createTableCell(text));
 };
+
+const isImageURL = (url: string): boolean => {
+  return /\.(png|jpg|jpeg|gif)$/i.test(url);
+};
+
+export const LINK: TextMatchTransformer = {
+  dependencies: [LinkNode],
+  export: (node, exportChildren, exportFormat) => {
+    if (!$isLinkNode(node)) {
+      return null;
+    }
+    const title = node.getTitle();
+    const linkContent = title
+      ? `[${node.getTextContent()}](${node.getURL()} "${title}")`
+      : `[${node.getTextContent()}](${node.getURL()})`;
+    const firstChild = node.getFirstChild();
+    if (node.getChildrenSize() === 1 && $isTextNode(firstChild)) {
+      return exportFormat(firstChild, linkContent);
+    }
+    return linkContent;
+  },
+  importRegExp:
+    /(?:\[([^[]+)\])(?:\((?:([^()\s]+)(?:\s"((?:[^"]*\\")*[^"]*)"\s*)?)\))/,
+  regExp:
+    /(?:\[([^[]+)\])(?:\((?:([^()\s]+)(?:\s"((?:[^"]*\\")*[^"]*)"\s*)?)\))$/,
+  replace: (textNode, match) => {
+    const [, linkText, linkUrl, linkTitle] = match;
+
+    // Don't create link if URL is an image
+    if (isImageURL(linkUrl)) {
+      return null;
+    }
+
+    const linkNode = $createLinkNode(linkUrl, { title: linkTitle });
+    const linkTextNode = $createTextNode(linkText);
+    linkTextNode.setFormat(textNode.getFormat());
+    linkNode.append(linkTextNode);
+    textNode.replace(linkNode);
+  },
+  trigger: ")",
+  type: "text-match",
+};
+
+// Optional helper type guard for clarity
+// export function $isImageNode(
+//   node: LexicalNode | null | undefined,
+// ): node is ImageNode {
+//   return node instanceof ImageNode;
+// }
