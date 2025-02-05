@@ -10,22 +10,22 @@ import type {
   ModuleExportEntry,
   NpmModuleExportEntry,
   PackageMetadata,
-} from '../../scripts/shared/PackageMetadata';
-import type {Alias} from 'vite';
+} from "../../scripts/shared/PackageMetadata";
+import type { Alias } from "vite";
 
-import * as fs from 'node:fs';
-import {createRequire} from 'node:module';
-import * as path from 'node:path';
+import * as fs from "node:fs";
+import { createRequire } from "node:module";
+import * as path from "node:path";
 
 const require = createRequire(import.meta.url);
-const {packagesManager} =
-  require('../../scripts/shared/packagesManager') as typeof import('../../scripts/shared/packagesManager');
+const { packagesManager } =
+  require("../../scripts/shared/packagesManager") as typeof import("../../scripts/shared/packagesManager");
 
 const sourceModuleResolution = () => {
   function toAlias(pkg: PackageMetadata, entry: ModuleExportEntry) {
     return {
       find: entry.name,
-      replacement: pkg.resolve('src', entry.sourceFileName),
+      replacement: pkg.resolve("src", entry.sourceFileName),
     };
   }
 
@@ -35,7 +35,7 @@ const sourceModuleResolution = () => {
       .flatMap((pkg) =>
         pkg.getExportedNpmModuleEntries().map(toAlias.bind(null, pkg)),
       ),
-    ...['shared']
+    ...["shared"]
       .map((name) => packagesManager.getPackageByDirectoryName(name))
       .flatMap((pkg) =>
         pkg.getPrivateModuleEntries().map(toAlias.bind(null, pkg)),
@@ -43,21 +43,21 @@ const sourceModuleResolution = () => {
   ];
 };
 
-const distModuleResolution = (environment: 'development' | 'production') => {
+const distModuleResolution = (environment: "development" | "production") => {
   return [
     ...packagesManager.getPublicPackages().flatMap((pkg) =>
       pkg
         .getNormalizedNpmModuleExportEntries()
         .map((entry: NpmModuleExportEntry) => {
           const [name, moduleExports] = entry;
-          const replacements = ([environment, 'default'] as const).map(
-            (condition) => pkg.resolve('dist', moduleExports.import[condition]),
+          const replacements = ([environment, "default"] as const).map(
+            (condition) => pkg.resolve("dist", moduleExports.import[condition]),
           );
           const replacement = replacements.find(fs.existsSync.bind(fs));
           if (!replacement) {
             throw new Error(
               `ERROR: Missing ./${path.relative(
-                '../..',
+                "../..",
                 replacements[1],
               )}. Did you run \`npm run build\` in the monorepo first?`,
             );
@@ -68,12 +68,12 @@ const distModuleResolution = (environment: 'development' | 'production') => {
           };
         }),
     ),
-    ...[packagesManager.getPackageByDirectoryName('shared')].flatMap(
+    ...[packagesManager.getPackageByDirectoryName("shared")].flatMap(
       (pkg: PackageMetadata) =>
         pkg.getPrivateModuleEntries().map((entry: ModuleExportEntry) => {
           return {
             find: entry.name,
-            replacement: pkg.resolve('src', entry.sourceFileName),
+            replacement: pkg.resolve("src", entry.sourceFileName),
           };
         }),
     ),
@@ -81,9 +81,9 @@ const distModuleResolution = (environment: 'development' | 'production') => {
 };
 
 export default function moduleResolution(
-  environment: 'source' | 'development' | 'production',
+  environment: "source" | "development" | "production",
 ): Alias[] {
-  return environment === 'source'
+  return environment === "source"
     ? sourceModuleResolution()
     : distModuleResolution(environment);
 }
