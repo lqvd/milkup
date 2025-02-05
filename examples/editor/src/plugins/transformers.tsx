@@ -1,4 +1,4 @@
-import { DASH_SPACE, HR, YOUTUBE, IMAGE } from "./customTransformers";
+import { DASH_SPACE, HR, YOUTUBE, IMAGE, TABLE } from "./customTransformers";
 import {
   EQUATION_BLOCK,
   EQUATION_BLOCK_ML,
@@ -53,4 +53,5 @@ export const TRANSFORMERS = [
   LINK,
   YOUTUBE,
   IMAGE,
+  TABLE,
 ];
