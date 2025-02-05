@@ -111,8 +111,8 @@ export default function ParagraphPlugin({
 
         if (
           ($isTextNode(node) &&
-          $isParagraphNode(parent) &&
-          parentsParent === $getRoot()) ||
+            $isParagraphNode(parent) &&
+            parentsParent === $getRoot()) ||
           ($isParagraphNode(node) && parent === $getRoot())
         ) {
           console.log("Paragraph node found");
