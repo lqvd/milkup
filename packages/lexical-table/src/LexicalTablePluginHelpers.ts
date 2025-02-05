@@ -11,6 +11,7 @@ import {
   $insertNodeToNearestRoot,
   $unwrapAndFilterDescendants,
   mergeRegister,
+  $findMatchingParent,
 } from '@lexical/utils';
 import {
   $createTextNode,
@@ -20,6 +21,8 @@ import {
   LexicalEditor,
   NodeKey,
   $getRoot,
+  $getSelection,
+  $isRangeSelection,
 } from 'lexical';
 import invariant from '../../shared/src/invariant';
 
@@ -52,18 +55,36 @@ function $insertTableCommandListener({
   columns,
   includeHeaders,
 }: InsertTableCommandPayload): boolean {
+  const selection = $getSelection();
+  console.log("selection:", selection); // Debug log
+  
+  if (!selection) {
+    console.warn('No selection found');
+    return false;
+  }
+  
+  if (!$isRangeSelection(selection)) {
+    console.warn('Selection is not a range selection');
+    return false;
+  }
+
+  const anchor = selection.anchor;
+  const anchorNode = anchor.getNode();
+  
+  // Check if we're inside a table
+  const tableParent = $findMatchingParent(anchorNode, (node) => $isTableNode(node));
+  if (tableParent) {
+    // Either return false silently or throw a more descriptive error
+    console.warn('Cannot insert a table inside another table');
+    return false;
+  }
+
   const tableNode = $createTableNodeWithDimensions(
     Number(rows),
     Number(columns),
     includeHeaders,
   );
-  const root = $getRoot();
-  root.append(tableNode);
-
-  // const firstDescendant = tableNode.getFirstDescendant();
-  // if ($isTextNode(firstDescendant)) {
-  //   firstDescendant.select();
-  // }
+  $insertNodeToNearestRoot(tableNode);
 
   return true;
 }

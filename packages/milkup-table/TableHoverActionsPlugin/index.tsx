@@ -193,39 +193,49 @@ function TableHoverActionsContainer({
       editor.registerMutationListener(
         TableNode,
         (mutations) => {
-          editor.getEditorState().read(
-            () => {
-              let resetObserver = false;
-              for (const [key, type] of mutations) {
-                switch (type) {
-                  case "created": {
+          editor.getEditorState().read(() => {
+            let resetObserver = false;
+            for (const [key, type] of mutations) {
+              switch (type) {
+                case "created": {
+                  const element = editor.getElementByKey(key);
+                  const node = element ? $getNearestNodeFromDOMNode(element) : null;
+                  if ($isTableNode(node)) {
                     tableSetRef.current.add(key);
                     resetObserver = true;
-                    break;
                   }
-                  case "destroyed": {
-                    tableSetRef.current.delete(key);
-                    resetObserver = true;
-                    break;
-                  }
-                  default:
-                    break;
+                  break;
                 }
+                case "destroyed": {
+                  tableSetRef.current.delete(key);
+                  resetObserver = true;
+                  break;
+                }
+                default:
+                  break;
               }
-              if (resetObserver) {
-                // Reset resize observers
-                tableResizeObserver.disconnect();
-                for (const tableKey of tableSetRef.current) {
+            }
+            if (resetObserver) {
+              // Reset resize observers
+              tableResizeObserver.disconnect();
+              for (const tableKey of tableSetRef.current) {
+                try {
                   const { tableElement } = $getTableAndElementByKey(tableKey);
                   tableResizeObserver.observe(tableElement);
+                } catch (error) {
+                  // Remove invalid table key from the set
+                  tableSetRef.current.delete(tableKey);
+                  console.error(
+                    `TableHoverActions: Failed to get table element for key ${tableKey}:`,
+                    error
+                  );
                 }
-                setShouldListenMouseMove(tableSetRef.current.size > 0);
               }
-            },
-            { editor },
-          );
+              setShouldListenMouseMove(tableSetRef.current.size > 0);
+            }
+          }, { editor });
         },
-        { skipInitialization: false },
+        { skipInitialization: false }
       ),
     );
   }, [editor, tableResizeObserver]);
