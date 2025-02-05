@@ -11,6 +11,7 @@ import {
   $selectAll,
   ElementNode,
   $getRoot,
+  TextNode,
 } from "lexical";
 import { CAN_USE_DOM } from "@lexical/utils";
 import { useCallback, useEffect } from "react";
@@ -98,8 +99,17 @@ export default function ParagraphPlugin({
       (payload) => {
         const event = payload as KeyboardEvent;
         const selection = $getSelection();
-        if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+        if (!$isRangeSelection(selection)) {
           return false;
+        }
+
+        let referenceNode: ElementNode | TextNode;
+        if (selection.isCollapsed()) {
+          referenceNode = selection.focus.getNode();
+        } else {
+          // *Always* insert a line break.
+          event.preventDefault();
+          return editor.dispatchCommand(INSERT_LINE_BREAK_COMMAND, false);
         }
 
         // Traverse upward to find the nearest paragraph node.
