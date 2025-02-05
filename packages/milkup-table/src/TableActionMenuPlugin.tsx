@@ -54,7 +54,6 @@ import { createPortal } from "react-dom";
 import invariant from "../../core/ui/invariant";
 
 import useModal from "./utils/useModal";
-import ColorPicker from "./utils/ColorPicker";
 
 function computeSelectionCount(selection: TableSelection): {
   columns: number;
@@ -67,64 +66,11 @@ function computeSelectionCount(selection: TableSelection): {
   };
 }
 
-function $canUnmerge(): boolean {
-  const selection = $getSelection();
-  if (
-    ($isRangeSelection(selection) && !selection.isCollapsed()) ||
-    ($isTableSelection(selection) && !selection.anchor.is(selection.focus)) ||
-    (!$isRangeSelection(selection) && !$isTableSelection(selection))
-  ) {
-    return false;
-  }
-  const [cell] = $getNodeTriplet(selection.anchor);
-  return cell.__colSpan > 1 || cell.__rowSpan > 1;
-}
-
-function $cellContainsEmptyParagraph(cell: TableCellNode): boolean {
-  if (cell.getChildrenSize() !== 1) {
-    return false;
-  }
-  const firstChild = cell.getFirstChildOrThrow();
-  if (!$isParagraphNode(firstChild) || !firstChild.isEmpty()) {
-    return false;
-  }
-  return true;
-}
-
-function $selectLastDescendant(node: ElementNode): void {
-  const lastDescendant = node.getLastDescendant();
-  if ($isTextNode(lastDescendant)) {
-    lastDescendant.select();
-  } else if ($isElementNode(lastDescendant)) {
-    lastDescendant.selectEnd();
-  } else if (lastDescendant !== null) {
-    lastDescendant.selectNext();
-  }
-}
-
-function currentCellBackgroundColor(editor: LexicalEditor): null | string {
-  return editor.getEditorState().read(() => {
-    const selection = $getSelection();
-    if ($isRangeSelection(selection) || $isTableSelection(selection)) {
-      const [cell] = $getNodeTriplet(selection.anchor);
-      if ($isTableCellNode(cell)) {
-        return cell.getBackgroundColor();
-      }
-    }
-    return null;
-  });
-}
-
 type TableCellActionMenuProps = Readonly<{
   contextRef: { current: null | HTMLElement };
   onClose: () => void;
   setIsMenuOpen: (isOpen: boolean) => void;
-  showColorPickerModal: (
-    title: string,
-    showModal: (onClose: () => void) => JSX.Element,
-  ) => void;
   tableCellNode: TableCellNode;
-  cellMerge: boolean;
 }>;
 
 function TableActionMenu({
@@ -132,8 +78,6 @@ function TableActionMenu({
   tableCellNode: _tableCellNode,
   setIsMenuOpen,
   contextRef,
-  cellMerge,
-  showColorPickerModal,
 }: TableCellActionMenuProps) {
   const [editor] = useLexicalComposerContext();
   const dropDownRef = useRef<HTMLDivElement | null>(null);
@@ -142,45 +86,6 @@ function TableActionMenu({
     columns: 1,
     rows: 1,
   });
-  const [canMergeCells, setCanMergeCells] = useState(false);
-  const [canUnmergeCell, setCanUnmergeCell] = useState(false);
-  const [backgroundColor, setBackgroundColor] = useState(
-    () => currentCellBackgroundColor(editor) || "",
-  );
-
-  useEffect(() => {
-    return editor.registerMutationListener(
-      TableCellNode,
-      (nodeMutations) => {
-        const nodeUpdated =
-          nodeMutations.get(tableCellNode.getKey()) === "updated";
-
-        if (nodeUpdated) {
-          editor.getEditorState().read(() => {
-            updateTableCellNode(tableCellNode.getLatest());
-          });
-          setBackgroundColor(currentCellBackgroundColor(editor) || "");
-        }
-      },
-      { skipInitialization: true },
-    );
-  }, [editor, tableCellNode]);
-
-  useEffect(() => {
-    editor.getEditorState().read(() => {
-      const selection = $getSelection();
-      // Merge cells
-      if ($isTableSelection(selection)) {
-        const currentSelectionCounts = computeSelectionCount(selection);
-        updateSelectionCounts(computeSelectionCount(selection));
-        setCanMergeCells(
-          currentSelectionCounts.columns > 1 || currentSelectionCounts.rows > 1,
-        );
-      }
-      // Unmerge cell
-      setCanUnmergeCell($canUnmerge());
-    });
-  }, [editor]);
 
   useEffect(() => {
     const menuButtonElement = contextRef.current;
@@ -262,53 +167,6 @@ function TableActionMenu({
       rootNode.selectStart();
     });
   }, [editor, tableCellNode]);
-
-  const mergeTableCellsAtSelection = () => {
-    editor.update(() => {
-      const selection = $getSelection();
-      if ($isTableSelection(selection)) {
-        const { columns, rows } = computeSelectionCount(selection);
-        const nodes = selection.getNodes();
-        let firstCell: null | TableCellNode = null;
-        for (let i = 0; i < nodes.length; i++) {
-          const node = nodes[i];
-          if ($isTableCellNode(node)) {
-            if (firstCell === null) {
-              node.setColSpan(columns).setRowSpan(rows);
-              firstCell = node;
-              const isEmpty = $cellContainsEmptyParagraph(node);
-              let firstChild;
-              if (
-                isEmpty &&
-                $isParagraphNode((firstChild = node.getFirstChild()))
-              ) {
-                firstChild.remove();
-              }
-            } else if ($isTableCellNode(firstCell)) {
-              const isEmpty = $cellContainsEmptyParagraph(node);
-              if (!isEmpty) {
-                firstCell.append(...node.getChildren());
-              }
-              node.remove();
-            }
-          }
-        }
-        if (firstCell !== null) {
-          if (firstCell.getChildrenSize() === 0) {
-            firstCell.append($createTextNode(""));
-          }
-          $selectLastDescendant(firstCell);
-        }
-        onClose();
-      }
-    });
-  };
-
-  const unmergeTableCellsAtSelection = () => {
-    editor.update(() => {
-      $unmergeCell();
-    });
-  };
 
   const insertTableRowAtSelection = useCallback(
     (shouldInsertAfter: boolean) => {
@@ -474,33 +332,6 @@ function TableActionMenu({
     [editor],
   );
 
-  let mergeCellButton: null | JSX.Element = null;
-  if (cellMerge) {
-    if (canMergeCells) {
-      mergeCellButton = (
-        <button
-          type="button"
-          className="item"
-          onClick={() => mergeTableCellsAtSelection()}
-          data-test-id="table-merge-cells"
-        >
-          <span className="text">Merge cells</span>
-        </button>
-      );
-    } else if (canUnmergeCell) {
-      mergeCellButton = (
-        <button
-          type="button"
-          className="item"
-          onClick={() => unmergeTableCellsAtSelection()}
-          data-test-id="table-unmerge-cells"
-        >
-          <span className="text">Unmerge cells</span>
-        </button>
-      );
-    }
-  }
-
   return createPortal(
     <div
       className="dropdown"
@@ -509,30 +340,6 @@ function TableActionMenu({
         e.stopPropagation();
       }}
     >
-      {mergeCellButton}
-      <button
-        type="button"
-        className="item"
-        onClick={() =>
-          showColorPickerModal("Cell background color", () => (
-            <ColorPicker
-              color={backgroundColor}
-              onChange={handleCellBackgroundColor}
-            />
-          ))
-        }
-        data-test-id="table-background-color"
-      >
-        <span className="text">Background color</span>
-      </button>
-      <button
-        type="button"
-        className="item"
-        onClick={() => toggleRowStriping()}
-        data-test-id="table-row-striping"
-      >
-        <span className="text">Toggle Row Striping</span>
-      </button>
       <hr />
       <button
         type="button"
@@ -613,33 +420,6 @@ function TableActionMenu({
         <span className="text">Delete table</span>
       </button>
       <hr />
-      <button
-        type="button"
-        className="item"
-        onClick={() => toggleTableRowIsHeader()}
-      >
-        <span className="text">
-          {(tableCellNode.__headerState & TableCellHeaderStates.ROW) ===
-          TableCellHeaderStates.ROW
-            ? "Remove"
-            : "Add"}{" "}
-          row header
-        </span>
-      </button>
-      <button
-        type="button"
-        className="item"
-        onClick={() => toggleTableColumnIsHeader()}
-        data-test-id="table-column-header"
-      >
-        <span className="text">
-          {(tableCellNode.__headerState & TableCellHeaderStates.COLUMN) ===
-          TableCellHeaderStates.COLUMN
-            ? "Remove"
-            : "Add"}{" "}
-          column header
-        </span>
-      </button>
     </div>,
     document.body,
   );
@@ -661,8 +441,6 @@ function TableCellActionMenuContainer({
   const [tableCellNode, setTableMenuCellNode] = useState<TableCellNode | null>(
     null,
   );
-
-  const [colorPickerModal, showColorPickerModal] = useModal();
 
   const $moveMenu = useCallback(() => {
     const menu = menuButtonRef.current;
@@ -827,15 +605,12 @@ function TableCellActionMenuContainer({
           >
             <i className="chevron-down" />
           </button>
-          {colorPickerModal}
           {isMenuOpen && (
             <TableActionMenu
               contextRef={menuRootRef}
               setIsMenuOpen={setIsMenuOpen}
               onClose={() => setIsMenuOpen(false)}
               tableCellNode={tableCellNode}
-              cellMerge={cellMerge}
-              showColorPickerModal={showColorPickerModal}
             />
           )}
         </>

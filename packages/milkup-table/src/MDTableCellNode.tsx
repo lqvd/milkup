@@ -1,10 +1,10 @@
-import { TableCellNode, SerializedTableCellNode } from '@lexical/table';
-import { LexicalNode, $isElementNode } from 'lexical';
-import { $createMDTableCellContentNode } from './MDTableCellContentNode';
+import { TableCellNode, SerializedTableCellNode } from "@lexical/table";
+import { LexicalNode, $isElementNode } from "lexical";
+import { $createMDTableCellContentNode } from "./MDTableCellContentNode";
 
 export class MDTableCellNode extends TableCellNode {
   static getType(): string {
-    return 'md-table-cell';
+    return "md-table-cell";
   }
 
   static clone(node: MDTableCellNode): MDTableCellNode {
@@ -37,7 +37,9 @@ export class MDTableCellNode extends TableCellNode {
     return this;
   }
 
-  static importJSON(serializedNode: SerializedMDTableCellNode): MDTableCellNode {
+  static importJSON(
+    serializedNode: SerializedMDTableCellNode,
+  ): MDTableCellNode {
     const node = $createMDTableCellNode();
     node.setFormat(serializedNode.format);
     node.setIndent(serializedNode.indent);
@@ -58,8 +60,12 @@ export function $createMDTableCellNode(): MDTableCellNode {
 
 export type SerializedMDTableCellNode = Omit<
   SerializedTableCellNode,
-  'type'
+  "type"
 > & {
-  type: 'md-table-cell';
+  type: "md-table-cell";
   version: 1;
 };
+
+export function $isMDTableCellNode(node: LexicalNode): node is MDTableCellNode {
+  return node.getType() === "md-table-cell";
+}

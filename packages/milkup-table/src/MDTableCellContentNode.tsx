@@ -5,17 +5,17 @@ import {
   LexicalNode,
   NodeKey,
   SerializedElementNode,
-} from 'lexical';
-import { $isTableNode } from '@lexical/table';
+} from "lexical";
+import { $isTableNode } from "@lexical/table";
 
 export type SerializedMDTableCellContentNode = SerializedElementNode & {
-  type: 'md-table-cell-content';
+  type: "md-table-cell-content";
   version: 1;
 };
 
 export class MDTableCellContentNode extends ElementNode {
   static getType(): string {
-    return 'md-table-cell-content';
+    return "md-table-cell-content";
   }
 
   static clone(node: MDTableCellContentNode): MDTableCellContentNode {
@@ -36,11 +36,13 @@ export class MDTableCellContentNode extends ElementNode {
   }
 
   createDOM(): HTMLElement {
-    const dom = document.createElement('div');
+    const dom = document.createElement("div");
     return dom;
   }
 
-  static importJSON(serializedNode: SerializedMDTableCellContentNode): MDTableCellContentNode {
+  static importJSON(
+    serializedNode: SerializedMDTableCellContentNode,
+  ): MDTableCellContentNode {
     const node = $createMDTableCellContentNode();
     node.setFormat(serializedNode.format);
     node.setIndent(serializedNode.indent);
@@ -57,6 +59,8 @@ export function $createMDTableCellContentNode(): MDTableCellContentNode {
   return new MDTableCellContentNode();
 }
 
-export function $isMDTableCellContentNode(node: LexicalNode): node is MDTableCellContentNode {
-  return node.getType() === 'md-table-cell-content';
+export function $isMDTableCellContentNode(
+  node: LexicalNode,
+): node is MDTableCellContentNode {
+  return node.getType() === "md-table-cell-content";
 }
