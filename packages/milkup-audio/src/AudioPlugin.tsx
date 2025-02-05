@@ -1,5 +1,11 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getRoot, $getSelection, $isRangeSelection, COMMAND_PRIORITY_EDITOR, createCommand } from "lexical";
+import {
+  $getRoot,
+  $getSelection,
+  $isRangeSelection,
+  COMMAND_PRIORITY_EDITOR,
+  createCommand,
+} from "lexical";
 import { useEffect } from "react";
 import { $createAudioNode, AudioNode } from "./AudioNode";
 
@@ -36,7 +42,7 @@ export function AudioPlugin({
             });
           })
           .catch((error) => {
-            console.error("Error generating audio src:", error); 
+            console.error("Error generating audio src:", error);
           });
 
         return true;
@@ -45,9 +51,7 @@ export function AudioPlugin({
     );
 
     return unregisterInsert;
-
   }, [editor, generateSrc]);
 
   return null;
 }
-
