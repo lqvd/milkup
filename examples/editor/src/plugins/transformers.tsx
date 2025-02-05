@@ -8,10 +8,10 @@ import { AUDIO_EMBED } from "../../../../packages/milkup-audio/src/transformers"
 
 import {
   IMAGE,
-  LINK,
+  // LINK,
 } from "../../../../packages/milkup-image/src/transformers";
 
-import { AUTO_LINK } from "../../../../packages/milkup-autolink/src/transformers";
+import { AUTO_LINK, LINK } from "../../../../packages/milkup-autolink/src/transformers";
 
 import {
   // Element transformers
