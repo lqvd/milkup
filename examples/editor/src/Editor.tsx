@@ -27,6 +27,8 @@ import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
 import "./lexical-styling.css";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
+import { FloatingToolbarPlugin } from "../../../packages/milkup-toolbar/src";
+
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/EquationsPlugin";
 import {
@@ -177,7 +179,8 @@ export default function Milkup() {
     <LexicalComposer initialConfig={initialConfig}>
       <HistoryPlugin externalHistoryState={historyState} />
       <div className="editor-container">
-        {initialConfig.editable && <ToolbarPlugin />}
+        {/* {initialConfig.editable && <ToolbarPlugin />} */}
+        <FloatingToolbarPlugin MenuComponent={ToolbarPlugin} />
         <div className="editor-inner">
           <RichTextPlugin
             contentEditable={
