@@ -1,4 +1,4 @@
-import { DASH_SPACE, HR, YOUTUBE, IMAGE} from "./customTransformers";
+import { DASH_SPACE, HR, YOUTUBE, IMAGE } from "./customTransformers";
 import {
   EQUATION_BLOCK,
   EQUATION_BLOCK_ML,

@@ -21,7 +21,6 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/index";
 import { EquationNode } from "../../../packages/milkup-equations/src/EquationNode";
 
-
 import { ImageToolbarPlugin } from "../../../packages/milkup-image/ImageToolBarPlugin";
 
 import { ImageNode } from "../../../packages/milkup-image/ImageNode";
@@ -43,13 +42,13 @@ import DraggableBlock from "./plugins/milkupDraggable";
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
 import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
 
-import { TablePlugin } from "../../../packages/milkup-table/src/TablePlugin";
+import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 import TableCellActionMenuPlugin from "../../../packages/milkup-table/src/TableActionMenuPlugin";
-import TableCellResizer from "../../../packages/milkup-table/src/TableCellResizer";
 import TableHoverActionsPlugin from "../../../packages/milkup-table/src/TableHoverPlugin";
 import TableFocusPlugin from "../../../packages/milkup-table/src/TableFocusPlugin";
 import { MDTableCellNode } from "../../../packages/milkup-table/src/MDTableCellNode";
 import { MDTableCellContentNode } from "../../../packages/milkup-table/src/MDTableCellContentNode";
+import TableCellResizerPlugin from "../../../packages/milkup-table/src/TableCellResizer";
 
 const theme = {
   ltr: "ltr",
@@ -134,7 +133,6 @@ const initialConfig = {
     CodeNode,
     CodeHighlightNode,
     TableNode,
-    TableCellNode,
     TableRowNode,
     AutoLinkNode,
     HorizontalRuleNode,
@@ -143,10 +141,20 @@ const initialConfig = {
     ImageNode, // Register ImageNode
     YouTubeNode,
     AudioNode,
-    MDTableCellNode,
     MDTableCellContentNode,
+    MDTableCellNode,
+    {
+      replace: TableCellNode,
+      with: (node: TableCellNode) => {
+        return new MDTableCellNode(
+          node.__headerState,
+          node.__colSpan,
+          node.__width,
+        );
+      },
+      withKlass: MDTableCellNode,
+    },
   ],
-
 };
 
 export default function Milkup() {
@@ -185,6 +193,11 @@ export default function Milkup() {
             {floatingAnchorElem && (
               <>
                 <DraggableBlock anchorElem={floatingAnchorElem} />
+                <TableCellActionMenuPlugin
+                  cellMerge={true}
+                  anchorElem={floatingAnchorElem}
+                />
+                <TableHoverActionsPlugin anchorElem={floatingAnchorElem} />
               </>
             )}
             <ListPlugin />
@@ -194,15 +207,14 @@ export default function Milkup() {
             <EquationsPlugin />
             <YouTubePlugin />
             <AutoEmbedPlugin />
+            <TableCellResizerPlugin />
             <TablePlugin
-              hasCellMerge={true}
-              hasCellBackgroundColor={true}
-              hasHorizontalScroll={true}
+
+            // hasHorizontalScroll={false}
             />
-            <TableCellResizer />
-            <TableHoverActionsPlugin />
+
             <TableFocusPlugin />
-            <TableCellActionMenuPlugin cellMerge={true} />
+
             <ParagraphPlugin trailingLBMode="paragraph" />
           </div>
         </div>

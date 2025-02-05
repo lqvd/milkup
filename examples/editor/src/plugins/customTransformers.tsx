@@ -77,7 +77,9 @@ export const YOUTUBE: ElementTransformer = {
 };
 
 // Optional helper type guard for clarity
-export function $isImageNode(node: LexicalNode | null | undefined): node is ImageNode {
+export function $isImageNode(
+  node: LexicalNode | null | undefined,
+): node is ImageNode {
   return node instanceof ImageNode;
 }
 
