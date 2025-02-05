@@ -120,7 +120,6 @@ export class AudioNode extends DecoratorNode<JSX.Element> {
     return true;
   }
 
-
   decorate(): JSX.Element {
     return (
       <Suspense fallback={<div>Loading...</div>}>
