@@ -11,6 +11,10 @@ import {
   LINK,
 } from "../../../../packages/milkup-image/src/transformers";
 
+import { 
+  AUTO_LINK,
+} from "../../../../packages/milkup-markdown/src/transformers"
+
 import {
   // Element transformers
   CHECK_LIST, // Must precede UNORDERED_LIST to avoid conflict (- [] vs -)
@@ -52,6 +56,7 @@ export const TRANSFORMERS = [
   ITALIC_STAR,
   ITALIC_UNDERSCORE,
   STRIKETHROUGH,
+  AUTO_LINK,
   LINK,
   YOUTUBE,
 ];
