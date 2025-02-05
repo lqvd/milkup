@@ -21,7 +21,6 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/index";
 import { EquationNode } from "../../../packages/milkup-equations/src/EquationNode";
 
-import { ImagePlugin } from "../../../packages/milkup-image/ImagePlugin";
 
 import { ImageToolbarPlugin } from "../../../packages/milkup-image/ImageToolBarPlugin";
 
@@ -49,7 +48,6 @@ import TableCellActionMenuPlugin from "../../../packages/milkup-table/src/TableA
 import TableCellResizer from "../../../packages/milkup-table/src/TableCellResizer";
 import TableHoverActionsPlugin from "../../../packages/milkup-table/src/TableHoverPlugin";
 import TableFocusPlugin from "../../../packages/milkup-table/src/TableFocusPlugin";
-import TableOfContentsPlugin from "../../../packages/milkup-table/src/TableOfContentsPlugin";
 import { MDTableCellNode } from "../../../packages/milkup-table/src/MDTableCellNode";
 import { MDTableCellContentNode } from "../../../packages/milkup-table/src/MDTableCellContentNode";
 
@@ -205,7 +203,6 @@ export default function Milkup() {
             <TableHoverActionsPlugin />
             <TableFocusPlugin />
             <TableCellActionMenuPlugin cellMerge={true} />
-            <TableOfContentsPlugin />
             <ParagraphPlugin trailingLBMode="paragraph" />
           </div>
         </div>
