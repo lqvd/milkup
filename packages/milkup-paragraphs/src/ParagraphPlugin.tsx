@@ -14,7 +14,7 @@ import {
 } from "lexical";
 import { CAN_USE_DOM } from "@lexical/utils";
 import { useCallback, useEffect } from "react";
-import { $isParagraphNode, $isTextNode } from 'lexical';
+import { $isParagraphNode, $isTextNode } from "lexical";
 
 // Credit to a workaround found in https://github.com/facebook/lexical/issues/4358,
 // Lexical issue #4358, which as of now is still open, for the following code snippet
