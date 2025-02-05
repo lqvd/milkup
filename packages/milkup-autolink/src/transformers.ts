@@ -8,10 +8,17 @@ export const AUTO_LINK: TextMatchTransformer = {
     if (!$isLinkNode(node)) {
       return null;
     }
+    let linkContent: string;
     const title = node.getTitle();
-    const linkContent = title
-      ? `[${node.getTextContent()}](${node.getURL()} "${title}")`
-      : `[${node.getTextContent()}](${node.getURL()})`;
+    if (node.getTextContent() === node.getURL()) {
+      linkContent = title
+        ? `<${node.getURL()} "${title}">`
+        : `<${node.getURL()}>`;
+    } else {
+      linkContent = title
+        ? `[${node.getTextContent()}](${node.getURL()} "${title}")`
+        : `[${node.getTextContent()}](${node.getURL()})`;
+    }
     const firstChild = node.getFirstChild();
     // Add text styles only if link has single text node inside. If it's more
     // then one we ignore it as markdown does not support nested styles for links

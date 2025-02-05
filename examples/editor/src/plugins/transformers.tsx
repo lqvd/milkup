@@ -11,7 +11,7 @@ import {
   LINK,
 } from "../../../../packages/milkup-image/src/transformers";
 
-import { AUTO_LINK } from "../../../../packages/milkup-markdown/src/transformers";
+import { AUTO_LINK } from "../../../../packages/milkup-autolink/src/transformers";
 
 import {
   // Element transformers
