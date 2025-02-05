@@ -127,9 +127,11 @@ export default function ParagraphPlugin({
           ) {
             // Otherwise, use paragraph insertion behavior.
             const focusType = selection.focus.getNode().getType();
-            const focusEmpty = (
-              selection.focus.getNode() as ElementNode
-            ).isEmpty();
+            const focusEmpty =
+              selection.focus.getNode() instanceof ElementNode
+                ? (selection.focus.getNode() as ElementNode).isEmpty()
+                : (selection.focus.getNode() as TextNode).getTextContent() ===
+                  "";
             if (trailingLBMode !== "keep") {
               selection.getNodes().forEach((node) => {
                 if (node.getType() === "linebreak") {
