@@ -1,14 +1,10 @@
-import { ElementTransformer } from "@lexical/markdown";
+import { TextMatchTransformer } from "@lexical/markdown";
 import { $createAudioNode, $isAudioNode, AudioNode } from "./AudioNode";
-import { ElementNode } from "lexical";
+import { TextNode } from "lexical";
 
 const AUDIO_MD_REGEX = /\[AUDIO_EMBED\]\((.*)\)/;
-const AUDIO_LINK_REGEX = /(.*)\.(mp3|wav|flac|aac|ogg|m4a|wma)/;
-const AUDIO_REGEX = new RegExp(
-  AUDIO_MD_REGEX.source + "|" + AUDIO_LINK_REGEX.source,
-);
-
-export const AUDIO_EMBED: ElementTransformer = {
+const AUDIO_LINK_REGEX = /(\S*)\.(mp3|wav|flac|aac|ogg|m4a|wma)/;
+export const AUDIO_EMBED: TextMatchTransformer = {
   dependencies: [AudioNode],
   export: (node) => {
     if (!$isAudioNode(node)) {
@@ -16,15 +12,12 @@ export const AUDIO_EMBED: ElementTransformer = {
     }
     return `[AUDIO_EMBED](${node.getSource()})`;
   },
-  regExp: AUDIO_REGEX,
-  replace: (parentNode: ElementNode, _1, match, isImport: boolean) => {
-    const newNode = $createAudioNode(match[isImport ? 1 : 0]);
-    if (parentNode.getNextSibling() != null || isImport) {
-      parentNode.replace(newNode);
-    } else {
-      parentNode.insertBefore(newNode);
-      parentNode.selectNext();
-    }
+  importRegExp: AUDIO_MD_REGEX,
+  regExp: AUDIO_LINK_REGEX,
+  replace: (node: TextNode, match: RegExpMatchArray) => {
+    const newNode = $createAudioNode(match[match.length == 3 ? 0 : 1]);
+    node.replace(newNode);
   },
-  type: "element",
+  trigger: " ",
+  type: "text-match",
 };
