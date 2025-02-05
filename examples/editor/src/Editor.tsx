@@ -43,6 +43,7 @@ import DraggableBlock from "./plugins/milkupDraggable";
 
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
 import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
+import AutoLinkPlugin from "../../../packages/milkup-autolink/src/AutoLinkPlugin";
 import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
 import { $getRoot } from "lexical";
 import { ImagePlugin } from "../../../packages/milkup-image/src/ImagePlugin";
@@ -213,6 +214,7 @@ export default function Milkup() {
           <YouTubePlugin />
           <AutoEmbedPlugin />
           <ParagraphPlugin trailingLBMode="remove" />
+          <AutoLinkPlugin />
         </div>
       </div>
       <HistoryPlugin />
