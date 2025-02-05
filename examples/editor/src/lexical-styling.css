@@ -574,6 +574,13 @@ i.check-list {
   background-image: url(/icons/list-check.svg);
 }
 
+i.markdown {
+  background-image: url(/icons/markdown.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
 .icon.plus {
   background-image: url(/icons/plus.svg);
 }
@@ -592,4 +599,12 @@ i.check-list {
 
 .icon.youtube {
   background-image: url(/icons/youtube.svg);
+}
+
+.editor-placeholder {
+  margin-left: 16px;
+}
+
+.icon.image {
+  background-image: url(/icons/file-image.svg);
 }

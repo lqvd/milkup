@@ -19,6 +19,7 @@ import { $setBlocksType } from "@lexical/selection";
 
 import { INSERT_EMBED_COMMAND } from "@lexical/react/LexicalAutoEmbedPlugin";
 import { EmbedConfigs } from "../../../../packages/milkup-autoembed/src/index";
+import { INSERT_IMAGE_COMMAND } from "../../../../packages/milkup-image/src/ImagePlugin";
 
 import { $isListNode } from "@lexical/list";
 import {
@@ -35,6 +36,7 @@ import {
   DropdownItem,
   ToolbarWrapper,
 } from "../../../../packages/milkup-toolbar/src/index";
+import toggleMarkdown from "./MarkdownAction";
 
 export default function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
@@ -73,6 +75,16 @@ export default function ToolbarPlugin() {
         label="Redo"
         icon="redo"
         isRedo={true}
+      />
+
+      <Divider />
+
+      <ToolbarButton
+        onClick={() =>
+          toggleMarkdown(editor, { shouldPreserveNewLinesInMarkdown: true })
+        }
+        label="Markdown"
+        icon="markdown"
       />
 
       <Divider />
@@ -164,22 +176,41 @@ export default function ToolbarPlugin() {
         icon="check-list"
         listType="check"
       />
-
       <Divider />
 
       <ToolbarDropdown
         buttonLabel="Insert"
         buttonIconClassName="plus"
-        items={EmbedConfigs.map((embedConfig) => (
+        items={[
+          ...EmbedConfigs.map((embedConfig) => (
+            // YouTube embed
+            <DropdownItem
+              key={embedConfig.type}
+              onClick={() => {
+                editor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type);
+              }}
+              icon={embedConfig.icon}
+              title={embedConfig.contentName}
+            />
+          )),
           <DropdownItem
-            key={embedConfig.type}
+            key="image"
             onClick={() => {
-              editor.dispatchCommand(INSERT_EMBED_COMMAND, embedConfig.type);
+              const input = document.createElement("input");
+              input.type = "file";
+              input.accept = "image/*";
+              input.onchange = (e) => {
+                const file = (e.target as HTMLInputElement).files?.[0];
+                if (file) {
+                  editor.dispatchCommand(INSERT_IMAGE_COMMAND, file);
+                }
+              };
+              input.click();
             }}
-            icon={embedConfig.icon}
-            title={embedConfig.contentName}
-          />
-        ))}
+            icon={<i className="icon image" />}
+            title="Image"
+          />,
+        ]}
       />
 
       <Divider />

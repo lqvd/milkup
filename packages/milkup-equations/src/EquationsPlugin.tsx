@@ -14,6 +14,10 @@ import {
   KEY_BACKSPACE_COMMAND,
   createCommand,
   LexicalCommand,
+  KEY_ENTER_COMMAND,
+  $isParagraphNode,
+  $getRoot,
+  TextNode,
 } from "lexical";
 import { useCallback, useEffect } from "react";
 import {
@@ -74,10 +78,7 @@ export default function EquationsPlugin(): JSX.Element | null {
           : $createBlockEquationNode(equation);
 
         $insertNodes([equationNode]);
-        // If inserted at the root, wrap in a paragraph.
-        if ($isRootOrShadowRoot(equationNode.getParentOrThrow())) {
-          $wrapNodeInElement(equationNode, $createParagraphNode).selectEnd();
-        }
+        equationNode.selectStart();
         return true;
       },
       COMMAND_PRIORITY_EDITOR,
@@ -240,6 +241,48 @@ export default function EquationsPlugin(): JSX.Element | null {
             prevSibling.remove();
           });
           return true;
+        }
+        return false;
+      },
+      COMMAND_PRIORITY_HIGH,
+    );
+    return unregister;
+  }, [editor]);
+
+  // Register enter command: create an equation block if $$ immediately precedes an LB.
+  useEffect(() => {
+    const unregister = editor.registerCommand(
+      KEY_ENTER_COMMAND,
+      (payload) => {
+        const event = payload as KeyboardEvent;
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+          return false;
+        }
+        // Traverse upward to find the nearest paragraph node.
+        let paragraphNode = selection.focus.getNode();
+        while (paragraphNode && !$isParagraphNode(paragraphNode)) {
+          const parent = paragraphNode.getParent();
+          if (!parent) break;
+          paragraphNode = parent;
+        }
+        // Only trigger custom behavior if found paragraph is a direct child of the root.
+        if (paragraphNode && paragraphNode.getParent() === $getRoot()) {
+          event.preventDefault();
+          const focusNode = selection.focus.getNode();
+          if (focusNode.getType() !== "text") {
+            return false;
+          }
+          console.log(focusNode.getTextContent().trim());
+          if (focusNode.getTextContent().trim().endsWith("$$")) {
+            (focusNode as TextNode).setTextContent(
+              focusNode.getTextContent().replace(/\$\$\s*$/, ""),
+            );
+            const equationNode = $createBlockEquationNode("");
+            $insertNodes([equationNode]);
+            equationNode.selectStart();
+            return true;
+          }
         }
         return false;
       },

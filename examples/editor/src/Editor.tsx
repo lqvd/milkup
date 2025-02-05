@@ -11,7 +11,6 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
-import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
@@ -28,7 +27,6 @@ import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
 import "./lexical-styling.css";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
-import MarkdownAction from "./plugins/MarkdownAction";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/EquationsPlugin";
 import {
@@ -43,8 +41,9 @@ import DraggableBlock from "./plugins/milkupDraggable";
 
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
 import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
+import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
 import { $getRoot } from "lexical";
-
+import { ImagePlugin } from "../../../packages/milkup-image/src/ImagePlugin";
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -125,15 +124,13 @@ const initialConfig = {
   editorState: EDITABLE ? undefined : $prepopulatedrichtext,
   onError: (error: Error) => console.error(error),
   nodes: [
+    ImageNode,
     HeadingNode,
     ListNode,
     ListItemNode,
     QuoteNode,
     CodeNode,
     CodeHighlightNode,
-    TableNode,
-    TableCellNode,
-    TableRowNode,
     AutoLinkNode,
     HorizontalRuleNode,
     LinkNode,
@@ -167,6 +164,15 @@ export default function Milkup() {
     }
   };
 
+  // Included for testing purposes only.
+  const defaultGenerateSrc = async (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsDataURL(file);
+    });
+  };
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <HistoryPlugin externalHistoryState={historyState} />
@@ -174,11 +180,13 @@ export default function Milkup() {
         {initialConfig.editable && <ToolbarPlugin />}
         <div className="editor-inner">
           <RichTextPlugin
-            // @ts-ignore
             contentEditable={
               <div className="editor-scroller">
                 <div className="editor-input" ref={onRef}>
+                  {/*
+                  // @ts-expect-error Probably caused by React version differences between examples/editor and milkup packages. */}
                   <ContentEditable
+                    aria-placeholder="Explore!"
                     placeholder={
                       <div className="editor-placeholder">Explore!</div>
                     }
@@ -193,6 +201,7 @@ export default function Milkup() {
               <DraggableBlock anchorElem={floatingAnchorElem} />
             </>
           )}
+          <ImagePlugin generateSrc={defaultGenerateSrc} />
           <ListPlugin />
           <CheckListPlugin />
           <LinkPlugin />
@@ -200,13 +209,12 @@ export default function Milkup() {
           <EquationsPlugin />
           <YouTubePlugin />
           <AutoEmbedPlugin />
-          <ParagraphPlugin trailingLBMode="paragraph" />
+          <ParagraphPlugin trailingLBMode="remove" />
         </div>
       </div>
       <HistoryPlugin />
       <CodeHighlightPlugin />
       <TreeViewPlugin />
-      <MarkdownAction shouldPreserveNewLinesInMarkdown={true} />
     </LexicalComposer>
   );
 }
