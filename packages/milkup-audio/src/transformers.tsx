@@ -20,4 +20,4 @@ export const AUDIO_EMBED: TextMatchTransformer = {
   },
   trigger: " ",
   type: "text-match",
-}
+};
