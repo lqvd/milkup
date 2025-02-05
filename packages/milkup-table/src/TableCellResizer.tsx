@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -9,7 +10,7 @@ import type { TableCellNode, TableDOMCell, TableMapType } from "@lexical/table";
 import type { LexicalEditor } from "lexical";
 import type { JSX } from "react";
 
-import "./index.css";
+import "./TableCellResizer.css";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useLexicalEditable } from "@lexical/react/useLexicalEditable";

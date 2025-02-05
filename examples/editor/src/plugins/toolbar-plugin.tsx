@@ -7,7 +7,7 @@
  */
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { mergeRegister } from "@lexical/utils";
-import { InsertTableDialog } from "../../../../packages/milkup-table/TablePlugin";
+import { InsertTableDialog } from "../../../../packages/milkup-table/src/TablePlugin";
 
 import {
   $getSelection,

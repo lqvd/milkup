@@ -10,17 +10,21 @@ import type { JSX } from "react";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
-import { EditorThemeClasses, Klass, LexicalEditor, LexicalNode } from "lexical";
+import { COMMAND_PRIORITY_EDITOR, EditorThemeClasses, Klass, LexicalEditor, LexicalNode } from "lexical";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import invariant from "../core/ui/invariant";
+import invariant from "../../core/ui/invariant";
 
-import Button from "../core/ui/button";
-import { DialogActions } from "../core/ui/dialog";
-import TextInput from "./TextInputs";
+import Button from "../../core/ui/button";
+import { DialogActions } from "../../core/ui/dialog";
+import TextInput from "./utils/TextInputs";
 
-import { INSERT_TABLE_COMMAND, TableCellNode, TableNode, TableRowNode } from "../lexical-table/src/index";
-import { registerTablePlugin } from "../lexical-table/src/LexicalTablePluginHelpers";
-
+import { $createTableNode, $createTableRowNode, INSERT_TABLE_COMMAND, TableCellNode, TableNode, TableRowNode, registerTablePlugin } from "@lexical/table";
+import { mergeRegister } from '@lexical/utils';
+import { $createMDTableCellNode, MDTableCellNode } from './MDTableCellNode';
+import { MDTableCellContentNode } from './MDTableCellContentNode';
+import { $insertNodeToNearestRoot } from "@lexical/utils";
+import { $getSelection, $isRangeSelection } from 'lexical';
+import { $isTableCellNode } from '@lexical/table';
 
 export type InsertTableCommandPayload = Readonly<{
   columns: string;
@@ -136,28 +140,52 @@ export function InsertTableDialog({
   );
 }
 
-export function TablePlugin({
-  cellEditorConfig,
-  children,
-}: {
-  cellEditorConfig: CellEditorConfig;
-  children: JSX.Element | Array<JSX.Element>;
-}): JSX.Element | null {
+export function TablePlugin(): JSX.Element {
   const [editor] = useLexicalComposerContext();
-  const cellContext = useContext(CellContext);
   useEffect(() => {
-    if (!editor.hasNodes([TableNode, TableRowNode, TableCellNode])) {
-      invariant(
-        false,
-        "TablePlugin: TableNode, TableRowNode, or TableCellNode is not registered on editor",
-      );
+    if (!editor.hasNodes([TableNode, TableRowNode, MDTableCellNode, MDTableCellContentNode])) {
+      throw new Error('TablePlugin: Required nodes not registered');
     }
+
+    return mergeRegister(
+      editor.registerCommand(
+        INSERT_TABLE_COMMAND,
+        (payload) => {
+          const selection = $getSelection();
+          if (!$isRangeSelection(selection)) {
+            return false;
+          }
+
+          const node = selection.anchor.getNode();
+          let parent = node.getParent();
+          while (parent !== null) {
+            if ($isTableCellNode(parent)) {
+              return false;
+            }
+            parent = parent.getParent();
+          }
+
+          const { columns, rows } = payload;
+          editor.update(() => {
+            try {
+              const tableNode = $createTableNode();
+              for (let i = 0; i < Number(rows); i++) {
+                const tableRowNode = $createTableRowNode();
+                for (let j = 0; j < Number(columns); j++) {
+                  tableRowNode.append($createMDTableCellNode());
+                }
+                tableNode.append(tableRowNode);
+              }
+              $insertNodeToNearestRoot(tableNode);
+            } catch (error) {
+              console.warn('Table insertion in a table cell is not allowed');
+            }
+          });
+          return true;
+        },
+        COMMAND_PRIORITY_EDITOR
+      )
+    );
   }, [editor]);
-  useEffect(() => {
-    cellContext.set(cellEditorConfig, children);
-  }, [cellContext, cellEditorConfig, children]);
-  useEffect(() => {
-    return registerTablePlugin(editor);
-  }, [editor]);
-  return null;
+  return <></>;
 }

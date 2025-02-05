@@ -8,7 +8,7 @@
 
 import type { JSX } from "react";
 
-import "../core/ui/input.css";
+import "../../../core/ui/input.css";
 
 import * as React from "react";
 import { HTMLInputTypeAttribute } from "react";

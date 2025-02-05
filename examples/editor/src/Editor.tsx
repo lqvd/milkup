@@ -13,7 +13,7 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
-import { TableCellNode, TableNode, TableRowNode } from "../../../packages/lexical-table/src/index";
+import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
@@ -44,12 +44,15 @@ import DraggableBlock from "./plugins/milkupDraggable";
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
 import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
 
-import { TablePlugin } from "../../../packages/milkup-table/TablePlugin";
-import TableCellActionMenuPlugin from "../../../packages/milkup-table/TableActionMenuPlugin";
-import TableCellResizer from "../../../packages/milkup-table/TableCellResizer";
-import TableHoverActionsPlugin from "../../../packages/milkup-table/TableHoverActionsPlugin";
-import TableFocusPlugin from "../../../packages/milkup-table/TableFocusPlugin";
-import TableOfContentsPlugin from "../../../packages/milkup-table/TableOfContentsPlugin/";
+import { TablePlugin } from "../../../packages/milkup-table/src/TablePlugin";
+import TableCellActionMenuPlugin from "../../../packages/milkup-table/src/TableActionMenuPlugin";
+import TableCellResizer from "../../../packages/milkup-table/src/TableCellResizer";
+import TableHoverActionsPlugin from "../../../packages/milkup-table/src/TableHoverPlugin";
+import TableFocusPlugin from "../../../packages/milkup-table/src/TableFocusPlugin";
+import TableOfContentsPlugin from "../../../packages/milkup-table/src/TableOfContentsPlugin";
+import { MDTableCellNode } from "../../../packages/milkup-table/src/MDTableCellNode";
+import { MDTableCellContentNode } from "../../../packages/milkup-table/src/MDTableCellContentNode";
+
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -142,6 +145,8 @@ const initialConfig = {
     ImageNode, // Register ImageNode
     YouTubeNode,
     AudioNode,
+    MDTableCellNode,
+    MDTableCellContentNode,
   ],
 
 };
