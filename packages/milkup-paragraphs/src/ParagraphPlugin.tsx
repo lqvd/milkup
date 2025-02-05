@@ -14,7 +14,7 @@ import {
 } from "lexical";
 import { CAN_USE_DOM } from "@lexical/utils";
 import { useCallback, useEffect } from "react";
-import { $isParagraphNode } from "lexical";
+import { $isParagraphNode, $isTextNode } from 'lexical';
 
 // Credit to a workaround found in https://github.com/facebook/lexical/issues/4358,
 // Lexical issue #4358, which as of now is still open, for the following code snippet
@@ -102,16 +102,18 @@ export default function ParagraphPlugin({
           return false;
         }
 
-        // Traverse upward to find the nearest paragraph node.
-        let paragraphNode = selection.focus.getNode();
-        while (paragraphNode && !$isParagraphNode(paragraphNode)) {
-          const parent = paragraphNode.getParent();
-          if (!parent) break;
-          paragraphNode = parent;
-        }
+        // If this node is a text node, and the parent node is a paragraph node
+        // whose parent is the root, then we can trigger custom behavior.
 
-        // Only trigger custom behavior if found paragraph is a direct child of the root.
-        if (paragraphNode && paragraphNode.getParent() === $getRoot()) {
+        const node = selection.focus.getNode();
+        const parent = node.getParent();
+        const parentsParent = parent?.getParent();
+
+        if (
+          $isTextNode(node) &&
+          $isParagraphNode(parent) &&
+          parentsParent === $getRoot()
+        ) {
           event.preventDefault();
           if (
             $isRangeSelection(selection) &&
