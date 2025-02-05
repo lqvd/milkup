@@ -110,10 +110,12 @@ export default function ParagraphPlugin({
         const parentsParent = parent?.getParent();
 
         if (
-          $isTextNode(node) &&
+          ($isTextNode(node) &&
           $isParagraphNode(parent) &&
-          parentsParent === $getRoot()
+          parentsParent === $getRoot()) ||
+          ($isParagraphNode(node) && parent === $getRoot())
         ) {
+          console.log("Paragraph node found");
           event.preventDefault();
           if (
             $isRangeSelection(selection) &&
