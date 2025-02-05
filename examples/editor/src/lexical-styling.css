@@ -24,40 +24,15 @@ body {
   outline: none;
 }
 
-.other h2 {
-  font-size: 18px;
-  color: #444;
-  margin-bottom: 7px;
-}
-
-.other a {
-  color: #777;
-  text-decoration: underline;
-  font-size: 14px;
-}
-
-.other ul {
-  padding: 0;
-  margin: 0;
-  list-style-type: none;
-}
-
 .App {
   font-family: sans-serif;
   text-align: center;
 }
 
-h1 {
-  font-size: 24px;
-  color: #333;
-}
+/* BEGIN: Editor formatting */
 
-.ltr {
-  text-align: left;
-}
-
-.rtl {
-  text-align: right;
+.editor-placeholder {
+  margin-left: 16px;
 }
 
 .editor-container {
@@ -134,24 +109,6 @@ h1 {
 .editor-link {
   color: rgb(33, 111, 219);
   text-decoration: none;
-}
-
-.tree-view-output {
-  box-sizing: border-box;
-  width: 90%;
-  display: block;
-  background: #222;
-  color: #fff;
-  padding: 5px;
-  font-size: 12px;
-  white-space: pre-wrap;
-  margin: -20px auto 10px auto;
-  max-height: 250px;
-  position: relative;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  overflow: auto;
-  line-height: 14px;
 }
 
 .editor-code {
@@ -388,54 +345,9 @@ h1 {
   border-width: 0 2px 2px 0;
 }
 
-pre::-webkit-scrollbar {
-  background: transparent;
-  width: 10px;
-}
+/* END: Editor formatting */
 
-pre::-webkit-scrollbar-thumb {
-  background: #999;
-}
-
-.debug-timetravel-panel {
-  overflow: hidden;
-  padding: 0 0 10px 0;
-  margin: auto;
-  display: flex;
-}
-
-.debug-timetravel-panel-slider {
-  padding: 0;
-  flex: 8;
-}
-
-.debug-timetravel-panel-button {
-  padding: 0;
-  border: 0;
-  background: none;
-  flex: 1;
-  color: #fff;
-  font-size: 12px;
-}
-
-.debug-timetravel-panel-button:hover {
-  text-decoration: underline;
-}
-
-.debug-timetravel-button {
-  border: 0;
-  padding: 0;
-  font-size: 12px;
-  top: 10px;
-  right: 15px;
-  position: absolute;
-  background: none;
-  color: #fff;
-}
-
-.debug-timetravel-button:hover {
-  text-decoration: underline;
-}
+/* BEGIN: Toolbar formatting */
 
 .toolbar {
   display: flex;
@@ -522,12 +434,23 @@ pre::-webkit-scrollbar-thumb {
   background-size: contain;
 }
 
+/* END: Toolbar formatting */
+
+/* BEGIN: Toolbar icons */
+
 i.undo {
   background-image: url(/icons/arrow-counterclockwise.svg);
 }
 
 i.redo {
   background-image: url(/icons/arrow-clockwise.svg);
+}
+
+i.markdown {
+  background-image: url(/icons/markdown.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 i.bold {
@@ -538,28 +461,8 @@ i.italic {
   background-image: url(/icons/type-italic.svg);
 }
 
-i.underline {
-  background-image: url(/icons/type-underline.svg);
-}
-
 i.strikethrough {
   background-image: url(/icons/type-strikethrough.svg);
-}
-
-i.left-align {
-  background-image: url(/icons/text-left.svg);
-}
-
-i.center-align {
-  background-image: url(/icons/text-center.svg);
-}
-
-i.right-align {
-  background-image: url(/icons/text-right.svg);
-}
-
-i.justify-align {
-  background-image: url(/icons/justify.svg);
 }
 
 i.bullet-list {
@@ -574,16 +477,9 @@ i.check-list {
   background-image: url(/icons/list-check.svg);
 }
 
-i.markdown {
-  background-image: url(/icons/markdown.svg);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-}
+/* END: Toolbar icons */
 
-.icon.plus {
-  background-image: url(/icons/plus.svg);
-}
+/* BEGIN: Toolbar dropdown icons */
 
 .icon.paragraph {
   background-image: url(/icons/text-paragraph.svg);
@@ -597,14 +493,16 @@ i.markdown {
   background-image: url(/icons/text-h2.svg);
 }
 
-.icon.youtube {
-  background-image: url(/icons/youtube.svg);
+.icon.plus {
+  background-image: url(/icons/plus.svg);
 }
 
-.editor-placeholder {
-  margin-left: 16px;
+.icon.youtube {
+  background-image: url(/icons/youtube.svg);
 }
 
 .icon.image {
   background-image: url(/icons/file-image.svg);
 }
+
+/* END: Toolbar dropdown icons */
