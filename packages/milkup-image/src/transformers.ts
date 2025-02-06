@@ -69,9 +69,16 @@ export const LINK: TextMatchTransformer = {
       return null;
     }
     const title = node.getTitle();
-    const linkContent = title
-      ? `[${node.getTextContent()}](${node.getURL()} "${title}")`
-      : `[${node.getTextContent()}](${node.getURL()})`;
+    let linkContent: string;
+    if (node.getTextContent() === node.getURL()) {
+      linkContent = title
+        ? `<${node.getURL()} "${title}">`
+        : `<${node.getURL()}>`;
+    } else {
+      linkContent = title
+        ? `[${node.getTextContent()}](${node.getURL()} "${title}")`
+        : `[${node.getTextContent()}](${node.getURL()})`;
+    }
     const firstChild = node.getFirstChild();
     if (node.getChildrenSize() === 1 && $isTextNode(firstChild)) {
       return exportFormat(firstChild, linkContent);
