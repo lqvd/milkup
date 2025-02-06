@@ -10,6 +10,7 @@
     "lint:fix": "yarn eslint ./ --fix"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.6.13",
     "@lexical/code": "^0.23.1",
     "@lexical/link": "^0.23.1",
     "@lexical/list": "^0.23.1",

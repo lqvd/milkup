@@ -27,6 +27,8 @@ import TreeViewPlugin from "./plugins/TreeViewPlugin";
 
 import "./lexical-styling.css";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
+import { FloatingToolbarPlugin } from "../../../packages/milkup-toolbar/src";
+
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import EquationsPlugin from "../../../packages/milkup-equations/src/EquationsPlugin";
 import {
@@ -41,9 +43,12 @@ import DraggableBlock from "./plugins/milkupDraggable";
 
 import { AudioNode } from "../../../packages/milkup-audio/src/AudioNode";
 import ParagraphPlugin from "../../../packages/milkup-paragraphs/src/ParagraphPlugin";
+import AutoLinkPlugin from "../../../packages/milkup-autolink/src/AutoLinkPlugin";
 import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
 import { $getRoot } from "lexical";
 import { ImagePlugin } from "../../../packages/milkup-image/src/ImagePlugin";
+import FloatingLinkEditorPlugin from "../../../packages/milkup-linkedit/src/FloatingLinkEditorPlugin";
+
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -158,6 +163,8 @@ export default function Milkup() {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLElement | null>(null);
 
+  const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
+
   const onRef = (_floatingAnchorElem: HTMLDivElement | null) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
@@ -177,14 +184,13 @@ export default function Milkup() {
     <LexicalComposer initialConfig={initialConfig}>
       <HistoryPlugin externalHistoryState={historyState} />
       <div className="editor-container">
-        {initialConfig.editable && <ToolbarPlugin />}
+        {/* {initialConfig.editable && <ToolbarPlugin />} */}
+        <FloatingToolbarPlugin MenuComponent={ToolbarPlugin} />
         <div className="editor-inner">
           <RichTextPlugin
             contentEditable={
               <div className="editor-scroller">
                 <div className="editor-input" ref={onRef}>
-                  {/*
-                  // @ts-expect-error Probably caused by React version differences between examples/editor and milkup packages. */}
                   <ContentEditable
                     aria-placeholder="Explore!"
                     placeholder={
@@ -199,6 +205,11 @@ export default function Milkup() {
           {initialConfig.editable && floatingAnchorElem && (
             <>
               <DraggableBlock anchorElem={floatingAnchorElem} />
+              <FloatingLinkEditorPlugin
+                anchorElem={floatingAnchorElem}
+                isLinkEditMode={isLinkEditMode}
+                setIsLinkEditMode={setIsLinkEditMode}
+              />
             </>
           )}
           <ImagePlugin generateSrc={defaultGenerateSrc} />
@@ -210,6 +221,7 @@ export default function Milkup() {
           <YouTubePlugin />
           <AutoEmbedPlugin />
           <ParagraphPlugin trailingLBMode="remove" />
+          <AutoLinkPlugin />
         </div>
       </div>
       <HistoryPlugin />
