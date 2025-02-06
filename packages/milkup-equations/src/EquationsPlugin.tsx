@@ -316,7 +316,9 @@ export default function EquationsPlugin(): JSX.Element | null {
           return false;
         }
 
-        if (selection.anchor.offset !== 0) {
+        // Only apply behaviour at start of first child
+        const anchorNode = selection.anchor.getNode();
+        if (anchorNode !== currentNode.getFirstChild() || selection.anchor.offset !== 0) {
           return false;
         }
 
@@ -331,7 +333,16 @@ export default function EquationsPlugin(): JSX.Element | null {
           return false;
         }
 
-        equationEditor.collapseAtStart();
+        // Destroy the editor and replace with a paragraph node if
+        // no prev sibling, otherwise just collapseAtStart.
+        if (!currentNode.getPreviousSibling()) {
+          editor.update(() => {
+            const paragraphNode = $createParagraphNode();
+            currentNode.replace(paragraphNode);
+            paragraphNode.selectStart();
+          });
+        }
+
         return false;
       },
       COMMAND_PRIORITY_HIGH,
