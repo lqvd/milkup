@@ -206,10 +206,10 @@ export default function Milkup() {
             <>
               <DraggableBlock anchorElem={floatingAnchorElem} />
               <FloatingLinkEditorPlugin
-                  anchorElem={floatingAnchorElem}
-                  isLinkEditMode={isLinkEditMode}
-                  setIsLinkEditMode={setIsLinkEditMode}
-                />
+                anchorElem={floatingAnchorElem}
+                isLinkEditMode={isLinkEditMode}
+                setIsLinkEditMode={setIsLinkEditMode}
+              />
             </>
           )}
           <ImagePlugin generateSrc={defaultGenerateSrc} />
