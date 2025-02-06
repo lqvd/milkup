@@ -159,6 +159,7 @@ export class EquationEditorNode extends CodeNode {
   }
 
   override collapseAtStart(): boolean {
+    console.log("collapseAtStart");
     const paragraph = $createParagraphNode();
     const children = this.getChildren();
     children.forEach((child) => {
@@ -167,6 +168,14 @@ export class EquationEditorNode extends CodeNode {
     this.getParentOrThrow().replace(paragraph);
     paragraph.select();
     return true;
+  }
+
+  override remove(): void {
+    const parent = this.getParent();
+    super.remove();
+    if (parent) {
+      parent.remove();
+    }
   }
 }
 

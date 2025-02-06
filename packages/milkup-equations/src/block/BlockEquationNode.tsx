@@ -17,6 +17,7 @@ import {
 import {
   $createEquationEditorNode,
   $isEquationEditorNode,
+  EquationEditorNode,
 } from "./EquationEditorNode";
 import { $createBlockEquationRendererNode } from "./BlockEquationRendererNode";
 import { $createCodeHighlightNode } from "@lexical/code";
@@ -104,6 +105,14 @@ export class BlockEquationNode extends ElementNode {
 
     this.replace(paragraph);
     return true;
+  }
+
+  getEquationEditorNode(): EquationEditorNode {
+    return this.getFirstChild() as EquationEditorNode;
+  }
+
+  hasTextContent(): boolean {
+    return this.getEquationEditorNode().getTextContentSize() !== 0;
   }
 }
 
