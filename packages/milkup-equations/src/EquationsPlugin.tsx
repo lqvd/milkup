@@ -318,7 +318,10 @@ export default function EquationsPlugin(): JSX.Element | null {
 
         // Only apply behaviour at start of first child
         const anchorNode = selection.anchor.getNode();
-        if (anchorNode !== currentNode.getFirstChild() || selection.anchor.offset !== 0) {
+        if (
+          anchorNode !== currentNode.getFirstChild() ||
+          selection.anchor.offset !== 0
+        ) {
           return false;
         }
 
