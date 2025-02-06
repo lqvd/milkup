@@ -185,7 +185,8 @@ export default function Milkup() {
               <div className="editor-scroller">
                 <div className="editor-input" ref={onRef}>
                   {/*
-                  // @ts-expect-error Probably caused by React version differences between examples/editor and milkup packages. */}
+                  // @ts-expect-error 
+                  // Probably caused by React version differences between examples/editor and milkup packages. */}
                   <ContentEditable
                     aria-placeholder="Explore!"
                     placeholder={
