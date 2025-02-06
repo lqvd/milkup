@@ -79,27 +79,19 @@ body {
   pointer-events: none;
 }
 
-.editor-text-bold {
+.editor-textBold {
   font-weight: bold;
 }
 
-.editor-text-italic {
+.editor-textItalic {
   font-style: italic;
 }
 
-.editor-text-underline {
-  text-decoration: underline;
-}
-
-.editor-text-strikethrough {
+.editor-textStrikethrough {
   text-decoration: line-through;
 }
 
-.editor-text-underlineStrikethrough {
-  text-decoration: underline line-through;
-}
-
-.editor-text-code {
+.editor-textCode {
   background-color: rgb(240, 242, 245);
   padding: 1px 0.25rem;
   font-family: Menlo, Consolas, Monaco, monospace;

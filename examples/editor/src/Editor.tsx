@@ -73,13 +73,9 @@ const theme = {
   link: "editor-link",
   text: {
     bold: "editor-textBold",
-    code: "editor-textCode",
     italic: "editor-textItalic",
     strikethrough: "editor-textStrikethrough",
-    subscript: "editor-textSubscript",
-    superscript: "editor-textSuperscript",
-    underline: "editor-textUnderline",
-    underlineStrikethrough: "editor-textUnderlineStrikethrough",
+    code: "editor-textCode",
   },
   code: "editor-code",
   codeHighlight: {
