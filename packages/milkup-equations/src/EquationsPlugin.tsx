@@ -143,6 +143,7 @@ export default function EquationsPlugin(): JSX.Element | null {
             }
           }
           // For non-first code-highlight, let default behavior preserve position.
+          return false;
         }
       });
       return true;
@@ -268,12 +269,10 @@ export default function EquationsPlugin(): JSX.Element | null {
         }
         // Only trigger custom behavior if found paragraph is a direct child of the root.
         if (paragraphNode && paragraphNode.getParent() === $getRoot()) {
-          event.preventDefault();
           const focusNode = selection.focus.getNode();
           if (focusNode.getType() !== "text") {
             return false;
           }
-          console.log(focusNode.getTextContent().trim());
           if (focusNode.getTextContent().trim().endsWith("$$")) {
             (focusNode as TextNode).setTextContent(
               focusNode.getTextContent().replace(/\$\$\s*$/, ""),
