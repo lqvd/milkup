@@ -1,5 +1,4 @@
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
@@ -48,6 +47,8 @@ import { ImageNode } from "../../../packages/milkup-image/src/ImageNode";
 import { $getRoot } from "lexical";
 import { ImagePlugin } from "../../../packages/milkup-image/src/ImagePlugin";
 import FloatingLinkEditorPlugin from "../../../packages/milkup-linkedit/src/FloatingLinkEditorPlugin";
+import MilkupContentEditable from "./plugins/milkupContentEditable/milkupEditable";
+
 
 const theme = {
   ltr: "ltr",
@@ -191,10 +192,10 @@ export default function Milkup() {
             contentEditable={
               <div className="editor-scroller">
                 <div className="editor-input" ref={onRef}>
-                  <ContentEditable
+                  <MilkupContentEditable
                     aria-placeholder="Explore!"
                     placeholder={
-                      <div className="editor-placeholder">Explore!</div>
+                      "Explore!"
                     }
                   />
                 </div>
