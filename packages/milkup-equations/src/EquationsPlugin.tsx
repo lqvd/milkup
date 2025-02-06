@@ -103,7 +103,7 @@ export default function EquationsPlugin(): JSX.Element | null {
       } else if ($isBlockEquationNode(anchorNode)) {
         equationEditor = anchorNode.getEquationEditorNode();
         editorChildren = equationEditor.getChildren();
-      } else if ($isTextNode(anchorNode)) { 
+      } else if ($isTextNode(anchorNode)) {
         if ($isEquationEditorNode(anchorNode.getParent())) {
           equationEditor = anchorNode.getParent() as EquationEditorNode;
           editorChildren = equationEditor.getChildren();
@@ -118,17 +118,15 @@ export default function EquationsPlugin(): JSX.Element | null {
         if (direction === Direction.RIGHT) {
           // If caret is at end of content, exit.
           if (
-            (editorChildren.length == 0) ||
+            editorChildren.length == 0 ||
             (editorChildren.length > 0 &&
               (editorChildren[editorChildren.length - 1] === anchorNode ||
                 anchorNode.getParent() ===
                   editorChildren[editorChildren.length - 1]) &&
-              selection.anchor.offset === anchorNode.getTextContentSize()
-            )
+              selection.anchor.offset === anchorNode.getTextContentSize())
           ) {
             event.preventDefault();
             editor.dispatchCommand(EXIT_EQUATION_COMMAND, undefined);
-
           }
         } else if (direction === Direction.DOWN) {
           // For down arrow, if selection is in the last child, exit.
@@ -253,11 +251,11 @@ export default function EquationsPlugin(): JSX.Element | null {
         if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
           return false;
         }
-        
+
         // Start with the current anchor node.
         let currentNode = selection.anchor.getNode();
         let foundBlockEquation: BlockEquationNode | null = null;
-        
+
         // Traverse upward and check for a previous sibling that is a BlockEquationNode.
         while (currentNode && !$isBlockEquationNode(currentNode)) {
           const prevSibling = currentNode.getPreviousSibling();
@@ -274,11 +272,11 @@ export default function EquationsPlugin(): JSX.Element | null {
           }
           currentNode = parent;
         }
-        
+
         if (foundBlockEquation) {
           event.preventDefault();
           // Get the equation editor node if available.
-          
+
           if (!foundBlockEquation.hasTextContent()) {
             foundBlockEquation.remove();
             return true;
@@ -305,7 +303,7 @@ export default function EquationsPlugin(): JSX.Element | null {
         if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
           return false;
         }
-  
+
         // Traverse upward to check if we are inside a BlockEquationNode.
         let currentNode = selection.anchor.getNode();
         while (currentNode && !$isBlockEquationNode(currentNode)) {
@@ -313,11 +311,11 @@ export default function EquationsPlugin(): JSX.Element | null {
           if (!parent) break;
           currentNode = parent;
         }
-  
+
         if (!$isBlockEquationNode(currentNode)) {
           return false;
         }
-  
+
         if (selection.anchor.offset !== 0) {
           return false;
         }
@@ -332,7 +330,7 @@ export default function EquationsPlugin(): JSX.Element | null {
         if (!equationEditor) {
           return false;
         }
-  
+
         equationEditor.collapseAtStart();
         return false;
       },
@@ -350,7 +348,7 @@ export default function EquationsPlugin(): JSX.Element | null {
         if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
           return false;
         }
-        
+
         // Traverse upward to find the block node that is a direct child of the root.
         let blockNode = selection.anchor.getNode();
         const root = $getRoot();
@@ -362,7 +360,7 @@ export default function EquationsPlugin(): JSX.Element | null {
         if (!blockNode || $isTextNode(blockNode)) {
           return false;
         }
-        
+
         // Ensure caret is at the very end of the block node.
         const lastDescendant = blockNode.getLastDescendant();
         if (!$isTextNode(lastDescendant)) {
@@ -373,7 +371,7 @@ export default function EquationsPlugin(): JSX.Element | null {
         if (!caretAtEnd) {
           return false;
         }
-        
+
         const nextSibling = blockNode.getNextSibling();
         if (nextSibling && $isBlockEquationNode(nextSibling)) {
           event.preventDefault();
