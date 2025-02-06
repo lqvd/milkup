@@ -61,12 +61,12 @@ const CustomAudio: React.FC<CustomAudioProps> = ({
   };
 
   return (
-    <div className="custom-audio flex items-center gap-4 p-2 bg-gray-800 text-white rounded-lg">
+    <span className="custom-audio">
       <button onClick={togglePlay} className="p-2 rounded-full bg-gray-700">
         {isPlaying ? <CirclePause size={20} /> : <CirclePlay size={20} />}
       </button>
       <audio ref={audioRef} src={source} />
-    </div>
+    </span>
   );
 };
 
@@ -105,8 +105,8 @@ export default function AudioComponent({
   }, [editor]);
 
   return (
-    <div className="audio-action">
+    <span className="audio-action">
       <CustomAudio source={source} />
-    </div>
+    </span>
   );
 }

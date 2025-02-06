@@ -122,7 +122,7 @@ export class AudioNode extends DecoratorNode<JSX.Element> {
 
   decorate(): JSX.Element {
     return (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<span>Loading...</span>}>
         <AudioComponent source={this.__source} nodeKey={this.__key} />
       </Suspense>
     );
