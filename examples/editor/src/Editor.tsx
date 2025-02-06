@@ -49,7 +49,6 @@ import { ImagePlugin } from "../../../packages/milkup-image/src/ImagePlugin";
 import FloatingLinkEditorPlugin from "../../../packages/milkup-linkedit/src/FloatingLinkEditorPlugin";
 import MilkupContentEditable from "./plugins/milkupContentEditable/milkupEditable";
 
-
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
@@ -194,9 +193,7 @@ export default function Milkup() {
                 <div className="editor-input" ref={onRef}>
                   <MilkupContentEditable
                     aria-placeholder="Explore!"
-                    placeholder={
-                      "Explore!"
-                    }
+                    placeholder={"Explore!"}
                   />
                 </div>
               </div>
