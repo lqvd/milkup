@@ -1,5 +1,4 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $wrapNodeInElement } from "@lexical/utils";
 import {
   $createParagraphNode,
   $getSelection,
@@ -18,6 +17,8 @@ import {
   $isParagraphNode,
   $getRoot,
   TextNode,
+  KEY_DELETE_COMMAND,
+  $isTextNode,
 } from "lexical";
 import { useCallback, useEffect } from "react";
 import {
@@ -91,25 +92,39 @@ export default function EquationsPlugin(): JSX.Element | null {
       const selection = $getSelection();
       if (!$isRangeSelection(selection)) return false;
 
+      let equationEditor: EquationEditorNode;
+      let editorChildren: Array<BlockEquationNode | EquationEditorNode>;
+
       const anchorNode = selection.anchor.getNode();
-      // Ensure we are inside an equation editor.
-      const anchorParent = anchorNode.getParent();
-      if (!$isEquationEditorNode(anchorParent)) return false;
+
+      if ($isEquationEditorNode(anchorNode)) {
+        equationEditor = anchorNode;
+        editorChildren = equationEditor.getChildren();
+      } else if ($isBlockEquationNode(anchorNode)) {
+        equationEditor = anchorNode.getEquationEditorNode();
+        editorChildren = equationEditor.getChildren();
+      } else if ($isTextNode(anchorNode)) {
+        if ($isEquationEditorNode(anchorNode.getParent())) {
+          equationEditor = anchorNode.getParent() as EquationEditorNode;
+          editorChildren = equationEditor.getChildren();
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
 
       editor.update(() => {
-        const equationEditor = anchorParent;
-        const editorChildren = equationEditor.getChildren();
-
         if (direction === Direction.RIGHT) {
           // If caret is at end of content, exit.
           if (
-            editorChildren.length > 0 &&
-            (editorChildren[editorChildren.length - 1] === anchorNode ||
-              anchorNode.getParent() ===
-                editorChildren[editorChildren.length - 1]) &&
-            selection.anchor.offset === anchorNode.getTextContentSize()
+            editorChildren.length == 0 ||
+            (editorChildren.length > 0 &&
+              (editorChildren[editorChildren.length - 1] === anchorNode ||
+                anchorNode.getParent() ===
+                  editorChildren[editorChildren.length - 1]) &&
+              selection.anchor.offset === anchorNode.getTextContentSize())
           ) {
-            // Dispatch exit command which shares identical logic.
             event.preventDefault();
             editor.dispatchCommand(EXIT_EQUATION_COMMAND, undefined);
           }
@@ -184,24 +199,23 @@ export default function EquationsPlugin(): JSX.Element | null {
       () => {
         const selection = $getSelection();
         if (!$isRangeSelection(selection)) return false;
-        const anchorNode = selection.anchor.getNode();
-        const anchorParent = anchorNode.getParent();
-        if (!$isEquationEditorNode(anchorParent)) return false;
 
         editor.update(() => {
           // Find the BlockEquationNode.
-          let parent = anchorNode.getParent();
-          while (parent && !$isBlockEquationNode(parent)) {
-            parent = parent.getParent();
+          let currentNode = selection.anchor.getNode();
+          while (currentNode && !$isBlockEquationNode(currentNode)) {
+            const parent = currentNode.getParent();
+            if (!parent) return;
+            currentNode = parent;
           }
-          if (!parent) return;
+          if (!$isBlockEquationNode(currentNode)) return;
           // Jump to the next sibling or create a new paragraph.
-          const nextSibling = parent.getNextSibling();
+          const nextSibling = currentNode.getNextSibling();
           if (nextSibling) {
             nextSibling.selectStart();
           } else {
             const paragraphNode = $createParagraphNode();
-            parent.insertAfter(paragraphNode);
+            currentNode.insertAfter(paragraphNode);
             paragraphNode.selectStart();
           }
         });
@@ -226,22 +240,166 @@ export default function EquationsPlugin(): JSX.Element | null {
     };
   }, [editor]);
 
-  // Register backspace command: remove previous block equation if at start.
+  // Register backspace command: move selection into prev sibling if it is
+  // a block equation and it has text, otherwise remove the block equation
+  // if it is empty.
   useEffect(() => {
     const unregister = editor.registerCommand(
       KEY_BACKSPACE_COMMAND,
-      () => {
+      (event: KeyboardEvent) => {
         const selection = $getSelection();
         if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
           return false;
         }
+
+        // Start with the current anchor node.
+        let currentNode = selection.anchor.getNode();
+        let foundBlockEquation: BlockEquationNode | null = null;
+
+        // Traverse upward and check for a previous sibling that is a BlockEquationNode.
+        while (currentNode && !$isBlockEquationNode(currentNode)) {
+          const prevSibling = currentNode.getPreviousSibling();
+          if (prevSibling) {
+            if ($isBlockEquationNode(prevSibling)) {
+              foundBlockEquation = prevSibling;
+              break;
+            }
+          }
+          // If no previous sibling was found, move up to the parent.
+          const parent = currentNode.getParent();
+          if (!parent || $isRootOrShadowRoot(parent)) {
+            break;
+          }
+          currentNode = parent;
+        }
+
+        if (foundBlockEquation) {
+          event.preventDefault();
+          // Get the equation editor node if available.
+
+          if (!foundBlockEquation.hasTextContent()) {
+            foundBlockEquation.remove();
+            return true;
+          } else {
+            // Otherwise, move selection into the block equation.
+            foundBlockEquation.selectStart();
+            return true;
+          }
+        }
+        return false;
+      },
+      COMMAND_PRIORITY_HIGH,
+    );
+    return unregister;
+  }, [editor]);
+
+  // Backspace command: collapse equation editor if at start and empty,
+  // otherwise, prevent default behavior and do nothing.
+  useEffect(() => {
+    const unregister = editor.registerCommand(
+      KEY_BACKSPACE_COMMAND,
+      (event: KeyboardEvent) => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+          return false;
+        }
+
+        // Traverse upward to check if we are inside a BlockEquationNode.
+        let currentNode = selection.anchor.getNode();
+        while (currentNode && !$isBlockEquationNode(currentNode)) {
+          const parent = currentNode.getParent();
+          if (!parent) break;
+          currentNode = parent;
+        }
+
+        if (!$isBlockEquationNode(currentNode)) {
+          return false;
+        }
+
+        // Only apply behaviour at start of first child
         const anchorNode = selection.anchor.getNode();
-        const prevSibling = anchorNode.getPreviousSibling();
-        if (prevSibling && $isBlockEquationNode(prevSibling)) {
-          editor.update(() => {
-            prevSibling.remove();
-          });
+        if (
+          anchorNode !== currentNode.getEquationEditorNode().getFirstChild() ||
+          selection.anchor.offset !== 0
+        ) {
+          return false;
+        }
+
+        if (currentNode.hasTextContent()) {
+          event.preventDefault();
           return true;
+        }
+
+        // Find the EquationEditorNode within the block equation.
+        const equationEditor = currentNode.getEquationEditorNode();
+        if (!equationEditor) {
+          return false;
+        }
+
+        // Destroy the editor and replace with a paragraph node if
+        // no prev sibling, otherwise just collapseAtStart.
+        if (!currentNode.getPreviousSibling()) {
+          editor.update(() => {
+            const paragraphNode = $createParagraphNode();
+            currentNode.replace(paragraphNode);
+            paragraphNode.selectStart();
+          });
+        }
+
+        return false;
+      },
+      COMMAND_PRIORITY_HIGH,
+    );
+    return unregister;
+  }, [editor]);
+
+  // Register delete command: move selection into block equation if at end.
+  useEffect(() => {
+    const unregister = editor.registerCommand(
+      KEY_DELETE_COMMAND,
+      (event: KeyboardEvent) => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+          return false;
+        }
+
+        // Traverse upward to find the block node that is a direct child of the root.
+        let blockNode = selection.anchor.getNode();
+        const root = $getRoot();
+        while (blockNode.getParent() && blockNode.getParent() !== root) {
+          const parent = blockNode.getParent();
+          if (!parent) break;
+          blockNode = parent;
+        }
+        if (!blockNode || $isTextNode(blockNode)) {
+          return false;
+        }
+
+        // Ensure caret is at the very end of the block node.
+        const lastDescendant = blockNode.getLastDescendant();
+        if (!$isTextNode(lastDescendant)) {
+          return false;
+        }
+        const caretAtEnd =
+          selection.anchor.offset === lastDescendant.getTextContentSize();
+        if (!caretAtEnd) {
+          return false;
+        }
+
+        const nextSibling = blockNode.getNextSibling();
+        if (nextSibling && $isBlockEquationNode(nextSibling)) {
+          event.preventDefault();
+          if (!nextSibling.hasTextContent()) {
+            // If empty, remove the block equation.
+            editor.update(() => {
+              nextSibling.remove();
+            });
+            return true;
+          } else {
+            // If not empty, move selection into the block equation.
+            nextSibling.selectStart();
+            return true;
+          }
         }
         return false;
       },

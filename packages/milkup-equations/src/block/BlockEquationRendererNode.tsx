@@ -150,6 +150,14 @@ export class BlockEquationRendererNode extends DecoratorNode<JSX.Element> {
       </Suspense>
     );
   }
+
+  override remove(): void {
+    const parent = this.getParent();
+    super.remove();
+    if (parent) {
+      parent.remove();
+    }
+  }
 }
 
 export function $createBlockEquationRendererNode(
